@@ -24,6 +24,7 @@ services:
       - "5433:5432"  # Port de PostgreSQL
     volumes:
       - pgdata:/var/lib/postgresql/datal:rw  # Persiste les données de la base de données PostgreSQL
+    restart: always
 
 volumes:
   pgdata:

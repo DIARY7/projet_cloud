@@ -40,3 +40,8 @@
 /app/userboard/obj/Debug/net7.0/userboard.pdb
 /app/userboard/obj/Debug/net7.0/userboard.genruntimeconfig.cache
 /app/userboard/obj/Debug/net7.0/ref/userboard.dll
+/app/userboard/obj/Debug/net7.0/userboard.MvcApplicationPartsAssemblyInfo.cs
+/app/userboard/bin/Debug/net7.0/Microsoft.OpenApi.dll
+/app/userboard/bin/Debug/net7.0/Swashbuckle.AspNetCore.Swagger.dll
+/app/userboard/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/app/userboard/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerUI.dll
