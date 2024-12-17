@@ -40,6 +40,7 @@ namespace userboard.Utils
             }
 
             return tokenBuilder.ToString();
-        }
+            
+        }        
     }
 }
