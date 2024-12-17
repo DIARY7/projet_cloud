@@ -50,12 +50,12 @@
     
     !! format des données retournées par l'api = { 'status': 'success/failed', 'datas': 'null/table/object/etc', 'error': 'null/message/etc'} 
 
-       - Initialisation du git [Diary]
-       - Initialisation des applications docker (environnement) [Ony]
-       - Initialisation base & modeles (Roles, Users, Tokens) [all]
-       - MCD (looping) [Ony]
+       Done - Initialisation du git [Diary]
+       Done - Initialisation des applications docker (environnement) [Ony]
+       Done - Initialisation base & modeles (Roles, Users, Tokens) [all]
+       Done - MCD (looping) [Ony]
        - Implémentation des fonctions utilitaires (dans Utils)
-        [Amboara] 
+        Done [Amboara] 
         1. Generator
          - string GeneratePin()
          - string GenerateToken()
@@ -69,7 +69,8 @@
        - Initialisation UsersController [NyAvo]
          - inscription (route: api/Users, method: POST) => CreateUser(RequestBody body)
          - authentification (route: api/Users/login, method: POST) => AuthenticateUser(RequestBody body)
-       - Liens Swaggers [Diary]
+         - modification (route: api/Users, method: PUT) => UpdateUser(RequestBody body)
+       Done - Liens Swaggers [Diary]
 
 ## SCENARIOS D'UTILISATION
 
