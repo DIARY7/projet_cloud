@@ -21,16 +21,21 @@ namespace userboard.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            return await _context.Users
-                                 .Include(u => u.Role) // Inclure les rôles liés
-                                 .ToListAsync();
+            var users = await _context.Users.Include(u => u.Role).ToListAsync();
+
+            return Ok(new
+            {
+                status = "success",
+                datas = users,
+                error = "null"
+            });
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
                                      .Include(u => u.Role)
@@ -38,26 +43,45 @@ namespace userboard.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Utilisateur non trouvé"
+                });
             }
 
-            return user;
+            return Ok(new
+            {
+                status = "success",
+                datas = user,
+                error = "null"
+            });
         }
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
-            // Vérifier si l'email est unique
             if (_context.Users.Any(u => u.Email == user.Email))
             {
-                return BadRequest("L'email existe déjà.");
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "L'email existe déjà."
+                });
             }
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
+            {
+                status = "success",
+                datas = user,
+                error = "null"
+            });
         }
 
         // PUT: api/Users/5
@@ -66,7 +90,12 @@ namespace userboard.Controllers
         {
             if (id != user.Id)
             {
-                return BadRequest();
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "ID utilisateur invalide."
+                });
             }
 
             _context.Entry(user).State = EntityState.Modified;
@@ -79,7 +108,12 @@ namespace userboard.Controllers
             {
                 if (!UserExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Utilisateur non trouvé."
+                    });
                 }
                 else
                 {
@@ -87,7 +121,12 @@ namespace userboard.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new
+            {
+                status = "success",
+                datas = user,
+                error = "null"
+            });
         }
 
         // DELETE: api/Users/5
@@ -97,16 +136,25 @@ namespace userboard.Controllers
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Utilisateur non trouvé."
+                });
             }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                status = "success",
+                datas = user,
+                error = "null"
+            });
         }
 
-        // Méthode pour vérifier si un utilisateur existe
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);

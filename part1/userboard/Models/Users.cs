@@ -49,6 +49,6 @@ namespace userboard.Models
         public Role Role { get; set; }
 
         // Navigation property: un utilisateur peut avoir plusieurs tokens
-        public ICollection<Token> Tokens { get; set; }
+        public ICollection<Token>? Tokens { get; set; }
     }
 }

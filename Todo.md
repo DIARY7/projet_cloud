@@ -47,17 +47,22 @@
        );
 
     -TACHES:
+    
+    !! format des données retournées par l'api = { 'status': 'success/failed', 'datas': 'null/table/object/etc', 'error': 'null/message/etc'} 
 
        - Initialisation des applications docker [Ony]
        - Initialisation du git [Diary]
-       - Initialisation base & modeles (Roles, Users, Tokens) [Amboara]
+       - Initialisation base & modeles (Roles, Users, Tokens) [all]
        - MCD (looping) [Ony]
-       - sendTo(email,html_content) [Amboara]
-       - Initialisation des controllers (UsersController) [Ny Avo]
-         - generatePin()
-         - generateToken()
-         - verifyToken(token)
-         - hash(password)
+       - Implémentation des fonctions utilitaires (dans Utils) [Amboara]
+         - generatePin() => dans Generator
+         - generateToken() => dans Generator
+         - hash(password) => dans Hasher
+         - sendTo(email,sujet,html_content) => dans EmailService
+       - Initialisation UsersController [NyAvo]
+         - inscription (route: api/Users, method: POST) => CreateUser(RequestBody body)
+         - authentification (route: api/Users/login, method: POST) => AuthenticateUser(RequestBody body)
+       - Liens Swaggers [Diary]
 
 ## SCENARIOS D'UTILISATION
 
