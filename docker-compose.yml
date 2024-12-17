@@ -3,7 +3,7 @@ services:
     image: mcr.microsoft.com/dotnet/sdk:7.0
     container_name: dotnet_sdk
     ports:
-      - "5000:5000" # Port pour l'application ASP.NET Core
+      - "5000:5015" # Port pour l'application ASP.NET Core
       - "5001:5001" # Port HTTPS si nécessaire
     volumes:
       - ./part1:/app # Monte le dossier app local dans le conteneur
@@ -14,7 +14,7 @@ services:
       - db
 
   db:
-    image: postgres:14
+    image: postgres:latest
     container_name: postgres_db
     environment:
       - POSTGRES_USER=backend  # Utilisateur PostgreSQL
