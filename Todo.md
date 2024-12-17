@@ -50,15 +50,22 @@
     
     !! format des données retournées par l'api = { 'status': 'success/failed', 'datas': 'null/table/object/etc', 'error': 'null/message/etc'} 
 
-       - Initialisation des applications docker [Ony]
        - Initialisation du git [Diary]
+       - Initialisation des applications docker (environnement) [Ony]
        - Initialisation base & modeles (Roles, Users, Tokens) [all]
        - MCD (looping) [Ony]
-       - Implémentation des fonctions utilitaires (dans Utils) [Amboara]
-         - generatePin() => dans Generator
-         - generateToken() => dans Generator
-         - hash(password) => dans Hasher
-         - sendTo(email,sujet,html_content) => dans EmailService
+       - Implémentation des fonctions utilitaires (dans Utils)
+        [Amboara] 
+        1. Generator
+         - string GeneratePin()
+         - string GenerateToken()
+        2. Hasher
+         - string HashString(password)
+        3. EmailService 
+         - void SendEmail(email,sujet,html_content)
+         [Ony] 
+         - string GetPinHtml(pin)
+         - string GetResetAttemptHtml(link)
        - Initialisation UsersController [NyAvo]
          - inscription (route: api/Users, method: POST) => CreateUser(RequestBody body)
          - authentification (route: api/Users/login, method: POST) => AuthenticateUser(RequestBody body)
