@@ -1,0 +1,29 @@
+services:
+  dotnet:
+    image: mcr.microsoft.com/dotnet/sdk:7.0
+    container_name: dotnet_sdk
+    ports:
+      - "5000:5000" # Port pour l'application ASP.NET Core
+      - "5001:5001" # Port HTTPS si nécessaire
+    volumes:
+      - ./part1:/app # Monte le dossier app local dans le conteneur
+    working_dir: /app # Définit le répertoire de travail
+    stdin_open: true
+    tty: true # Permet de garder le conteneur interactif pour les commandes
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=backend  # Utilisateur PostgreSQL
+      - POSTGRES_PASSWORD=sql # Mot de passe PostgreSQL
+      - POSTGRES_DB=cloud  # Nom de la base de données par défaut
+    ports:
+      - "5433:5432"  # Port de PostgreSQL
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persiste les données de la base de données PostgreSQL
+
+volumes:
+  pgdata:
