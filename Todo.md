@@ -30,8 +30,8 @@
         id SERIAL PRIMARY KEY, 
         full_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        n_attempt INT CHECK (n_attempt <= 5) DEFAULT 0,
+        pwd VARCHAR(255) NOT NULL,
+        n_attempt INT DEFAULT 0,
         last_attempt TIMESTAMP,
         role_id INTEGER REFERENCES Roles(id) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -43,7 +43,7 @@
         user_id INTEGER REFERENCES Users(id),
         token VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        expires_at TIMESTAMP
+        expires_at TIMESTAMP -- 90 secondes apres created_at
        );
 
     -TACHES:
@@ -51,48 +51,51 @@
        - Initialisation des applications docker [Ony]
        - Initialisation du git [Diary]
        - Initialisation base & modeles (Roles, Users, Tokens) [Amboara]
-       - Initialisation des controllers (UsersController) [Hery]
-       - generatePin()
-       - generateToken()
-       - verifyToken(token)
-       - sendTo(email,html_content)
+       - MCD (looping) [Ony]
+       - sendTo(email,html_content) [Amboara]
+       - Initialisation des controllers (UsersController) [Ny Avo]
+         - generatePin()
+         - generateToken()
+         - verifyToken(token)
+         - hash(password)
 
-## SCENARIOS D'UTILISATION (détails des fonctionnalités)
+## SCENARIOS D'UTILISATION
 
    ### Inscription
    - Saisie des informations de l'utilisateur
    - Controle des valeurs:
-     . informations non-null & respect typages
-     . email unique
+     - informations non-null & respect typages
+     - email unique
    - Envoi du code pin par email
    - Vérification du code pin
-     ! si incorrect => renvoi du pin
+     - ! si incorrect => renvoi du pin
    - Insertion utilisateur
   
   ### Authentification multifacteur
    - Saisie de l'email + mot de passe
    - Controle des valeurs:
-     . informations non-null & respect typages
-     . email existant
-     . si last_attempt non-null
-     . mot de passe correct
-       ! si incorrect => n_attempt ++
-       ! si n_attempt > 5 => initialisation last_attempt
+     - informations non-null & respect typages
+     - email existant
+     - si last_attempt non-null
+     - mot de passe correct
+       - ! si incorrect => n_attempt ++
+       - ! si n_attempt > 3 => initialisation last_attempt et renvoi lien réinitialisation de n_attempt
    - Envoi du code pin par email
    - Vérification du code pin
-       ! si incorrect => renvoi du pin
+       - ! si incorrect => n_attempt ++ et renvoi du pin
+       - ! si n_attempt > 3 => initialisation last_attempt et renvoi lien réinitialisation de n_attempt   
    - Création du token
    - Réinitialisation n_attempt (0) et last_attempt (null) 
   
   ### Gestion du compte
    - Modification: 
      1. Mot de passe
-      . lien de réinitialisation par email
-      . saisie nouveau mot de passe
-       ! si mot de passe non-réinitialisé => erreur
+      - lien de réinitialisation par email
+      - saisie nouveau mot de passe
+       - ! si mot de passe non-réinitialisé => erreur
 
      2. Autres informations
-      . saisie nouvelles infos (respect typages)
+      - saisie nouvelles infos (respect typages)
 
    - Suppression
   
