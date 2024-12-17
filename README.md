@@ -11,9 +11,10 @@ Pour lancer .net:
 ```bash
     docker exec -it dotnet_sdk /bin/bash
 ```
+
 Pour lancer postgres:
 ```bash
-    docker exec -it postgres_db psql -U backend
+    docker exec -it postgres_db psql -U backend -d cloud
 ```
 
 Le lien pour l'api .net:

@@ -12,7 +12,7 @@ CREATE TABLE users(
    n_attempt INTEGER,
    last_attempt TIMESTAMP,
    created_at TIMESTAMP NOT NULL,
-   updated_at_ TIMESTAMP,
+   updated_at TIMESTAMP,
    role_id INTEGER NOT NULL,
    PRIMARY KEY(id),
    UNIQUE(email),
