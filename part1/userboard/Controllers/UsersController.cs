@@ -328,11 +328,12 @@ namespace userboard.Controllers
                 }
             }
 
-            // PUT: api/Users/5
-            [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateUser(int id)
+            // PUT: api/Users/update
+             [HttpPost("/update")]
+            public async Task<IActionResult> UpdateUser(User userModified)
             {
-                var user = await _context.Users.FindAsync(id);
+               var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == userModified.Email);
                 if (user == null)
                 {
                     return NotFound(new
@@ -343,7 +344,7 @@ namespace userboard.Controllers
                     });
                 }
 
-                _context.Users.Remove(user);
+                user.FullName = userModified.FullName;
                 await _context.SaveChangesAsync();
 
                 return Ok(new
