@@ -33,7 +33,7 @@ namespace userboard.Utils
         // Méthode non statique pour récupérer les informations d'un utilisateur dans le cache
         public UserCacheInfo GetUserCacheInfo(string email)
         {
-            _cache.TryGetValue(email, out UserCacheInfo userCache);
+            _cache.TryGetValue(email, out UserCacheInfo? userCache);
             return userCache;
         }
 
