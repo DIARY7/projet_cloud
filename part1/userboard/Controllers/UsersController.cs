@@ -64,10 +64,10 @@ namespace userboard.Controllers
            if (cachedData.Pin == pinGiven)
             {
                 // insertion des donnees du user et return id
-                user.CreatedAt = DateTime.Now;
-                 _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
+                cachedData.User.CreatedAt = DateTime.Now;
+                 _context.Users.Add(cachedData.User);
+                await _context.SaveChangesAsync();
+                _cache.Remove(cacheKey);
                 return Ok(new
             {
                 status = "success",
@@ -81,8 +81,6 @@ namespace userboard.Controllers
 
             EmailService.SendEmail(user.Email,"Pin de confirmation de creation de compte", pin);
 
-
-            
             string cacheKey = user.Email;
             _cache.Remove(cacheKey);
             TemporaryModels tm = new TemporaryModels(user,generatedPin) ;
