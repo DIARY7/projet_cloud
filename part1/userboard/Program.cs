@@ -3,7 +3,11 @@ using Microsoft.EntityFrameworkCore; // Pour Entity Framework Core
 using userboard.Data; // Pour votre DbContext
 using userboard.Utils;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Ajouter les services pour les contrôleurs et les vues
 builder.Services.AddControllersWithViews();

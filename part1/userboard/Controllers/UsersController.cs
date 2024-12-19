@@ -140,51 +140,121 @@ namespace userboard.Controllers
     /*
         Fonction Login
     */
-
-    // public IActionResult VerifyLogin(LoginResponse login){
-        
-    // }
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+    [HttpPost("/login")] 
+    public async Task<IActionResult> VerifyLogin(LoginResponse loginJson){
+        var email = loginJson.Login;
+        if(!_context.Users.Any(e => e.Email == email))
         {
-            if (id != user.Id)
-            {
-                return BadRequest(new
+            return NotFound(new
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "ID utilisateur invalide."
+                    error = "Utilisateur non trouvé"
                 });
-            }
+        }
+        var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
 
+        if(user.Password != Hasher.HashString(loginJson.Pwd))
+        {
+            user.NAttempt += 1;
             _context.Entry(user).State = EntityState.Modified;
-
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                throw;
+            }
+            return BadRequest(new
                 {
-                    return NotFound(new
-                    {
-                        status = "failed",
-                        datas = (object)null,
-                        error = "Utilisateur non trouvé."
-                    });
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Mot de passe incorrect, Votre tentative "+user.NAttempt
+                });
+            }
+
+            var pin = Generator.GenererPin(6);
+            var pinHtml = EmailService.GetPinHtml(pin);
+
+            EmailService.SendEmail(user.Email,"Authentification A deux facteurs",pinHtml);
+
+            UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+            _multiAuthCache.AddUserToCache(userCache);
+
+            return Ok(new
+                {
+                    status = "success",
+                    datas = "Authentification valide",
+                    error = "null"
+                });
+        }
+
+        [HttpPost("/confirmLogin")]
+        public async Task<IActionResult> validateLogin(PinSent pinSent)
+        {
+            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
+
+            if(userCache==null){
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "pin expiré ou email non inscrit"
+                });
+            }
+
+            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                
+                var userDiso = userCache.User;
+                userDiso.NAttempt +=1;
+                _context.Entry(userDiso).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
                     throw;
                 }
+                return BadRequest(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Pin incorrect, Votre tentative "+userDiso.NAttempt
+                    });
+                
+            }
+            var userMarina = userCache.User;
+            userMarina.NAttempt = 0;
+            _context.Entry(userMarina).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
+            // generer le token
+            var tokenValue = Generator.GenererToken();
+            Token tokenObj = new Token();
+            tokenObj.Value = tokenValue;
+            tokenObj.CreatedAt = DateTime.UtcNow;
+            tokenObj.ExpiresAt =  DateTime.UtcNow.AddHours(1);
+            tokenObj.User = userMarina;
+
+            _context.Tokens.Add(tokenObj);
             return Ok(new
             {
                 status = "success",
-                datas = user,
+                datas = new {
+                    message = "Login valide",
+                    token = tokenValue
+                },
                 error = "null"
             });
         }
