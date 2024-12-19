@@ -57,17 +57,17 @@ namespace userboard.Controllers
         [HttpGet("/confirmationPin/{pinGiven}")]
         public async Task<IActionResult> GetPin(string pinGiven,string cacheKey)
         {
-            //checking de la tentative
+            
                 //recuperation pin et donnee user dans le cache 
         if (_cache.TryGetValue(cacheKey, out var cachedData))
         {
            if (cachedData.Pin == pinGiven)
             {
                 // insertion des donnees du user et return id
-            //      _context.Users.Add(user);
-            // await _context.SaveChangesAsync();
-                // generation du token
-              string token = Generator.GenererToken();
+                user.CreatedAt = DateTime.Now;
+                 _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            
                 return Ok(new
             {
                 status = "success",
@@ -76,13 +76,24 @@ namespace userboard.Controllers
             });
                 
             }else{
+                string generatedPin = Generator.GenererPin();
+            var pin = EmailService.GetPinHtml(generatedPin);
+
+            EmailService.SendEmail(user.Email,"Pin de confirmation de creation de compte", pin);
+
+
+            
+            string cacheKey = user.Email;
+            _cache.Remove(cacheKey);
+            TemporaryModels tm = new TemporaryModels(user,generatedPin) ;
+            var cacheValue = tm;
+            _cache.Set(cacheKey, cacheValue, TimeSpan.FromMinutes(10));
 
             return BadRequest(new
                 {
-                    //augmentation de la tentative
                     status = "failed",
                     datas = (object)null,
-                    error = "Pin tape incorrect"
+                    error = "Pin tape incorrect , renvoie d'un nouveau pin"
                 });
             }
            

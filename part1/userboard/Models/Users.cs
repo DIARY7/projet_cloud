@@ -45,8 +45,8 @@ namespace userboard.Models
         // [Column("role_id")]
         // public int RoleId { get; set; }
 
-        [ForeignKey("role_id")]
-        public Role Role { get; set; }
+        // [ForeignKey("role_id")]
+        // public Role Role { get; set; }
 
         // Navigation property: un utilisateur peut avoir plusieurs tokens
         public ICollection<Token>? Tokens { get; set; }
