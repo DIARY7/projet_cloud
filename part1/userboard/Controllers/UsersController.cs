@@ -61,11 +61,12 @@ namespace userboard.Controllers
                 //recuperation pin et donnee user dans le cache 
         if (_cache.TryGetValue(cacheKey, out var cachedData))
         {
-           if (cachedData.Pin == pinGiven)
+            var tm = cachedData as TemporaryModels;
+           if (tm.Pin == pinGiven)
             {
                 // insertion des donnees du user 
-                cachedData.User.CreatedAt = DateTime.Now;
-                 _context.Users.Add(cachedData.User);
+                tm.User.CreatedAt = DateTime.Now;
+                 _context.Users.Add(tm.User);
                 await _context.SaveChangesAsync();
                 _cache.Remove(cacheKey);
                 return Ok(new
