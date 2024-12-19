@@ -259,6 +259,65 @@ namespace userboard.Controllers
             });
         }
 
+        [HttpPost("/reinitialise")]
+        public async Task<IActionResult> ReinitialisePwd(string email,string link)
+        {
+            if (!_context.Users.Any(u => u.Email == email))
+            {
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "L'email est introuvable."
+                });
+            }
+
+
+            var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
+
+            var resetHtml = EmailService.GetResetAttemptHtml(link);
+
+            EmailService.SendEmail(user.Email,"Confirmation reinitialisation",resetHtml);
+
+
+           return Ok(new
+            {
+                status = "success",
+                datas = "Email de reinitialisation envoye",
+                error = "null"
+            });
+        }
+        [HttpPost("/validateReinitialise")]
+        public async Task<IActionResult> ValidatePwd(string email,string mdp)
+        {
+            if (!_context.Users.Any(u => u.Email == email))
+            {
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "L'email est introuvable."
+                });
+            }
+
+
+            var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
+
+           // hashage de pwd
+            var pwdhached = Hasher.HashString(mdp);
+            user.Password = pwdhached;
+            await _context.SaveChangesAsync();
+
+           return Ok(new
+            {
+                status = "success",
+                datas = "Mot de passe reinitialise avec succes.",
+                error = "null"
+            });
+        }
+
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
