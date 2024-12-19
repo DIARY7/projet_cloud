@@ -63,7 +63,7 @@ namespace userboard.Controllers
         {
            if (cachedData.Pin == pinGiven)
             {
-                // insertion des donnees du user et return id
+                // insertion des donnees du user 
                 cachedData.User.CreatedAt = DateTime.Now;
                  _context.Users.Add(cachedData.User);
                 await _context.SaveChangesAsync();
