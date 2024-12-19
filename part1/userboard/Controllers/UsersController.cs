@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using userboard.Models;
 using userboard.Data;
+using userboard.Utils;
+using userboard.Dto;
 
 namespace userboard.Controllers
 {
@@ -13,17 +15,21 @@ namespace userboard.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly MultiAuthCache _multiAuthCache;
 
-        public UsersController(AppDbContext context)
+        // Injection de dépendances pour AppDbContext et MultiAuthCache
+        public UsersController(AppDbContext context, MultiAuthCache multiAuthCache)
         {
             _context = context;
+            _multiAuthCache = multiAuthCache;
         }
+
 
         // GET: api/Users
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _context.Users.Include(u => u.Role).ToListAsync();
+            var users = await _context.Users.ToListAsync();
 
             return Ok(new
             {
@@ -38,7 +44,6 @@ namespace userboard.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
-                                     .Include(u => u.Role)
                                      .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -73,8 +78,14 @@ namespace userboard.Controllers
                 });
             }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var pin = Generator.GenererPin(6);
+            var pinHtml = EmailService.GetPinHtml(pin);
+
+            EmailService.SendEmail(user.Email,"Confirmation inscription",pinHtml);
+
+            UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+            _multiAuthCache.AddUserToCache(userCache);
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
             {
@@ -84,7 +95,38 @@ namespace userboard.Controllers
             });
         }
 
-        // public async Task<IActionResult> ValidateUser()
+        [HttpPost("/confirm")]
+        public async Task<IActionResult> ValidateUser(PinSent pinSent)
+        {
+            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
+
+            if(userCache==null){
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "pin expiré ou email non inscrit"
+                });
+            }
+
+            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                 return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "pin incorrect"
+                });
+            }
+
+            _context.Users.Add(userCache.User);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                status = "success",
+                datas = userCache.User,
+                error = "null"
+            });
+        }
 
         // PUT: api/Users/5
         [HttpPut("{id}")]

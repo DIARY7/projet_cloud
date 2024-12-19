@@ -13,13 +13,13 @@ CREATE TABLE users(
    last_attempt TIMESTAMP,
    created_at TIMESTAMP NOT NULL,
    updated_at TIMESTAMP,
-   role_id INTEGER NOT NULL,
+   -- role_id INTEGER NOT NULL,
    PRIMARY KEY(id),
-   UNIQUE(email),
-   FOREIGN KEY(role_id) REFERENCES roles(id)
+   UNIQUE(email)
+   --FOREIGN KEY(role_id) REFERENCES roles(id)
 );
 
-CREATE TABLE token(
+CREATE TABLE tokens(
    id SERIAL,
    token VARCHAR(255)  NOT NULL,
    created_at TIMESTAMP,

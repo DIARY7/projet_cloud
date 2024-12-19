@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models; // Pour Swagger
 using Microsoft.EntityFrameworkCore; // Pour Entity Framework Core
 using userboard.Data; // Pour votre DbContext
+using userboard.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,10 @@ builder.Services.AddSwaggerGen(c =>
 // Configurer la connexion à la base de données Postgres
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<MultiAuthCache>();
+builder.Services.AddMemoryCache();
+
 
 // Spécifier l'URL du serveur
 builder.WebHost.UseUrls("http://0.0.0.0:5015");
