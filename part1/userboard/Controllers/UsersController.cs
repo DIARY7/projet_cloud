@@ -114,7 +114,20 @@ namespace userboard.Controllers
                 });
             }
 
-            _context.Users.Add(userCache.User);
+            var newuser = userCache.User;
+
+            // hashage de pwd
+            var pwdhached = Hasher.HashString(newuser.Password);
+            newuser.Password = pwdhached;
+
+            // initialisation de creation et modification
+            newuser.CreatedAt = DateTime.UtcNow;
+            newuser.UpdatedAt = DateTime.UtcNow;
+
+            // nb tentatives
+            newuser.NAttempt = 0;
+
+            _context.Users.Add(newuser);
             await _context.SaveChangesAsync();
             return Ok(new
             {
@@ -128,9 +141,9 @@ namespace userboard.Controllers
         Fonction Login
     */
 
-    public IActionResult VerifyLogin(LoginResponse login){
+    // public IActionResult VerifyLogin(LoginResponse login){
         
-    }
+    // }
         // PUT: api/Users/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)

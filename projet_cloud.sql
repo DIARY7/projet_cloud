@@ -10,7 +10,6 @@ CREATE TABLE users(
    email VARCHAR(255)  NOT NULL,
    pwd VARCHAR(255)  NOT NULL,
    n_attempt INTEGER,
-   last_attempt TIMESTAMP,
    created_at TIMESTAMP NOT NULL,
    updated_at TIMESTAMP,
    -- role_id INTEGER NOT NULL,

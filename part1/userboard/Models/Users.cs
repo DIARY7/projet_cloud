@@ -30,8 +30,6 @@ namespace userboard.Models
         [Column("n_attempt")]
         public int? NAttempt { get; set; }
 
-        [Column("last_attempt")]
-        public DateTime? LastAttempt { get; set; }
 
         [Required]
         [Column("created_at")]
