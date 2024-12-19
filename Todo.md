@@ -66,6 +66,12 @@
          [Ony] 
          - string GetPinHtml(pin)
          - string GetResetAttemptHtml(link)
+        4. MultiAuthCache
+         - classe UserCacheInfo (fields: User, ExpectedPin)
+         - void AddUserToCache(string email, UserCacheInfo userCacheInfo, TimeSpan expirationTime)
+         - UserCacheInfo GetUserFromCache(string email)
+         - RemoveUserFromCache(string email)
+         - bool ValidatePin(string email, string pinToCompare)
        - Initialisation UsersController [NyAvo]
          - inscription (route: api/Users, method: POST) => CreateUser(RequestBody body)
          - authentification (route: api/Users/login, method: POST) => AuthenticateUser(RequestBody body)
