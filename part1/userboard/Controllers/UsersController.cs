@@ -61,6 +61,7 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
+
         // POST: api/Users
         [HttpPost]
         public async Task<IActionResult> CreateUserToCache(User user)
@@ -78,7 +79,7 @@ namespace userboard.Controllers
             var pin = Generator.GenererPin(6);
             var pinHtml = EmailService.GetPinHtml(pin);
 
-            EmailService.SendEmail(user.Email,"Confirmation inscription",pinHtml);
+            EmailService.SendEmail(user.Email,"Confirmation Inscription",pinHtml);
 
             UserCacheInfo userCache = new UserCacheInfo(user,pin);
 
@@ -87,7 +88,7 @@ namespace userboard.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
             {
                 status = "success",
-                datas = user,
+                datas = "1. Inscription réussie",
                 error = "null"
             });
         }
@@ -101,7 +102,7 @@ namespace userboard.Controllers
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "pin expiré ou email non inscrit"
+                    error = "Pin expiré ou email non-inscrit"
                 });
             }
 
@@ -110,7 +111,7 @@ namespace userboard.Controllers
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "pin incorrect"
+                    error = "Pin incorrect"
                 });
             }
 
@@ -129,10 +130,11 @@ namespace userboard.Controllers
 
             _context.Users.Add(newuser);
             await _context.SaveChangesAsync();
+            _multiAuthCache.Remove(newuser.Email);
             return Ok(new
             {
                 status = "success",
-                datas = userCache.User,
+                datas = "2. Inscription réussie",
                 error = "null"
             });
         }
@@ -141,7 +143,7 @@ namespace userboard.Controllers
         Fonction Login
     */
     [HttpPost("/login")] 
-    public async Task<IActionResult> VerifyLogin(LoginResponse loginJson){
+    public async Task<IActionResult> Login(LoginResponse loginJson){
         var email = loginJson.Login;
         if(!_context.Users.Any(e => e.Email == email))
         {
@@ -171,14 +173,14 @@ namespace userboard.Controllers
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "Mot de passe incorrect, Votre tentative "+user.NAttempt
+                    error = "Mot de passe incorrect. Il vous reste : "+(3 - user.NAttempt)+" tentative(s)."
                 });
             }
 
             var pin = Generator.GenererPin(6);
             var pinHtml = EmailService.GetPinHtml(pin);
 
-            EmailService.SendEmail(user.Email,"Authentification A deux facteurs",pinHtml);
+            EmailService.SendEmail(user.Email,"Confirmation Authentification",pinHtml);
 
             UserCacheInfo userCache = new UserCacheInfo(user,pin);
 
@@ -187,13 +189,13 @@ namespace userboard.Controllers
             return Ok(new
                 {
                     status = "success",
-                    datas = "Authentification valide",
+                    datas = "1. Connexion Réussie",
                     error = "null"
                 });
         }
 
         [HttpPost("/confirmLogin")]
-        public async Task<IActionResult> validateLogin(PinSent pinSent)
+        public async Task<IActionResult> ValidateLogin(PinSent pinSent)
         {
             var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
 
@@ -202,7 +204,7 @@ namespace userboard.Controllers
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "pin expiré ou email non inscrit"
+                    error = "Pin expiré ou email non-inscrit"
                 });
             }
 
@@ -223,7 +225,7 @@ namespace userboard.Controllers
                     {
                         status = "failed",
                         datas = (object)null,
-                        error = "Pin incorrect, Votre tentative "+userDiso.NAttempt
+                        error = "Pin incorrect. Il vous reste : "+(3 - userDiso.NAttempt)+" tentative(s)."
                     });
                 
             }
@@ -248,11 +250,13 @@ namespace userboard.Controllers
             tokenObj.User = userMarina;
 
             _context.Tokens.Add(tokenObj);
+            await _context.SaveChangesAsync();
+            _multiAuthCache.Remove(userMarina.Email)
             return Ok(new
             {
                 status = "success",
                 datas = new {
-                    message = "Login valide",
+                    message = "2. Connexion réussie",
                     token = tokenValue
                 },
                 error = "null"

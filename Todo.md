@@ -95,16 +95,15 @@
    - Controle des valeurs:
      - informations non-null & respect typages
      - email existant
-     - si last_attempt non-null
      - mot de passe correct
        - ! si incorrect => n_attempt ++
-       - ! si n_attempt > 3 => initialisation last_attempt et renvoi lien réinitialisation de n_attempt
+       - ! si n_attempt > 3 => envoi lien réinitialisation de n_attempt
    - Envoi du code pin par email
    - Vérification du code pin
        - ! si incorrect => n_attempt ++ et renvoi du pin
-       - ! si n_attempt > 3 => initialisation last_attempt et renvoi lien réinitialisation de n_attempt   
+       - ! si n_attempt > 3 => envoi lien réinitialisation de n_attempt   
    - Création du token
-   - Réinitialisation n_attempt (0) et last_attempt (null) 
+   - Réinitialisation n_attempt (0) 
   
   ### Gestion du compte
    - Modification: 
