@@ -33,7 +33,7 @@ namespace userboard.Controllers
             {
                 status = "success",
                 datas = users,
-                error = "null"
+                error = (object)null
             });
         }
 
@@ -58,7 +58,7 @@ namespace userboard.Controllers
             {
                 status = "success",
                 datas = user,
-                error = "null"
+                error = (object)null
             });
         }
 
@@ -89,9 +89,11 @@ namespace userboard.Controllers
             {
                 status = "success",
                 datas = "1. Inscription réussie",
-                error = "null"
+                error = (object)null
             });
         }
+
+
         [HttpPost("/confirm")]
         public async Task<IActionResult> ValidateUser(PinSent pinSent)
         {
@@ -135,84 +137,43 @@ namespace userboard.Controllers
             {
                 status = "success",
                 datas = "2. Inscription réussie",
-                error = "null"
+                error = (object)null
             });
         }
-// ===========================================================================
-    /*
-        Fonction Login
-    */
-    [HttpPost("/login")] 
-    public async Task<IActionResult> Login(LoginResponse loginJson){
-        var email = loginJson.Login;
-        if(!_context.Users.Any(e => e.Email == email))
-        {
-            return NotFound(new
-                {
-                    status = "failed",
-                    datas = (object)null,
-                    error = "Utilisateur non trouvé"
-                });
-        }
-        var user = await _context.Users
-                                     .FirstOrDefaultAsync(u => u.Email == email);
-
-        if(user.Password != Hasher.HashString(loginJson.Pwd))
-        {
-            user.NAttempt += 1;
-            _context.Entry(user).State = EntityState.Modified;
-            try
+        // ===========================================================================
+            /*
+                Fonction Login
+            */
+        [HttpPost("/login")] 
+        public async Task<IActionResult> Login(LoginResponse loginJson){
+            var email = loginJson.Login;
+            if(!_context.Users.Any(e => e.Email == email))
             {
-                await _context.SaveChangesAsync();
+                return NotFound(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Utilisateur non trouvé"
+                    });
             }
-            catch (DbUpdateConcurrencyException)
+            var user = await _context.Users
+                                        .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user.NAttempt >= 3)
             {
-                throw;
-            }
-            return BadRequest(new
-                {
+                return Unauthorized(new 
+                { 
                     status = "failed",
                     datas = (object)null,
-                    error = "Mot de passe incorrect. Il vous reste : "+(3 - user.NAttempt)+" tentative(s)."
+                    error = "Vous avez atteint le nombre maximum de tentatives. Un lieu vous a été envoyé pour réinitialiser ce nombre." 
                 });
             }
 
-            var pin = Generator.GenererPin(6);
-            var pinHtml = EmailService.GetPinHtml(pin);
-
-            EmailService.SendEmail(user.Email,"Confirmation Authentification",pinHtml);
-
-            UserCacheInfo userCache = new UserCacheInfo(user,pin);
-
-            _multiAuthCache.AddUserToCache(userCache);
-
-            return Ok(new
-                {
-                    status = "success",
-                    datas = "1. Connexion Réussie",
-                    error = "null"
-                });
-        }
-
-        [HttpPost("/confirmLogin")]
-        public async Task<IActionResult> ValidateLogin(PinSent pinSent)
-        {
-            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
-
-            if(userCache==null){
-                return BadRequest(new
-                {
-                    status = "failed",
-                    datas = (object)null,
-                    error = "Pin expiré ou email non-inscrit"
-                });
-            }
-
-            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
-                
-                var userDiso = userCache.User;
-                userDiso.NAttempt +=1;
-                _context.Entry(userDiso).State = EntityState.Modified;
+            if(user.Password != Hasher.HashString(loginJson.Pwd))
+            {
+                user.NAttempt += 1;
+                CheckAttempt(user.NAttempt, user.Email)
+                _context.Entry(user).State = EntityState.Modified;
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -225,73 +186,212 @@ namespace userboard.Controllers
                     {
                         status = "failed",
                         datas = (object)null,
-                        error = "Pin incorrect. Il vous reste : "+(3 - userDiso.NAttempt)+" tentative(s)."
+                        error = "Mot de passe incorrect. Il vous reste : "+(3 - user.NAttempt)+" tentative(s)."
                     });
-                
-            }
-            var userMarina = userCache.User;
-            userMarina.NAttempt = 0;
-            _context.Entry(userMarina).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
+                }
+
+                var pin = Generator.GenererPin(6);
+                var pinHtml = EmailService.GetPinHtml(pin);
+
+                EmailService.SendEmail(user.Email,"Confirmation Authentification",pinHtml);
+
+                UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+                _multiAuthCache.AddUserToCache(userCache);
+
+                return Ok(new
+                    {
+                        status = "success",
+                        datas = "1. Connexion Réussie",
+                        error = (object)null
+                    });
             }
 
-            // generer le token
-            var tokenValue = Generator.GenererToken();
-            Token tokenObj = new Token();
-            tokenObj.Value = tokenValue;
-            tokenObj.CreatedAt = DateTime.UtcNow;
-            tokenObj.ExpiresAt =  DateTime.UtcNow.AddHours(1);
-            tokenObj.User = userMarina;
-
-            _context.Tokens.Add(tokenObj);
-            await _context.SaveChangesAsync();
-            _multiAuthCache.Remove(userMarina.Email)
-            return Ok(new
+            [HttpPost("/confirmLogin")]
+            public async Task<IActionResult> ValidateLogin(PinSent pinSent)
             {
-                status = "success",
-                datas = new {
-                    message = "2. Connexion réussie",
-                    token = tokenValue
-                },
-                error = "null"
-            });
-        }
+                var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
 
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound(new
+                if(userCache==null){
+                    return BadRequest(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Pin expiré ou email non-inscrit"
+                    });
+                }
+
+                if (userCache.User.NAttempt >= 3)
                 {
-                    status = "failed",
-                    datas = (object)null,
-                    error = "Utilisateur non trouvé."
+                    return Unauthorized(new 
+                    { 
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Vous avez atteint le nombre maximum de tentatives. Un lieu vous a été envoyé pour réinitialiser ce nombre." 
+                    });
+                }
+
+                if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                    
+                    var userDiso = userCache.User;
+                    userDiso.NAttempt +=1;
+                    CheckAttempt(userDiso.NAttempt, pinSent.Email)
+                    _context.Entry(userDiso).State = EntityState.Modified;
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        throw;
+                    }
+                    return BadRequest(new
+                        {
+                            status = "failed",
+                            datas = (object)null,
+                            error = "Pin incorrect. Il vous reste : "+(3 - userDiso.NAttempt)+" tentative(s)."
+                        });
+                    
+                }
+                var userMarina = userCache.User;
+                userMarina.NAttempt = 0;
+                _context.Entry(userMarina).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                // generer le token
+                var tokenValue = Generator.GenererToken();
+                Token tokenObj = new Token();
+                tokenObj.Value = tokenValue;
+                tokenObj.CreatedAt = DateTime.UtcNow;
+                tokenObj.ExpiresAt =  DateTime.UtcNow.AddHours(1);
+                tokenObj.User = userMarina;
+
+                _context.Tokens.Add(tokenObj);
+                await _context.SaveChangesAsync();
+                _multiAuthCache.Remove(userMarina.Email)
+                return Ok(new
+                {
+                    status = "success",
+                    datas = new {
+                        message = "2. Connexion réussie",
+                        token = tokenValue
+                    },
+                    error = (object)null
                 });
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(new
+            [HttpGet("reset-attempts")]
+            public async Task<IActionResult> ResetAttempts([FromQuery] string email)
             {
-                status = "success",
-                datas = user,
-                error = "null"
-            });
-        }
+                try
+                {
+                    var decodedBytes = Convert.FromBase64String(email);
+                    var decodedEmail = Encoding.UTF8.GetString(decodedBytes);
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == decodedEmail);
+                    if (user == null)
+                    {
+                        return NotFound(new
+                        {
+                            status = "failed",
+                            datas = (object)null,
+                            error = "Utilisateur non trouvé."
+                        });
+                    }
+
+                    // Réinitialise le nombre de tentatives
+                    user.NAttempt = 0;
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new
+                    {
+                        status = "success",
+                        datas = "Nombre de tentatives réinitialiées",
+                        error = (object) null
+                    });
+                }
+                catch (FormatException)
+                {
+                    return BadRequest(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Format d'email invalide"
+                    });                
+                }
+            }
+
+            // PUT: api/Users/5
+            [HttpPut("{id}")]
+            public async Task<IActionResult> UpdateUser(int id)
+            {
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Utilisateur non trouvé."
+                    });
+                }
+
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    status = "success",
+                    datas = "Nouvelles informations sauvegardées",
+                    error = (object)null
+                });
+            }
+
+            // DELETE: api/Users/5
+            [HttpDelete("{id}")]
+            public async Task<IActionResult> DeleteUser(int id)
+            {
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Utilisateur non trouvé."
+                    });
+                }
+
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    status = "success",
+                    datas = user,
+                    error = (object)null
+                });
+            }
+
+            private bool UserExists(int id)
+            {
+                return _context.Users.Any(e => e.Id == id);
+            }
+
+            private void CheckAttempt(int NAttempt, string email){
+                if (NAttempt >= 3){
+                    var encodedEmail = Convert.ToBase64String(Encoding.UTF8.GetBytes(email));
+                    var resetlink =  $"{Request.Scheme}://{Request.Host}/api/Users/reset-attempts?email={encodedEmail}";
+                    var resetHtml = EmailService.GetResetAttemptHtml(resetlink);
+                    EmailService.SendEmail(email, "Réinitialisation Nombre Tentatives de Connexion", resetHtml)
+                }
+            }
         }
-    }
 }

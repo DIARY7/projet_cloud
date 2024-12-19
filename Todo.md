@@ -106,14 +106,6 @@
    - Réinitialisation n_attempt (0) 
   
   ### Gestion du compte
-   - Modification: 
-     1. Mot de passe
-      - lien de réinitialisation par email
-      - saisie nouveau mot de passe
-       - ! si mot de passe non-réinitialisé => erreur
-
-     2. Autres informations
-      - saisie nouvelles infos (respect typages)
-
+   - Modification
    - Suppression
   

@@ -113,7 +113,7 @@ namespace userboard.Utils
         <head>
             <meta charset=""UTF-8"">
             <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-            <title>Réinitialisation de mot de passe</title>
+            <title>Réinitialisation de tentatives</title>
             <style>
                 body {{
                     font-family: Arial, sans-serif;
@@ -169,12 +169,12 @@ namespace userboard.Utils
         <body>
             <div class=""email-container"">
                 <div class=""email-header"">
-                    Réinitialisation de votre mot de passe
+                    Réinitialisation de votre nombre de tentatives
                 </div>
                 <div class=""message"">
-                    Une demande de réinitialisation de mot de passe a été reçue. Si vous êtes à l'origine de cette demande, cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :
+                    Une demande de réinitialisation de nombre de tentatives a été reçue. Si vous êtes à l'origine de cette demande, cliquez sur le lien ci-dessous pour réinitialiser votre nombre de tentatives :
                 </div>
-                <a href=""{link}"" class=""reset-link"">Réinitialiser mon mot de passe</a>
+                <a href=""{link}"" class=""reset-link"">Réinitialiser mon nombre de tentatives</a>
                 <div class=""message"">
                     Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.
                 </div>
