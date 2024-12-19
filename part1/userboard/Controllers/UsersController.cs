@@ -23,8 +23,6 @@ namespace userboard.Controllers
             _context = context;
             _multiAuthCache = multiAuthCache;
         }
-
-
         // GET: api/Users
         [HttpGet]
         public async Task<IActionResult> GetUsers()
@@ -63,7 +61,6 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
-
         // POST: api/Users
         [HttpPost]
         public async Task<IActionResult> CreateUserToCache(User user)
@@ -94,7 +91,6 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
-
         [HttpPost("/confirm")]
         public async Task<IActionResult> ValidateUser(PinSent pinSent)
         {
@@ -127,7 +123,14 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
+// ===========================================================================
+    /*
+        Fonction Login
+    */
 
+    public IActionResult VerifyLogin(LoginResponse login){
+        
+    }
         // PUT: api/Users/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
