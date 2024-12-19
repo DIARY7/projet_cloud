@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using userboard.Models;
 using userboard.Data;
 using userboard.Utils;
+using userboard.Dto;
 
 namespace userboard.Controllers
 {
@@ -13,109 +14,20 @@ namespace userboard.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IMemoryCache _cache;
-
         private readonly AppDbContext _context;
+        private readonly MultiAuthCache _multiAuthCache;
 
-        public UsersController(AppDbContext context,IMemoryCache cache)
+        // Injection de dépendances pour AppDbContext et MultiAuthCache
+        public UsersController(AppDbContext context, MultiAuthCache multiAuthCache)
         {
             _context = context;
-            _cache = cache;
+            _multiAuthCache = multiAuthCache;
         }
-
-          // GET: api/Users/CreatePin
-        [HttpGet("/CreatePin")]
-        public async Task<IActionResult> GeneratePin(User user)
-        {
-            if (_context.Users.Any(u => u.Email == user.Email))
-            {
-                return BadRequest(new
-                {
-                    status = "failed",
-                    datas = (object)null,
-                    error = "L'email existe déjà."
-                });
-            }
-            string generatedPin = Generator.GenererPin();
-            var pin = EmailService.GetPinHtml(generatedPin);
-
-            EmailService.SendEmail(user.Email,"Pin de confirmation de creation de compte", pin);
-
-            //insertion pin et donnee user dans le cache
-            string cacheKey = user.Email;
-            TemporaryModels tm = new TemporaryModels(user,generatedPin) ;
-            var cacheValue = tm;
-            _cache.Set(cacheKey, cacheValue, TimeSpan.FromMinutes(10));
-
-            return Ok(new{
-                status = "success",
-                datas = "veuillez taper le pin envoye a l'email : "+user.Email,
-                error = "null"
-            });
-        }
-        // GET: api/Users/confirmationPin/5
-        [HttpGet("/confirmationPin/{pinGiven}")]
-        public async Task<IActionResult> GetPin(string pinGiven,string cacheKey)
-        {
-            
-                //recuperation pin et donnee user dans le cache 
-        if (_cache.TryGetValue(cacheKey, out var cachedData))
-        {
-            var tm = cachedData as TemporaryModels;
-           if (tm.Pin == pinGiven)
-            {
-                // insertion des donnees du user 
-                tm.User.CreatedAt = DateTime.Now;
-                 _context.Users.Add(tm.User);
-                await _context.SaveChangesAsync();
-                _cache.Remove(cacheKey);
-                return Ok(new
-            {
-                status = "success",
-                datas = "Inscription reussie.",
-                error = "null"
-            });
-                
-            }else{
-                string generatedPin = Generator.GenererPin();
-            var pin = EmailService.GetPinHtml(generatedPin);
-
-            EmailService.SendEmail(user.Email,"Pin de confirmation de creation de compte", pin);
-
-            string cacheKey = user.Email;
-            _cache.Remove(cacheKey);
-            TemporaryModels tm = new TemporaryModels(user,generatedPin) ;
-            var cacheValue = tm;
-            _cache.Set(cacheKey, cacheValue, TimeSpan.FromMinutes(10));
-
-            return BadRequest(new
-                {
-                    status = "failed",
-                    datas = (object)null,
-                    error = "Pin tape incorrect , renvoie d'un nouveau pin"
-                });
-            }
-           
-        }
-        else
-        {
-            return NotFound(new {
-                 status = "failed",
-                    datas = (object)null,
-                    error = "The pin expired."
-                });
-        }
-           
-            
-        }
-
-
-
         // GET: api/Users
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _context.Users.Include(u => u.Role).ToListAsync();
+            var users = await _context.Users.ToListAsync();
 
             return Ok(new
             {
@@ -124,14 +36,12 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
-      
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.Users
-                                     .Include(u => u.Role)
                                      .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
@@ -151,10 +61,9 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
-
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> CreateUserToCache(User user)
         {
             if (_context.Users.Any(u => u.Email == user.Email))
             {
@@ -166,8 +75,14 @@ namespace userboard.Controllers
                 });
             }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var pin = Generator.GenererPin(6);
+            var pinHtml = EmailService.GetPinHtml(pin);
+
+            EmailService.SendEmail(user.Email,"Confirmation inscription",pinHtml);
+
+            UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+            _multiAuthCache.AddUserToCache(userCache);
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new
             {
@@ -176,48 +91,229 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
-
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        [HttpPost("/confirm")]
+        public async Task<IActionResult> ValidateUser(PinSent pinSent)
         {
-            if (id != user.Id)
-            {
+            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
+
+            if(userCache==null){
                 return BadRequest(new
                 {
                     status = "failed",
                     datas = (object)null,
-                    error = "ID utilisateur invalide."
+                    error = "pin expiré ou email non inscrit"
                 });
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                 return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "pin incorrect"
+                });
+            }
 
+            var newuser = userCache.User;
+
+            // hashage de pwd
+            var pwdhached = Hasher.HashString(newuser.Password);
+            newuser.Password = pwdhached;
+
+            // initialisation de creation et modification
+            newuser.CreatedAt = DateTime.UtcNow;
+            newuser.UpdatedAt = DateTime.UtcNow;
+
+            // nb tentatives
+            newuser.NAttempt = 0;
+
+            _context.Users.Add(newuser);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                status = "success",
+                datas = userCache.User,
+                error = "null"
+            });
+        }
+// ===========================================================================
+    /*
+        Fonction Login
+    */
+    [HttpPost("/login")] 
+    public async Task<IActionResult> VerifyLogin(LoginResponse loginJson){
+        var email = loginJson.Login;
+        if(!_context.Users.Any(e => e.Email == email))
+        {
+            return NotFound(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Utilisateur non trouvé"
+                });
+        }
+        var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
+
+        if(user.Password != Hasher.HashString(loginJson.Pwd))
+        {
+            user.NAttempt += 1;
+            _context.Entry(user).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                throw;
+            }
+            return BadRequest(new
                 {
-                    return NotFound(new
-                    {
-                        status = "failed",
-                        datas = (object)null,
-                        error = "Utilisateur non trouvé."
-                    });
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Mot de passe incorrect, Votre tentative "+user.NAttempt
+                });
+            }
+
+            var pin = Generator.GenererPin(6);
+            var pinHtml = EmailService.GetPinHtml(pin);
+
+            EmailService.SendEmail(user.Email,"Authentification A deux facteurs",pinHtml);
+
+            UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+            _multiAuthCache.AddUserToCache(userCache);
+
+            return Ok(new
+                {
+                    status = "success",
+                    datas = "Authentification valide",
+                    error = "null"
+                });
+        }
+
+        [HttpPost("/confirmLogin")]
+        public async Task<IActionResult> validateLogin(PinSent pinSent)
+        {
+            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
+
+            if(userCache==null){
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "pin expiré ou email non inscrit"
+                });
+            }
+
+            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                
+                var userDiso = userCache.User;
+                userDiso.NAttempt +=1;
+                _context.Entry(userDiso).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
                     throw;
                 }
+                return BadRequest(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Pin incorrect, Votre tentative "+userDiso.NAttempt
+                    });
+                
+            }
+            var userMarina = userCache.User;
+            userMarina.NAttempt = 0;
+            _context.Entry(userMarina).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
 
+            // generer le token
+            var tokenValue = Generator.GenererToken();
+            Token tokenObj = new Token();
+            tokenObj.Value = tokenValue;
+            tokenObj.CreatedAt = DateTime.UtcNow;
+            tokenObj.ExpiresAt =  DateTime.UtcNow.AddHours(1);
+            tokenObj.User = userMarina;
+
+            _context.Tokens.Add(tokenObj);
             return Ok(new
             {
                 status = "success",
-                datas = user,
+                datas = new {
+                    message = "Login valide",
+                    token = tokenValue
+                },
+                error = "null"
+            });
+        }
+
+        [HttpPost("/reinitialise")]
+        public async Task<IActionResult> ReinitialisePwd(string email,string link)
+        {
+            if (!_context.Users.Any(u => u.Email == email))
+            {
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "L'email est introuvable."
+                });
+            }
+
+
+            var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
+
+            var resetHtml = EmailService.GetResetAttemptHtml(link);
+
+            EmailService.SendEmail(user.Email,"Confirmation reinitialisation",resetHtml);
+
+
+           return Ok(new
+            {
+                status = "success",
+                datas = "Email de reinitialisation envoye",
+                error = "null"
+            });
+        }
+        [HttpPost("/validateReinitialise")]
+        public async Task<IActionResult> ValidatePwd(string email,string mdp)
+        {
+            if (!_context.Users.Any(u => u.Email == email))
+            {
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "L'email est introuvable."
+                });
+            }
+
+
+            var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == email);
+
+           // hashage de pwd
+            var pwdhached = Hasher.HashString(mdp);
+            user.Password = pwdhached;
+            await _context.SaveChangesAsync();
+
+           return Ok(new
+            {
+                status = "success",
+                datas = "Mot de passe reinitialise avec succes.",
                 error = "null"
             });
         }

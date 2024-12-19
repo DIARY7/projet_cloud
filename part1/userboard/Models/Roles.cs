@@ -16,8 +16,5 @@ namespace userboard.Models
         [MaxLength(50)]
         [Column("name")]
         public string Name { get; set; }
-
-        // Navigation property: un rôle peut avoir plusieurs utilisateurs
-        public ICollection<User>? Users { get; set; }
     }
 }
