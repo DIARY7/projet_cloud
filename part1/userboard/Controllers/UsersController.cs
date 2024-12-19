@@ -61,7 +61,7 @@ namespace userboard.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> CreateUserToCache(User user)
         {
             if (_context.Users.Any(u => u.Email == user.Email))
             {
@@ -83,6 +83,8 @@ namespace userboard.Controllers
                 error = "null"
             });
         }
+
+        // public async Task<IActionResult> ValidateUser()
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
