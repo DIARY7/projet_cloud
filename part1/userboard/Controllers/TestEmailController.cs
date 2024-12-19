@@ -26,7 +26,7 @@ namespace userboard.Controllers
         {
             var email = EmailService.GetPinHtml("123456");
 
-            EmailService.SendEmail("nyxrafaly@gmail.com","test", email);
+            EmailService.SendEmail("herynyx@gmail.com","test", email);
             return Ok(new{
                 status = "success",
                 datas = "mety",

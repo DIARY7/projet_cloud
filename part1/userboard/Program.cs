@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore; // Pour Entity Framework Core
 using userboard.Data; // Pour votre DbContext
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
 
 // Ajouter les services pour les contrôleurs et les vues
 builder.Services.AddControllersWithViews();

@@ -29,5 +29,9 @@ namespace userboard.Models
 
         [ForeignKey("user_id")]
         public User User { get; set; }
+
+        // public Token(string value,DateTime? createdAt,DateTime? expiresAt,){
+
+        // }
     }
 }
