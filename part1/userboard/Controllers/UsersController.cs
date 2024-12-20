@@ -330,8 +330,8 @@ namespace userboard.Controllers
             }
         }
 
-        // PUT: api/Users/update
-        [HttpPost("/update")]
+        // PUT: api/Users
+        [HttpPut()]
         public async Task<IActionResult> UpdateUser(User userModified)
         {
             var user = await _context.Users
