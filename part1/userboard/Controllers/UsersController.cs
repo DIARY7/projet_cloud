@@ -289,6 +289,7 @@ namespace userboard.Controllers
             });
         }
 
+// ===========================================================================
         [HttpGet("reset-attempts")]
         public async Task<IActionResult> ResetAttempts([FromQuery] string email)
         {
@@ -329,6 +330,8 @@ namespace userboard.Controllers
                 });                
             }
         }
+
+// ===========================================================================
 
         // PUT: api/Users
         [HttpPut()]
@@ -385,7 +388,7 @@ namespace userboard.Controllers
                 error = (object) null
             });
         }
-
+// ===========================================================================
         [HttpPost("/validateReinitialise")]
         public async Task<IActionResult> ValidatePwd(string email,string mdp)
         {
@@ -416,6 +419,46 @@ namespace userboard.Controllers
             });
         }
 
+        [HttpPost("/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (!Request.Headers.TryGetValue("Authorization", out var token))
+            {
+            return BadRequest(new
+            {
+                status = "failed",
+                datas = (object)null,
+                error = "Token introuvable dans les en-têtes."
+            });
+            }
+
+            string tokenString = token.ToString().Replace("Bearer ", "").Trim();
+
+            if (!_context.Tokens.Any(t => t.Value == tokenString))
+            {
+            return BadRequest(new
+            {
+                status = "failed",
+                datas = (object)null,
+                error = "Token introuvable."
+            });
+            }
+
+            var tokenObj = await _context.Tokens
+                         .FirstOrDefaultAsync(t => t.Value == tokenString);
+
+            _context.Tokens.Remove(tokenObj);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+            status = "success",
+            datas = new {
+                message ="Déconnexion réussie. Au revoir !"
+            },
+            error = (object)null
+            });
+        }
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -456,5 +499,7 @@ namespace userboard.Controllers
                 EmailService.SendEmail(email, "Réinitialisation Nombre Tentatives de Connexion", resetHtml);
             }
         }
+
+        
     }
 }
