@@ -12,10 +12,11 @@ Pour lancer .net:
     docker exec -it dotnet_sdk /bin/bash
 ```
 
-Pour lancer postgres:
-```bash
-    docker exec -it postgres_db psql -U backend -d cloud
-```
-
-Le lien pour l'api .net:
-http://localhost:5000/
+Les liens:
+    - API .net:
+        http://localhost:5000/
+    - API java:
+        http://localhost:8080/ 
+    - GitHub:
+        https://github.com/DIARY7/projet_cloud/
+         
