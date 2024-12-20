@@ -33,7 +33,7 @@ namespace userboard.Controllers
             return Ok(new
             {
                 status = "success",
-                datas? = users,
+                datas = users,
                 error = (object)null
             });
         }
