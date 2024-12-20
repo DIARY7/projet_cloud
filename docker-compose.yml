@@ -1,6 +1,6 @@
 services:
   dotnet:
-    image: mcr.microsoft.com/dotnet/sdk:7.0
+    build: ./part1/userboard
     container_name: dotnet_sdk
     ports:
       - "5000:5015" # Port pour l'application ASP.NET Core
