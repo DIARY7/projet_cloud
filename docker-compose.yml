@@ -24,6 +24,7 @@ services:
       - "5433:5432"  # Port de PostgreSQL
     volumes:
       - pgdata:/var/lib/postgresql/data:rw  # Persiste les données de la base de données PostgreSQL
+      - ./ressources:/docker-entrypoint-initdb.d # Monte le dossier ressources contenant le script SQL
     restart: always
 
 volumes:
