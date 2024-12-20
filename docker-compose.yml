@@ -1,4 +1,26 @@
 services:
+  spring-app:
+    image: openjdk:17-jdk-slim
+    container_name: spring_app
+    build:
+      context: ./part2/projets5 # Chemin vers le projet Spring (contenant le Dockerfile)
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Port exposé pour l'application Spring Boot
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cloud
+      - SPRING_DATASOURCE_USERNAME=backend
+      - SPRING_DATASOURCE_PASSWORD=sql
+    volumes:
+      - ./part2/spring:/app # Monte le code source dans le conteneur
+    working_dir: /app
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
   dotnet:
     image: mcr.microsoft.com/dotnet/sdk:7.0
     container_name: dotnet_sdk
@@ -12,6 +34,11 @@ services:
     tty: true # Permet de garder le conteneur interactif pour les commandes
     depends_on:
       - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50' # Limite l'utilisation du CPU à 50%
+          memory: 512M # Limite l'utilisation de la mémoire à 512MB
 
   db:
     image: postgres:latest
@@ -26,6 +53,11 @@ services:
       - pgdata:/var/lib/postgresql/data:rw  # Persiste les données de la base de données PostgreSQL
       - ./ressources:/docker-entrypoint-initdb.d # Monte le dossier ressources contenant le script SQL
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50' # Limite l'utilisation du CPU à 50%
+          memory: 512M # Limite l'utilisation de la mémoire à 512MB
 
 volumes:
   pgdata:
