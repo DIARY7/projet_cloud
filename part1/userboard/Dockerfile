@@ -1,27 +1,17 @@
-# Étape 1 : Build
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /app
+# Étape 1 : Build andFROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-runtime
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-runtime
 
-# Copie les fichiers CSPROJ
-COPY ./*.csproj .
+WORKDIR /app
+# Restaure les dépendances
 RUN dotnet restore
-
 # Copie tout le code source
-COPY . .
+COPY . ./
 
-# Crée le dossier de sortie et publie
-RUN mkdir -p /out && dotnet publish -c Release -o /out
-
-# Vérifie les fichiers générés
-RUN ls -la /out
-
-# Étape 2 : Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
-COPY --from=build /out .
+# Compile le projet
+RUN dotnet build
 
 # Expose le port
 EXPOSE 5015
 
-# Commande pour démarrer l'application
-ENTRYPOINT ["dotnet", "userboard.dll"]
+# Commande pour démarrer l'application avec dotnet run
+CMD ["dotnet", "run", "--no-launch-profile", "--urls=http://0.0.0.0:5015"]
