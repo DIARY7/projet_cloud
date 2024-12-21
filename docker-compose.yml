@@ -13,6 +13,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=sql
     volumes:
       - ./part2/spring:/app # Monte le code source dans le conteneur
+      - ~/.m2/repository:/root/.m2/repository
     working_dir: /app
     depends_on:
       - db
@@ -20,7 +21,6 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 512M
   dotnet:
     image: mcr.microsoft.com/dotnet/sdk:7.0
     container_name: dotnet_sdk
