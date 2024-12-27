@@ -10,6 +10,8 @@ Pour initialiser les applications:
 Pour lancer .net:
 ```bash
     docker exec -it dotnet_sdk /bin/bash
+    cd  userboard
+    dotnet run
 ```
 
 Les liens:
