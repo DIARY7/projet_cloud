@@ -7,6 +7,7 @@ services:
       - "5001:5001" # Port HTTPS si nécessaire
     volumes:
       - ./part1:/app1 # Monte le dossier app local dans le conteneur
+    working_dir: /app1
     stdin_open: true
     tty: true # Permet de garder le conteneur interactif pour les commandes
     depends_on:
@@ -29,9 +30,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=backend
       - SPRING_DATASOURCE_PASSWORD=sql
     volumes:
-      - ./part2:/app2 # Monte le code source dans le conteneur
+      - ./part2:/app # Monte le code source dans le conteneur
       - ~/.m2/repository:/root/.m2/repository
-    working_dir: /app2
     depends_on:
       - db
     deploy:
