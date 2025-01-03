@@ -1,4 +1,22 @@
 services:
+  dotnet:
+    image: mcr.microsoft.com/dotnet/sdk:7.0
+    container_name: dotnet_sdk
+    ports:
+      - "5000:5015" # Port pour l'application ASP.NET Core
+      - "5001:5001" # Port HTTPS si nécessaire
+    volumes:
+      - ./part1:/app1 # Monte le dossier app local dans le conteneur
+    working_dir: /app1 # Définit le répertoire de travail
+    stdin_open: true
+    tty: true # Permet de garder le conteneur interactif pour les commandes
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50' # Limite l'utilisation du CPU à 50%
+          memory: 512M # Limite l'utilisation de la mémoire à 512MB
   spring-app:
     image: openjdk:17-jdk-slim
     container_name: spring_app
@@ -12,7 +30,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=backend
       - SPRING_DATASOURCE_PASSWORD=sql
     volumes:
-      - ./part2:/app # Monte le code source dans le conteneur
+      - ./part2:/app2 # Monte le code source dans le conteneur
       - ~/.m2/repository:/root/.m2/repository
     working_dir: /app2
     depends_on:
@@ -21,24 +39,6 @@ services:
       resources:
         limits:
           cpus: '0.50'
-  dotnet:
-    image: mcr.microsoft.com/dotnet/sdk:7.0
-    container_name: dotnet_sdk
-    ports:
-      - "5000:5015" # Port pour l'application ASP.NET Core
-      - "5001:5001" # Port HTTPS si nécessaire
-    volumes:
-      - ./part1:/app # Monte le dossier app local dans le conteneur
-    working_dir: /app1 # Définit le répertoire de travail
-    stdin_open: true
-    tty: true # Permet de garder le conteneur interactif pour les commandes
-    depends_on:
-      - db
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50' # Limite l'utilisation du CPU à 50%
-          memory: 512M # Limite l'utilisation de la mémoire à 512MB
 
   db:
     image: postgres:latest

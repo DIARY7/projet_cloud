@@ -65,45 +65,8 @@ CREATE TABLE Transaction_Fond (
    devise_id INTEGER REFERENCES Devises(id)
 );
 
---------------------------------- VUES ---------------------------------
-
-CREATE VIEW Portefeuille_Fond AS
-SELECT 
-   user_id, 
-   COALESCE(SUM(entree - sortie), 0) AS montant,
-   devise_id
-FROM 
-   Transaction_Fond
-GROUP BY 
-   user_id;
-
-CREATE VIEW Portefeuille_Crypto AS
-SELECT 
-   user_id, 
-   crypto_id, 
-   COALESCE(SUM(entree - sortie), 0) AS cryptos,
-   COALESCE(SUM(montant), 0 ) AS montant
-FROM 
-   Transaction_Crypto
-GROUP BY 
-   user_id, 
-   crypto_id;
-
-CREATE VIEW Portefeuille_General AS
-SELECT 
-   u.id AS user_id,
-   COALESCE(pf.montant, 0) AS solde_fond,
-   COALESCE(pc.cryptos, 0) AS qte_crypto,
-   pc.crypto_id,
-   COALESCE(pc.montant, 0) AS montant_crypto
-FROM 
-   users u
-LEFT JOIN 
-   Portefeuille_Fond pf ON u.id = pf.user_id
-LEFT JOIN 
-   Portefeuille_Crypto pc ON u.id = pc.user_id;
-
 ------------------------------ DONNEES ---------------------------------------
+
 INSERT INTO Cryptos (name) VALUES ('BTC');
 INSERT INTO Cryptos (name) VALUES ('ETH');
 INSERT INTO Cryptos (name) VALUES ('LTC');
@@ -168,3 +131,41 @@ INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (11.00, 9, 3); -- T
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (50.00, 10, 1); -- NEO to USD
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (45.00, 10, 2); -- NEO to EUR
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (5500.00, 10, 3); -- NEO to MGA
+
+--------------------------------- VUES ---------------------------------
+
+CREATE VIEW Portefeuille_Fond AS
+SELECT 
+   user_id, 
+   COALESCE(SUM(entree - sortie), 0) AS montant,
+   devise_id
+FROM 
+   Transaction_Fond
+GROUP BY 
+   user_id;
+
+CREATE VIEW Portefeuille_Crypto AS
+SELECT 
+   user_id, 
+   crypto_id, 
+   COALESCE(SUM(entree - sortie), 0) AS cryptos,
+   COALESCE(SUM(montant), 0 ) AS montant
+FROM 
+   Transaction_Crypto
+GROUP BY 
+   user_id, 
+   crypto_id;
+
+CREATE VIEW Portefeuille_General AS
+SELECT 
+   u.id AS user_id,
+   COALESCE(pf.montant, 0) AS solde_fond,
+   COALESCE(pc.cryptos, 0) AS qte_crypto,
+   pc.crypto_id,
+   COALESCE(pc.montant, 0) AS montant_crypto
+FROM 
+   users u
+LEFT JOIN 
+   Portefeuille_Fond pf ON u.id = pf.user_id
+LEFT JOIN 
+   Portefeuille_Crypto pc ON u.id = pc.user_id;

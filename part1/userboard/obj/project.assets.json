@@ -1328,11 +1328,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/app/userboard/userboard.csproj",
+      "projectUniqueName": "/app1/userboard/userboard.csproj",
       "projectName": "userboard",
-      "projectPath": "/app/userboard/userboard.csproj",
+      "projectPath": "/app1/userboard/userboard.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/userboard/obj/",
+      "outputPath": "/app1/userboard/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
