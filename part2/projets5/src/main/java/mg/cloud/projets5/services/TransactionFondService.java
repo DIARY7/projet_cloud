@@ -12,8 +12,37 @@ public class TransactionFondService {
     TransactionFondRepo transactionFondRepo;
 
 
-    public void save(String token){
+    public void ajouterFond(String token){
+        /*
+         * - Verifier le token si il est valide
+         */
+        ajouterFond();
+    }
 
+    
+
+    public void retirerFond(String token){
+        /*
+         * - Verifier le token si il est valide
+        */
+        retirerFond();
+    }
+
+    public void ajouterFond(){
+        /*
+         * - Teste d'integrité
+         *      - Verifier si le montant à inserer est positif
+         * - ajouter le fond
+         */
+    }
+
+    public void retirerFond(){
+        /*
+         * - Teste d'integrité
+         *      - Verifier si le montant est positif
+         *      - Verifier si le montant est inferieur au montant du compte
+         * - ajouter la transcation
+         */
     }
 
 

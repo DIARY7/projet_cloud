@@ -7,7 +7,6 @@ services:
       - "5001:5001" # Port HTTPS si nécessaire
     volumes:
       - ./part1:/app1 # Monte le dossier app local dans le conteneur
-    working_dir: /app1 # Définit le répertoire de travail
     stdin_open: true
     tty: true # Permet de garder le conteneur interactif pour les commandes
     depends_on:
@@ -39,6 +38,18 @@ services:
       resources:
         limits:
           cpus: '0.50'
+
+  react-app:
+    container_name: react_app
+    build:
+      context: ./part3/front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - ./part3:/app3
+    restart: always
+
 
   db:
     image: postgres:latest
