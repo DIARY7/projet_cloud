@@ -3,6 +3,13 @@ package mg.cloud.projets5.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "transaction_fond")
 public class TransactionFond {
