@@ -1,11 +1,17 @@
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';  // Import de Bootstrap
-import logo from './logo.svg';  // Logo par défaut de React
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import logo from './logo.svg';
 
 // Importation des vues
 import Home from './views/Home';
 import About from './views/About';
+import SignUpForm from './views/SignUpForm';
+import LoginForm from './views/LoginForm';
+import PinConfirmationForm from './views/PinConfirmationForm';
+import CryptoPrices from './views/CryptoPrices';
+import NotFound from './views/NotFound';
 
 function App() {
   return (
@@ -26,6 +32,19 @@ function App() {
                 <li className="nav-item">
                   <Link to="/about" className="nav-link">À propos</Link>
                 </li>
+                <li className="nav-item">
+                  <Link to="/cours" className="nav-link">Cours des Cryptos</Link>
+                </li>
+                {/* Dropdown pour l'authentification */}
+                <li className="nav-item dropdown">
+                  <a className="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Authentification
+                  </a>
+                  <ul className="dropdown-menu bg-dark" aria-labelledby="authDropdown">
+                    <li><Link className="dropdown-item bg-dark text-white" to="/sign-up">Inscription</Link></li>
+                    <li><Link className="dropdown-item bg-dark text-white" to="/login">Connexion</Link></li>
+                  </ul>
+                </li>
               </ul>
             </div>
           </div>
@@ -36,6 +55,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/sign-up" element={<SignUpForm />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/pin-form" element={<PinConfirmationForm />} />
+            <Route path="/cours" element={<CryptoPrices />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>
