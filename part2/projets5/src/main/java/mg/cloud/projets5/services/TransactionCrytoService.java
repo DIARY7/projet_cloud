@@ -1,6 +1,7 @@
 package mg.cloud.projets5.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import mg.cloud.projets5.entity.Cryptos;
 import mg.cloud.projets5.entity.Devises;
 import mg.cloud.projets5.entity.TransactionCrypto;
 import mg.cloud.projets5.entity.Users;
+import mg.cloud.projets5.entity.TransactionCrypto;
 
 @Service
 public class TransactionCrytoService {
@@ -80,6 +82,14 @@ public class TransactionCrytoService {
             throw new IllegalArgumentException("Quantite positive uniquement");
         }
        
+    }
+
+    public List<TransactionCrypto> getAllAchat(){        
+        return transactionCryptoRepo.findListeAchat();
+    }
+
+    public List< TransactionCrypto > getAllVente(){
+        return transactionCryptoRepo.findListeVente();
     }
 
 
