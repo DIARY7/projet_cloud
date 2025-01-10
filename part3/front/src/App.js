@@ -12,6 +12,11 @@ import LoginForm from './views/LoginForm';
 import PinConfirmationForm from './views/PinConfirmationForm';
 import CryptoPrices from './views/CryptoPrices';
 import NotFound from './views/NotFound';
+import TransactionCryptoForm from './views/TransactionCryptoForm';
+import TransactionFondForm from './views/TransactionFondForm';
+import TransactionList from './views/TransactionList';
+import CryptoChart from './views/CryptoChart';
+import UserProfile from './views/UserProfile';
 
 function App() {
   return (
@@ -29,9 +34,9 @@ function App() {
                 <li className="nav-item">
                   <Link to="/" className="nav-link active" aria-current="page">Accueil</Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link to="/about" className="nav-link">À propos</Link>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   <Link to="/cours" className="nav-link">Cours des Cryptos</Link>
                 </li>
@@ -59,6 +64,11 @@ function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/pin-form" element={<PinConfirmationForm />} />
             <Route path="/cours" element={<CryptoPrices />} />
+            <Route path="/t-crypto" element={<TransactionCryptoForm />} />
+            <Route path="/t-fond" element={<TransactionFondForm />} />
+            <Route path="/l-crypto" element={<TransactionList />} />
+            <Route path="/chart" element={<CryptoChart />} />
+            <Route path="/user" element={<UserProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
