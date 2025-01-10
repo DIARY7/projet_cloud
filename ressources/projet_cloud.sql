@@ -1,9 +1,3 @@
-CREATE TABLE roles(
-   id SERIAL,
-   name VARCHAR(50)  NOT NULL,
-   PRIMARY KEY(id)
-);
-
 CREATE TABLE users(
    id SERIAL,
    full_name VARCHAR(255)  NOT NULL,
@@ -66,6 +60,20 @@ CREATE TABLE Transaction_Fond (
 );
 
 ------------------------------ DONNEES ---------------------------------------
+
+INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
+VALUES
+    ('User 1', 'liffeuquogulou-6839@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 2', 'groikozafaya-4437@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 3', 'weiffacrimaussau-1751@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 4', 'jupoquottupoi-3092@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 5', 'sadattizannou-5769@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 6', 'geibufrobuju-9156@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 7', 'noxoileubroli-7358@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 8', 'lammeinnannecru-7114@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 9', 'feurofaseipu-7684@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
+    ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
+
 
 INSERT INTO Cryptos (name) VALUES ('BTC');
 INSERT INTO Cryptos (name) VALUES ('ETH');
@@ -131,6 +139,35 @@ INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (11.00, 9, 3); -- T
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (50.00, 10, 1); -- NEO to USD
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (45.00, 10, 2); -- NEO to EUR
 INSERT INTO Conversions (value, crypto_id, devise_id) VALUES (5500.00, 10, 3); -- NEO to MGA
+
+
+-- Transaction_Crypto (3 derniers jours)
+INSERT INTO Transaction_Crypto (date_transaction, entree, sortie, crypto_id, devise_id, user_id, montant)
+VALUES
+    (CURRENT_DATE - INTERVAL '2 day', 100, 50, 1, 1, 1, 1000),  -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '2 day', 200, 100, 2, 2, 2, 2000),  -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '2 day', 150, 0, 3, 1, 3, 1500),    -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '1 day', 250, 0, 4, 3, 4, 2500),    -- 1 jour avant
+    (CURRENT_DATE - INTERVAL '1 day', 300, 100, 5, 2, 5, 3000),   -- 1 jour avant
+    (CURRENT_DATE - INTERVAL '1 day', 0, 200, 6, 3, 6, 2000),     -- 1 jour avant
+    (CURRENT_DATE, 200, 100, 7, 1, 7, 2000),                     -- Aujourd'hui
+    (CURRENT_DATE, 0, 300, 8, 2, 8, 3000),                       -- Aujourd'hui
+    (CURRENT_DATE, 400, 0, 9, 3, 9, 4000),                       -- Aujourd'hui
+    (CURRENT_DATE, 150, 50, 10, 1, 10, 1500);                    -- Aujourd'hui
+
+-- Transaction_Fond (3 derniers jours)
+INSERT INTO Transaction_Fond (date_transaction, entree, sortie, user_id, devise_id)
+VALUES
+    (CURRENT_DATE - INTERVAL '2 day', 500, 0, 1, 1),  -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '2 day', 0, 300, 2, 2),  -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '2 day', 200, 0, 3, 3),  -- 2 jours avant
+    (CURRENT_DATE - INTERVAL '1 day', 600, 0, 4, 1),  -- 1 jour avant
+    (CURRENT_DATE - INTERVAL '1 day', 0, 200, 5, 2),  -- 1 jour avant
+    (CURRENT_DATE - INTERVAL '1 day', 100, 0, 6, 3),  -- 1 jour avant
+    (CURRENT_DATE, 400, 0, 7, 1),                     -- Aujourd'hui
+    (CURRENT_DATE, 0, 300, 8, 2),                     -- Aujourd'hui
+    (CURRENT_DATE, 200, 0, 9, 3),                     -- Aujourd'hui
+    (CURRENT_DATE, 500, 0, 10, 1);                    -- Aujourd'hui
 
 --------------------------------- VUES ---------------------------------
 

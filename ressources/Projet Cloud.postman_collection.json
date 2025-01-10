@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "bc7cefc0-e79e-4ac9-b672-ae310ce6bec1",
+		"name": "Projet Cloud",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32294836"
+	},
+	"item": [
+		{
+			"name": "inscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FullName\" : \"Ny Ony RAMAVO\",\r\n    \"Email\" : \"nyxrafaly@gmail.com\",\r\n    \"Password\" : \"etu2547\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/Users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"Users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pin inscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Email\" : \"nyxrafaly@gmail.com\",\r\n    \"pin\" : \"218119\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/confirm",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Login\" : \"nyxrafaly@gmail.com\",\r\n    \"Pwd\" : \"etu2547\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pin login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Email\" : \"nyxrafaly@gmail.com\",\r\n    \"pin\" : \"788595\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/confirmLogin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"confirmLogin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update reinitialisation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FullName\" : \"RAMAVO Harinaivo\",\r\n    \"Email\" : \"nyxrafaly@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer kgPNFdZokMHYnS3BC7CvoCs7an8KiQV1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
