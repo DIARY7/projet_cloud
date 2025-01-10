@@ -37,8 +37,17 @@ function App() {
                 {/* <li className="nav-item">
                   <Link to="/about" className="nav-link">À propos</Link>
                 </li> */}
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link to="/cours" className="nav-link">Cours des Cryptos</Link>
+                </li> */}
+                <li className="nav-item dropdown">
+                  <a className="nav-link dropdown-toggle" href="#" id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Cryptomonnaie
+                  </a>
+                  <ul className="dropdown-menu bg-dark" aria-labelledby="authDropdown">
+                    <li><Link className="dropdown-item bg-dark text-white" to="/cours">Cours</Link></li>
+                    <li><Link className="dropdown-item bg-dark text-white" to="/graphe">Graphe</Link></li>
+                  </ul>
                 </li>
                 {/* Dropdown pour l'authentification */}
                 <li className="nav-item dropdown">
@@ -67,7 +76,7 @@ function App() {
             <Route path="/t-crypto" element={<TransactionCryptoForm />} />
             <Route path="/t-fond" element={<TransactionFondForm />} />
             <Route path="/l-crypto" element={<TransactionList />} />
-            <Route path="/chart" element={<CryptoChart />} />
+            <Route path="/graphe" element={<CryptoChart />} />
             <Route path="/user" element={<UserProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
