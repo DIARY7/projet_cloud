@@ -500,6 +500,100 @@ namespace userboard.Controllers
             }
         }
 
+
+        [HttpPost("/validation")]
+        public async Task<IActionResult> createValidation(string email)
+        {
+            if(!_context.Users.Any(e => e.Email == email))
+            {
+                return NotFound(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Utilisateur non trouvé"
+                    });
+            }
+            var user = await _context.Users
+                                        .FirstOrDefaultAsync(u => u.Email == email);
+
+            var pin = Generator.GenererPin(6);
+            var pinHtml = EmailService.GetPinHtml(pin);
+
+            EmailService.SendEmail(user.Email,"Validation à deux facteur",pinHtml);
+
+            UserCacheInfo userCache = new UserCacheInfo(user,pin);
+
+            _multiAuthCache.AddUserToCache(userCache);
+
+            return Ok(new
+                    {
+                        status = "success",
+                        datas = "Transaction en Attente de confirmation",
+                        error = (object)null
+                    });
+
+        }
+
+
+        [HttpPost("/doValidation")]
+        public async Task<IActionResult> createValidation(PinSent pinSent)
+        {
+            var userCache = _multiAuthCache.GetUserCacheInfo(pinSent.Email);
+
+            if(userCache==null){
+                return BadRequest(new
+                {
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Pin expiré"
+                });
+            }
+
+            if (userCache.User.NAttempt >= 3)
+            {
+                return Unauthorized(new 
+                { 
+                    status = "failed",
+                    datas = (object)null,
+                    error = "Vous avez atteint le nombre maximum de tentatives. Un lien vous a été envoyé pour réinitialiser ce nombre." 
+                });
+            }
+
+            if(!_multiAuthCache.ValidatePin(pinSent.Email, pinSent.Pin)){
+                
+                var userDiso = userCache.User;
+                userDiso.NAttempt +=1;
+                CheckAttempt(userDiso.NAttempt, pinSent.Email);
+                _context.Entry(userDiso).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return BadRequest(new
+                    {
+                        status = "failed",
+                        datas = (object)null,
+                        error = "Pin incorrect. Il vous reste : "+(3 - userDiso.NAttempt)+" tentative(s)."
+                    });
+            }
+
+            return Ok(new
+                    {
+                        status = "success",
+                        datas = (bool) true,
+                        error = (object) null
+                    });
+        }
+
+
+
+        
+
+
         
     }
 }
