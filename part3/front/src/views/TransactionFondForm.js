@@ -54,6 +54,7 @@ function TransactionFondForm() {
                         value={amount}
                         onChange={handleAmountChange}
                         required
+                        min="0"
                     />
                 </div>
 

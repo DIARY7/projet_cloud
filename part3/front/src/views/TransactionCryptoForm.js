@@ -57,6 +57,7 @@ function TransactionCryptoForm() {
                         value={quantity}
                         onChange={handleQuantityChange}
                         required
+                        min="0"
                     />
                 </div>
 
