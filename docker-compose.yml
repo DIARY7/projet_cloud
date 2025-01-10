@@ -4,7 +4,8 @@ services:
     container_name: dotnet_sdk
     ports:
       - "5000:5015" # Port pour l'application ASP.NET Core
-      - "5001:5001" # Port HTTPS si nécessaire
+      # - "5001:5001" # Port HTTPS si nécessaire
+      - "5001:7010" # Port HTTPS si nécessaire
     volumes:
       - ./part1:/app1 # Monte le dossier app local dans le conteneur
     working_dir: /app1
