@@ -6,4 +6,7 @@ import mg.cloud.projets5.entity.TransactionFond;
 
 public interface TransactionFondRepo extends JpaRepository<TransactionFond, Long> {
     
+    
+
+
 }

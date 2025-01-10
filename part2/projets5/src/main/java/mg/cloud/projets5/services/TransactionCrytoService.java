@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
+import mg.cloud.projets5.utils.ConversionCrypto;
 import mg.cloud.projets5.entity.Cryptos;
 import mg.cloud.projets5.entity.Devises;
 import mg.cloud.projets5.entity.TransactionCrypto;
@@ -26,8 +27,12 @@ public class TransactionCrytoService {
          * - Convertir le Fond en Crypto
          * - Ajouter la transcation du crypto dans la table transactionCrypto
          * - Ajouter la transcation du fond dans la table transactionFond
-         */
+        */
         if (quantite > 0) {
+            Double fond = quantite * prix;
+            /*
+             * Verifier fond
+             */
             TransactionCrypto tc = TransactionCrypto.builder()
                                     .dateTransaction(dateTransaction)
                                     .user(Users.builder().id(user_id).build())
@@ -37,12 +42,13 @@ public class TransactionCrytoService {
                                     .sortie(0.0)
                                     .montant(prix)
                                     .build();
-                                    transactionCryptoRepo.save(tc);                            
+                                    transactionCryptoRepo.save(tc);     
+            transactionFondService.retirerFond(dateTransaction,fond,user_id,devise_id);                       
         }else{
             throw new IllegalArgumentException("Quantite positive uniquement");
         }
 
-        transactionFondService.retirerFond(dateTransaction,quantite*prix,user_id,devise_id);
+        
     }
     
     public void retirerCrypto(String token,LocalDateTime dateTransaction ,Double quantite,Double prix,Long crypto_id,Long user_id,Long devise_id){
@@ -54,6 +60,7 @@ public class TransactionCrytoService {
          * - retirer le crypto
          */
         if (quantite > 0) {
+            Double cryptoToFond = ConversionCrypto.CryptoToFond(quantite, prix);
             TransactionCrypto tc = TransactionCrypto.builder()
                                     .dateTransaction(dateTransaction)
                                     .user(Users.builder().id(user_id).build())
@@ -61,13 +68,18 @@ public class TransactionCrytoService {
                                     .crypto(Cryptos.builder().id(crypto_id).build())
                                     .entree(0.0)
                                     .sortie(quantite)
-                                    .montant(prix)
+                                    .montant(cryptoToFond)
                                     .build();
-            transactionCryptoRepo.save(tc);                            
+            transactionCryptoRepo.save(tc);
+            /*
+             * Transformer le crypto en Fond
+            */
+            transactionFondService.ajouterFond(token, dateTransaction, cryptoToFond, user_id, devise_id);
+
         }else{
             throw new IllegalArgumentException("Quantite positive uniquement");
         }
-        transactionFondService.ajouterFond(dateTransaction,quantite*prix,user_id,devise_id);
+       
     }
 
 

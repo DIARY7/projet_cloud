@@ -6,5 +6,4 @@ import mg.cloud.projets5.entity.Cryptos;
 
 public interface CryptoRepo extends JpaRepository<Cryptos, Long> {
     
-
 }

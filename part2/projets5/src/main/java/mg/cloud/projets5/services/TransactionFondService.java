@@ -1,7 +1,6 @@
 package mg.cloud.projets5.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionFondRepo;
@@ -12,7 +11,7 @@ import mg.cloud.projets5.entity.*;
 public class TransactionFondService {
     
     @Autowired
-    TransactionFondRepo transactionFondRepo;
+    private TransactionFondRepo transactionFondRepo;
 
 
     public void ajouterFond(String token,LocalDateTime dateTransaction ,Double entree,Long user_id,Long devise_id){

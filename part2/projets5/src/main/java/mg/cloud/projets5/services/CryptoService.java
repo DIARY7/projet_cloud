@@ -26,4 +26,5 @@ public class CryptoService {
     public List<Cryptos> findAll(){
         return cryptoRepo.findAll();
     }
+
 }
