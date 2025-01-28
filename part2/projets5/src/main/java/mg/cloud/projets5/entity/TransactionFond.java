@@ -15,23 +15,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "prix_crypto")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "transaction_fond")
 @Data
-public class PrixCrypto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TransactionFond {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
     @Column
-    LocalDateTime daty;
+    Double entree;
 
     @Column
-    Double prix;
+    Double sortie;
+
+    @Column
+    LocalDateTime dtTransaction;
 
     @ManyToOne
-    @JoinColumn(name = "crypto_id")
-    Crypto crypto;
+    @JoinColumn(name = "user_id")
+    Users users;
 
 }

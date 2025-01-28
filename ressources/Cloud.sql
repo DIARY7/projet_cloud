@@ -50,11 +50,11 @@ CREATE TABLE transaction_crypto(
    prix NUMERIC(15,2)  ,
    qte NUMERIC(15,2)  ,
    dt_transaction TIMESTAMP NOT NULL,
-   type_commission INTEGER NOT NULL,
+   type_commission_id INTEGER NOT NULL,
    crypto_id INTEGER NOT NULL,
    user_id INTEGER NOT NULL,
    PRIMARY KEY(id),
-   FOREIGN KEY(type_commission) REFERENCES type_commission(id),
+   FOREIGN KEY(type_commission_id) REFERENCES type_commission(id),
    FOREIGN KEY(crypto_id) REFERENCES crypto(id),
    FOREIGN KEY(user_id) REFERENCES users(id)
 );
@@ -63,7 +63,7 @@ CREATE TABLE commission(
    id SERIAL,
    commission NUMERIC(15,2)  ,
    pourcentage NUMERIC(2,2)   NOT NULL,
-   transaction_crypto VARCHAR(50)  NOT NULL,
+   transaction_crypto_id VARCHAR(50)  NOT NULL,
    PRIMARY KEY(id),
-   FOREIGN KEY(transaction_crypto) REFERENCES transaction_crypto(id)
+   FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
