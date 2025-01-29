@@ -55,7 +55,7 @@ CREATE TABLE type_commission(
 );
 
 CREATE TABLE transaction_crypto(
-   id VARCHAR(50) ,
+   id SERIAL ,
    pu_crypto NUMERIC(15,2)  ,
    prix NUMERIC(15,2)  ,
    qte NUMERIC(15,2)  ,
@@ -94,15 +94,15 @@ VALUES
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
 
 
-INSERT INTO Cryptos (name) VALUES ('BTC');
-INSERT INTO Cryptos (name) VALUES ('ETH');
-INSERT INTO Cryptos (name) VALUES ('LTC');
-INSERT INTO Cryptos (name) VALUES ('XRP');
-INSERT INTO Cryptos (name) VALUES ('BCH');
-INSERT INTO Cryptos (name) VALUES ('EOS');
-INSERT INTO Cryptos (name) VALUES ('ADA');
-INSERT INTO Cryptos (name) VALUES ('XLM');
-INSERT INTO Cryptos (name) VALUES ('TRX');
-INSERT INTO Cryptos (name) VALUES ('NEO');
+INSERT INTO Crypto (name) VALUES ('BTC');
+INSERT INTO Crypto (name) VALUES ('ETH');
+INSERT INTO Crypto (name) VALUES ('LTC');
+INSERT INTO Crypto (name) VALUES ('XRP');
+INSERT INTO Crypto (name) VALUES ('BCH');
+INSERT INTO Crypto (name) VALUES ('EOS');
+INSERT INTO Crypto (name) VALUES ('ADA');
+INSERT INTO Crypto (name) VALUES ('XLM');
+INSERT INTO Crypto (name) VALUES ('TRX');
+INSERT INTO Crypto (name) VALUES ('NEO');
 
 
