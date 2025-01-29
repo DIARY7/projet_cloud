@@ -1,5 +1,7 @@
 package mg.cloud.projets5.services;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mg.cloud.projets5.dto.analyseCrypto.AnalyseCrypto;
+import mg.cloud.projets5.dto.analyseCrypto.AnalyseCryptoDTO;
 import mg.cloud.projets5.dto.coursCrypto.CoursCryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.EvolutionCryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.ListCryptoPrix;
@@ -25,6 +29,14 @@ public class CryptoService {
 
     @Autowired
     PrixCryptoRepo prixCryptoRepo;
+
+    
+    public AnalyseCryptoDTO analyseCryptoDTO(LocalDateTime startDate, LocalDateTime endDate){
+        AnalyseCryptoDTO analyseCryptoDTO = new AnalyseCryptoDTO();
+        List<AnalyseCrypto> analyseCryptos = prixCryptoRepo.findAnalyseCryptos(startDate, endDate);
+        analyseCryptoDTO.setAnalyseCryptos(analyseCryptos);
+        return analyseCryptoDTO;
+    }
 
 
     public CoursCryptoDTO getCoursCrypto(){

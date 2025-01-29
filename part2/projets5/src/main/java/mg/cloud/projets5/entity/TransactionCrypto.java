@@ -1,5 +1,7 @@
 package mg.cloud.projets5.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +35,7 @@ public class TransactionCrypto {
     Double qte;
 
     @Column
-    Double dtTransaction;
+    LocalDateTime dtTransaction;
 
     @ManyToOne
     @JoinColumn(name = "type_commission_id")
