@@ -78,8 +78,6 @@ CREATE TABLE commission(
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
 
------------------------------- DONNEES ---------------------------------------
-
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
     ('User 1', 'liffeuquogulou-6839@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
@@ -93,7 +91,6 @@ VALUES
     ('User 9', 'feurofaseipu-7684@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
 
-
 INSERT INTO Crypto (label) VALUES ('BTC');
 INSERT INTO Crypto (label) VALUES ('ETH');
 INSERT INTO Crypto (label) VALUES ('LTC');
@@ -105,7 +102,6 @@ INSERT INTO Crypto (label) VALUES ('XLM');
 INSERT INTO Crypto (label) VALUES ('TRX');
 INSERT INTO Crypto (label) VALUES ('NEO');
 
--- Insertion des prix de BTC pour les deux derniers jours
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 480000000.00, 1),
 ('2025-01-28 11:30:00', 459800000.00, 1),
@@ -128,8 +124,7 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 461850000.00, 1),
 ('2025-01-29 18:45:00', 504000000.00, 1);
 
--- Insertion des prix de ETH pour les deux derniers jours
-INSERT INTO prix_crypto (id, daty, prix, crypto_id) VALUES
+INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 14000000.00, 2),
 ('2025-01-28 11:30:00', 13300000.00, 2),
 ('2025-01-28 13:15:00', 14420000.00, 2),
@@ -151,7 +146,6 @@ INSERT INTO prix_crypto (id, daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 14200000.00, 2),
 ('2025-01-29 18:45:00', 13370000.00, 2);
 
--- Insertion des prix pour LTC (id auto-généré)
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 530000.00, 3),
 ('2025-01-28 11:30:00', 503500.00, 3),
@@ -174,7 +168,6 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 531400.00, 3),
 ('2025-01-29 18:45:00', 505700.00, 3);
 
--- Insertion des prix pour XRP (id auto-généré)
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 15000.00, 4),
 ('2025-01-28 11:30:00', 14250.00, 4),
@@ -197,7 +190,7 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 14650.00, 4),
 ('2025-01-29 18:45:00', 15350.00, 4);
 
--- Insertion des prix pour BCH (id auto-généré)
+
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 1945000.00, 5),
 ('2025-01-28 11:30:00', 1857750.00, 5),
@@ -220,7 +213,6 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 1862500.00, 5),
 ('2025-01-29 18:45:00', 2030000.00, 5);
 
--- Insertion des prix pour EOS (id auto-généré)
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 3500.00, 6),
 ('2025-01-28 11:30:00', 3325.00, 6),
@@ -243,7 +235,29 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 3320.00, 6),
 ('2025-01-29 18:45:00', 3655.00, 6);
 
--- Insertion des prix pour XLM (id auto-généré)
+-- Insertion des prix pour ADA (id auto-généré)
+INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
+('2025-01-28 09:00:00', 4500.00, 7),
+('2025-01-28 11:30:00', 4275.00, 7),
+('2025-01-28 13:15:00', 4725.00, 7),
+('2025-01-28 15:00:00', 4425.00, 7),
+('2025-01-28 16:45:00', 4280.00, 7),
+('2025-01-28 18:00:00', 4720.00, 7),
+('2025-01-28 19:30:00', 4390.00, 7),
+('2025-01-28 21:15:00', 4530.00, 7),
+('2025-01-28 23:00:00', 4285.00, 7),
+('2025-01-29 01:15:00', 4710.00, 7),
+('2025-01-29 03:00:00', 4385.00, 7),
+('2025-01-29 04:45:00', 4515.00, 7),
+('2025-01-29 06:30:00', 4280.00, 7),
+('2025-01-29 08:15:00', 4700.00, 7),
+('2025-01-29 10:00:00', 4400.00, 7),
+('2025-01-29 11:45:00', 4525.00, 7),
+('2025-01-29 13:30:00', 4695.00, 7),
+('2025-01-29 15:15:00', 4405.00, 7),
+('2025-01-29 17:00:00', 4275.00, 7),
+('2025-01-29 18:45:00', 4705.00, 7);
+
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 2000.00, 8),
 ('2025-01-28 11:30:00', 1900.00, 8),
@@ -266,7 +280,7 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 1900.00, 8),
 ('2025-01-29 18:45:00', 2100.00, 8);
 
--- Insertion des prix pour TRX (id auto-généré)
+
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 1100.00, 9),
 ('2025-01-28 11:30:00', 1045.00, 9),
@@ -289,7 +303,7 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 17:00:00', 1045.00, 9),
 ('2025-01-29 18:45:00', 1155.00, 9);
 
--- Insertion des prix pour NEO (id auto-généré)
+
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 61000.00, 10),
 ('2025-01-28 11:30:00', 57950.00, 10),
@@ -311,14 +325,6 @@ INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-29 15:15:00', 57850.00, 10),
 ('2025-01-29 17:00:00', 57900.00, 10),
 ('2025-01-29 18:45:00', 64000.00, 10);
-
-
-
-
-
-
-
-
 
 INSERT INTO type_commission (label, commission)
 VALUES ('Commission sur ventes', 0.05),   -- 5% de commission

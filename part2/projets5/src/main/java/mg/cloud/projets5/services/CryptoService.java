@@ -1,6 +1,5 @@
 package mg.cloud.projets5.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +19,7 @@ import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
 import mg.cloud.projets5.repo.CryptoRepo;
 import mg.cloud.projets5.repo.PrixCryptoRepo;
-import mg.cloud.projets5.entity.Crypto;
-import java.util.List;
+
 
 @Service
 public class CryptoService {
@@ -35,7 +33,15 @@ public class CryptoService {
     
     public AnalyseCryptoDTO analyseCryptoDTO(LocalDateTime startDate, LocalDateTime endDate){
         AnalyseCryptoDTO analyseCryptoDTO = new AnalyseCryptoDTO();
-        List<AnalyseCrypto> analyseCryptos = prixCryptoRepo.findAnalyseCryptos(startDate, endDate);
+        List<AnalyseCrypto> analyseCryptos = null;
+        if(startDate != null && endDate != null) 
+        analyseCryptos = prixCryptoRepo.findAnalyseCryptos(startDate, endDate);
+        if(startDate == null && endDate == null)
+        analyseCryptos = prixCryptoRepo.findAnalyseCryptos();
+        if(startDate != null && endDate == null)
+        analyseCryptos = prixCryptoRepo.findAnalyseCryptosWithMinDate(startDate);
+        if(startDate == null && endDate != null)
+        analyseCryptos = prixCryptoRepo.findAnalyseCryptosWithMaxDate(endDate);
         analyseCryptoDTO.setAnalyseCryptos(analyseCryptos);
         return analyseCryptoDTO;
     }
@@ -75,8 +81,11 @@ public class CryptoService {
         return evolutionCryptoDTO;
     }
 
+    public double getCryptoCurrentPrice(Integer cryptoId){
+        double currentPrice = 0;
+        return currentPrice;
+    }
 
-    
     public List<Crypto> findAll(){
         return cryptoRepo.findAll();
     }

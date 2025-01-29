@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mg.cloud.projets5.dto.DataTransfertObject;
 import mg.cloud.projets5.services.CryptoService;
 import mg.cloud.projets5.services.TransactionCryptoService;
 import mg.cloud.projets5.services.UsersService;
@@ -27,16 +28,20 @@ public class TransactionCryptoController {
     
 
      @GetMapping("/List")
-    public HashMap<String,List<?>> getMessage(
+    public DataTransfertObject getMessage(
         @RequestParam(required = false) Integer cryptoId,
         @RequestParam(required = false) Integer userId,
         @RequestParam(required = false) LocalDate dateDebut,
         @RequestParam(required = false) LocalDate dateFin
     ) {
+        DataTransfertObject dto = new DataTransfertObject();
+
         HashMap<String , List<?>> map = new HashMap<String,List<?>>();
             map.put("listTransactionCrypto", transactionCryptoService.filterByCommissionIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
             map.put("listCrypto",cryptoService.findAll() );
             map.put("listUser", usersService.findAll());
-        return  map;
+            dto.success(map,null);
+            
+        return dto;
     }
 }
