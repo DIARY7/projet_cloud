@@ -73,7 +73,7 @@ CREATE TABLE commission(
    id SERIAL,
    commission NUMERIC(15,2)  ,
    pourcentage NUMERIC(2,2)   NOT NULL,
-   transaction_crypto_id VARCHAR(50)  NOT NULL,
+   transaction_crypto_id INTEGER  NOT NULL,
    PRIMARY KEY(id),
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
