@@ -1,13 +1,19 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// FullOffice
 import LandingPage from './pages/fulloffice/LandingPage';
 import Login from './pages/fulloffice/Login';
 import Register from './pages/fulloffice/Register';
-import TransactionsList from './pages/backoffice/TransactionsList';
-import CryptoWallet from './pages/frontoffice/CryptoWallet';
-import FundsWallet from './pages/frontoffice/FundsWallet';
 import PinConfirmation from './pages/fulloffice/PinConfirmation';
 import CryptoPrices from './pages/fulloffice/CryptoPrices';
+
+// BackOffice
+import TransactionsList from './pages/backoffice/TransactionsList';
+import EditCommission from './pages/backoffice/EditCommission';
+
+// FrontOffice
+import CryptoWallet from './pages/frontoffice/CryptoWallet';
+import FundsWallet from './pages/frontoffice/FundsWallet';
 
 function App() {
   return (
@@ -21,10 +27,11 @@ function App() {
         <Route path="/cryptos/prices" element={<CryptoPrices />} />
 
         {/* Backoffice Routes */}
-        <Route path="/admin/transactions" element={<TransactionsList />} />
+        <Route path="/transactions" element={<TransactionsList />} />
+        <Route path="/commission/edit" element={<EditCommission />} />
 
         {/* Frontoffice Routes */}
-        <Route path="/wallet/crypto" element={<CryptoWallet />} />
+        <Route path="/wallet/cryptos" element={<CryptoWallet />} />
         <Route path="/wallet/funds" element={<FundsWallet />} />
 
         {/* Fallback route */}
