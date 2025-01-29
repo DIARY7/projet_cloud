@@ -34,7 +34,7 @@ public class TransactionCryptoController {
         @RequestParam(required = false) LocalDate dateFin
     ) {
         HashMap<String , List<?>> map = new HashMap<String,List<?>>();
-            map.put("listTransactionCrypto", transactionCryptoService.filterByCommissionIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
+            map.put("listTransactionCrypto", transactionCryptoService.filterByUserIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
             map.put("listCrypto",cryptoService.findAll() );
             map.put("listUser", usersService.findAll());
         return  map;

@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mg.cloud.projets5.entity.Commission;
-import mg.cloud.projets5.services.CommissionService;
+import mg.cloud.projets5.services.TypeCommissionService;
 
 @RestController
 @RequestMapping("/commission")
 public class CommissionController {
       @Autowired
-    CommissionService commissionService;
+    TypeCommissionService typeCommissionService;
 
        @PostMapping("/insert")
     public void insert(
-        @RequestParam(required = true) Commission commission
+        @RequestParam(required = true) Integer typeCommissionId,
+        @RequestParam(required = true) Double pourcentage
     ) {
         try {
-            commissionService.save(commission);
+            typeCommissionService.update(typeCommissionId,pourcentage);
         } catch (Exception e) {
            
         }
