@@ -1,49 +1,24 @@
-# Node.js
-node_modules/
-
-# Build output
-/build/
-dist/
-
 # Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# IDEs
-.vscode/
-.idea/
+node_modules
+dist
+dist-ssr
+*.local
 
-# MacOS
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-
-# Windows
-Thumbs.db
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# npm package lock file (si tu utilises yarn, tu peux ignorer cette ligne)
-package-lock.json
-
-# Optional npm cache directory
-.npm/
-
-# Next.js build output (si tu utilises Next.js, sinon tu peux ignorer cette ligne)
-.next/
-
-# Test coverage reports
-coverage/
-
-# Expo (si tu utilises Expo)
-.expo/
-.expo-shared/
-
-# Storybook (si tu utilises Storybook)
-storybook-static/
-
-# Miscellaneous
-.vscode/
-.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

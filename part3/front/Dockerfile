@@ -1,5 +1,5 @@
 # Étape 1 : Construire l'application
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 
 # Définir le répertoire de travail
 WORKDIR /app3
@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:1.23-alpine
 
 # Copier les fichiers construits dans Nginx
-COPY --from=builder /app3/build /usr/share/nginx/html
+COPY --from=builder /app3/dist /usr/share/nginx/html
 
 # Exposer le port
 EXPOSE 80
