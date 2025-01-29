@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "transaction_crypto")
@@ -33,7 +34,7 @@ public class TransactionCrypto {
     Double qte;
 
     @Column
-    Double dtTransaction;
+    Timestamp dtTransaction;
 
     @ManyToOne
     @JoinColumn(name = "type_commission_id")

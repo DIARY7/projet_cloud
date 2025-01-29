@@ -1,0 +1,42 @@
+package mg.cloud.projets5.controllers;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import mg.cloud.projets5.services.CryptoService;
+import mg.cloud.projets5.services.TransactionCryptoService;
+import mg.cloud.projets5.services.UsersService;
+
+@RestController
+@RequestMapping("/TransCrypto")
+public class TransactionCryptoController {
+
+     @Autowired
+    TransactionCryptoService transactionCryptoService;
+     @Autowired
+    UsersService usersService;
+     @Autowired
+    CryptoService cryptoService;
+    
+
+     @GetMapping("/List")
+    public HashMap<String,List<?>> getMessage(
+        @RequestParam(required = false) String cryptoId,
+        @RequestParam(required = false) String userId,
+        @RequestParam(required = false) LocalDate dateDebut,
+        @RequestParam(required = false) LocalDate dateFin
+    ) {
+        HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+            map.put("listTransactionCrypto", transactionCryptoService.filterByCommissionIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
+            map.put("listCrypto",cryptoService.findAll() );
+            map.put("listUser", usersService.findAll());
+        return  map;
+    }
+}

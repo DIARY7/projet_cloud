@@ -94,15 +94,15 @@ VALUES
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
 
 
-INSERT INTO Cryptos (name) VALUES ('BTC');
-INSERT INTO Cryptos (name) VALUES ('ETH');
-INSERT INTO Cryptos (name) VALUES ('LTC');
-INSERT INTO Cryptos (name) VALUES ('XRP');
-INSERT INTO Cryptos (name) VALUES ('BCH');
-INSERT INTO Cryptos (name) VALUES ('EOS');
-INSERT INTO Cryptos (name) VALUES ('ADA');
-INSERT INTO Cryptos (name) VALUES ('XLM');
-INSERT INTO Cryptos (name) VALUES ('TRX');
-INSERT INTO Cryptos (name) VALUES ('NEO');
+INSERT INTO Crypto (label) VALUES ('BTC');
+INSERT INTO Crypto (label) VALUES ('ETH');
+INSERT INTO Crypto (label) VALUES ('LTC');
+INSERT INTO Crypto (label) VALUES ('XRP');
+INSERT INTO Crypto (label) VALUES ('BCH');
+INSERT INTO Crypto (label) VALUES ('EOS');
+INSERT INTO Crypto (label) VALUES ('ADA');
+INSERT INTO Crypto (label) VALUES ('XLM');
+INSERT INTO Crypto (label) VALUES ('TRX');
+INSERT INTO Crypto (label) VALUES ('NEO');
 
 
