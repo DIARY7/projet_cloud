@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Wallet } from 'lucide-react';
 
-const cryptoData = [
-    { name: 'Bitcoin', min: 30000, max: 50000, firstQuartile: 35000, average: 40000, stdDev: 5000 },
-    { name: 'Ethereum', min: 1000, max: 3000, firstQuartile: 1500, average: 2000, stdDev: 300 },
-    { name: 'Ripple', min: 0.2, max: 2, firstQuartile: 0.5, average: 1, stdDev: 0.5 },
-    { name: 'Litecoin', min: 50, max: 500, firstQuartile: 100, average: 200, stdDev: 50 },
+const commissionData = [
+    { name: 'Bitcoin', somme: 1000, moyenne: 200 },
+    { name: 'Ethereum', somme: 1500, moyenne: 300 },
+    { name: 'Ripple', somme: 500, moyenne: 100 },
+    { name: 'Litecoin', somme: 800, moyenne: 150 },
 ];
 
-export default function CryptoAnalysis() {
+export default function CommissionAnalysis() {
     const [selectedCryptos, setSelectedCryptos] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
 
     useEffect(() => {
-        if (selectedCryptos.length === cryptoData.length) {
+        if (selectedCryptos.length === commissionData.length) {
             setSelectAll(true);
         } else {
             setSelectAll(false);
@@ -32,7 +32,7 @@ export default function CryptoAnalysis() {
         if (selectAll) {
             setSelectedCryptos([]); // Deselect all
         } else {
-            setSelectedCryptos(cryptoData.map(crypto => crypto.name)); // Select all
+            setSelectedCryptos(commissionData.map(crypto => crypto.name)); // Select all
         }
     };
 
@@ -41,12 +41,12 @@ export default function CryptoAnalysis() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center mb-8">
                     <Wallet className="h-8 w-8 text-yellow-500 mr-3" />
-                    <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>
+                    <h1 className="text-3xl font-bold text-white">Analyse des Commissions Reçues par Cryptomonnaie</h1>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 mb-8">
                     <div className="bg-gray-800 rounded-lg p-6">
-                        <h2 className="text-xl font-bold text-white mb-4">Filtres de Cryptomonnaies</h2>
+                        <h2 className="text-xl font-bold text-white mb-4">Filtres des Cryptomonnaies</h2>
                         <div className="space-y-4">
                             <div className="flex items-center">
                                 <input
@@ -60,7 +60,7 @@ export default function CryptoAnalysis() {
                                     Tous
                                 </label>
                             </div>
-                            {cryptoData.map((crypto) => (
+                            {commissionData.map((crypto) => (
                                 <div key={crypto.name} className="flex items-center">
                                     <input
                                         type="checkbox"
@@ -78,29 +78,23 @@ export default function CryptoAnalysis() {
                     </div>
 
                     <div className="bg-gray-800 overflow-x-auto rounded-lg p-6">
-                        <h2 className="text-xl font-bold text-white mb-4">Tableau des Statistiques (en MGA)</h2>
+                        <h2 className="text-xl font-bold text-white mb-4">Tableau des Commissions (en MGA)</h2>
                         <table className="min-w-full table-auto text-gray-300">
                             <thead>
                                 <tr>
                                     <th className="px-4 py-2 text-left">Cryptomonnaie</th>
-                                    <th className="px-4 py-2 text-left">Min</th>
-                                    <th className="px-4 py-2 text-left">Max</th>
-                                    <th className="px-4 py-2 text-left">1er Quartile</th>
+                                    <th className="px-4 py-2 text-left">Somme</th>
                                     <th className="px-4 py-2 text-left">Moyenne</th>
-                                    <th className="px-4 py-2 text-left">Ecart-Type</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {cryptoData
+                                {commissionData
                                     .filter((crypto) => selectedCryptos.includes(crypto.name))
                                     .map((crypto) => (
                                         <tr key={crypto.name}>
                                             <td className="px-4 py-2">{crypto.name}</td>
-                                            <td className="px-4 py-2">{crypto.min}</td>
-                                            <td className="px-4 py-2">{crypto.max}</td>
-                                            <td className="px-4 py-2">{crypto.firstQuartile}</td>
-                                            <td className="px-4 py-2">{crypto.average}</td>
-                                            <td className="px-4 py-2">{crypto.stdDev}</td>
+                                            <td className="px-4 py-2">{crypto.somme}</td>
+                                            <td className="px-4 py-2">{crypto.moyenne}</td>
                                         </tr>
                                     ))}
                             </tbody>
