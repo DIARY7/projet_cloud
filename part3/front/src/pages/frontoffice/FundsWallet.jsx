@@ -10,7 +10,7 @@ export default function FundsWallet() {
           <h1 className="text-3xl font-bold text-white">Portefeuille de Fonds</h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-gray-400 mb-2">Solde Disponible</h2>
             <p className="text-3xl font-bold text-white">5,000 MGA</p>

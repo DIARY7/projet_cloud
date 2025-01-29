@@ -6,6 +6,7 @@ import Login from './pages/fulloffice/Login';
 import Register from './pages/fulloffice/Register';
 import PinConfirmation from './pages/fulloffice/PinConfirmation';
 import CryptoPrices from './pages/fulloffice/CryptoPrices';
+import CryptoAnalysis from './pages/fulloffice/CryptoAnalysis';
 
 // BackOffice
 import TransactionsList from './pages/backoffice/TransactionsList';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/pin/confirm" element={<PinConfirmation />} />
         <Route path="/cryptos/prices" element={<CryptoPrices />} />
+        <Route path="/cryptos/analysis" element={<CryptoAnalysis/>} />
 
         {/* Backoffice Routes */}
         <Route path="/transactions" element={<TransactionsList />} />

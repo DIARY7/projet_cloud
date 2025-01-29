@@ -49,9 +49,7 @@ export default function CryptoWallet() {
                   </div>
                 </div>
 
-                {/* Formulaires d'achat et de vente en flex wrap */}
                 <div className="mt-4 flex flex-wrap gap-4">
-                  {/* Formulaire d'achat */}
                   <div className="w-full sm:w-[48%]">
                     <h3 className="text-sm text-gray-400 mb-2">Acheter {crypto.name}</h3>
                     <input
@@ -70,7 +68,6 @@ export default function CryptoWallet() {
                     </button>
                   </div>
 
-                  {/* Formulaire de vente */}
                   <div className="w-full sm:w-[48%]">
                     <h3 className="text-sm text-gray-400 mb-2">Vendre {crypto.name}</h3>
                     <input
