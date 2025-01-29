@@ -55,7 +55,7 @@ CREATE TABLE type_commission(
 );
 
 CREATE TABLE transaction_crypto(
-   id VARCHAR(50) ,
+   id SERIAL ,
    pu_crypto NUMERIC(15,2)  ,
    prix NUMERIC(15,2)  ,
    qte NUMERIC(15,2)  ,

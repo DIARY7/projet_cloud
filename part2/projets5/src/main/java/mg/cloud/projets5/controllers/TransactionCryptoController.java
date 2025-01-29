@@ -28,8 +28,8 @@ public class TransactionCryptoController {
 
      @GetMapping("/List")
     public HashMap<String,List<?>> getMessage(
-        @RequestParam(required = false) String cryptoId,
-        @RequestParam(required = false) String userId,
+        @RequestParam(required = false) Integer cryptoId,
+        @RequestParam(required = false) Integer userId,
         @RequestParam(required = false) LocalDate dateDebut,
         @RequestParam(required = false) LocalDate dateFin
     ) {
