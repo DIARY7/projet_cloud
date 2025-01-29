@@ -73,7 +73,7 @@ CREATE TABLE commission(
    id SERIAL,
    commission NUMERIC(15,2)  ,
    pourcentage NUMERIC(2,2)   NOT NULL,
-   transaction_crypto_id VARCHAR(50)  NOT NULL,
+   transaction_crypto_id INTEGER  NOT NULL,
    PRIMARY KEY(id),
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
@@ -105,4 +105,14 @@ INSERT INTO Crypto (label) VALUES ('XLM');
 INSERT INTO Crypto (label) VALUES ('TRX');
 INSERT INTO Crypto (label) VALUES ('NEO');
 
+
+INSERT INTO type_commission (label, commission)
+VALUES ('Commission sur ventes', 0.05),   -- 5% de commission
+       ('Commission sur achats', 0.10); -- 10% de commission
+
+-- Insertion d'une transaction avec les données correspondantes
+INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+VALUES 
+(20000.50, 1000000.00, 50, '2025-01-29 12:00:00', 1, 1, 1),
+(30000.75, 600000.00, 20, '2025-01-29 14:00:00', 2, 2, 2);
 
