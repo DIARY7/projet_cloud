@@ -20,6 +20,8 @@ import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
 import mg.cloud.projets5.repo.CryptoRepo;
 import mg.cloud.projets5.repo.PrixCryptoRepo;
+import mg.cloud.projets5.entity.Crypto;
+import java.util.List;
 
 @Service
 public class CryptoService {
@@ -75,4 +77,7 @@ public class CryptoService {
 
 
     
+    public List<Crypto> findAll(){
+        return cryptoRepo.findAll();
+    }
 }
