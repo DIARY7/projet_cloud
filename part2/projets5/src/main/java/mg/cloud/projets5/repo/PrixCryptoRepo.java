@@ -78,7 +78,7 @@ public interface PrixCryptoRepo extends JpaRepository<PrixCrypto, Integer> {
          WHERE (p.daty <= :endDate)
         GROUP BY c
     """)
-    List<AnalyseCrypto> findAnalyseCryptosWithMaxDate(@Param("startDate") LocalDateTime startDate); 
+    List<AnalyseCrypto> findAnalyseCryptosWithMaxDate(@Param("endDate") LocalDateTime endDate); 
     
     @Query("SELECT pc.prix FROM PrixCrypto pc WHERE pc.crypto.id = :cryptoId AND pc.daty = (SELECT MAX(subPc.daty) FROM PrixCrypto subPc WHERE subPc.crypto.id = :cryptoId)")
     Optional<Double> findLatestPriceByCryptoId(@Param("cryptoId") Integer cryptoId);
