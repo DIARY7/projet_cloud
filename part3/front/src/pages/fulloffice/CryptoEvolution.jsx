@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { TrendingUp } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
@@ -6,48 +6,60 @@ import Select from 'react-select';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const cryptoData = {
-    BTC: [
-        { date: '2024-01-01', price: 30000 },
-        { date: '2024-01-02', price: 32000 },
-        { date: '2024-01-03', price: 31000 },
-        { date: '2024-01-04', price: 33000 },
-        { date: '2024-01-05', price: 34000 },
-    ],
-    ETH: [
-        { date: '2024-01-01', price: 2000 },
-        { date: '2024-01-02', price: 2100 },
-        { date: '2024-01-03', price: 2050 },
-        { date: '2024-01-04', price: 2200 },
-        { date: '2024-01-05', price: 2300 },
-    ],
-    XRP: [
-        { date: '2024-01-01', price: 0.5 },
-        { date: '2024-01-02', price: 0.6 },
-        { date: '2024-01-03', price: 0.55 },
-        { date: '2024-01-04', price: 0.65 },
-        { date: '2024-01-05', price: 0.7 },
-    ]
+const fetchCryptoData = async () => {
+    return {
+        status: "success",
+        code: 200,
+        data: {
+            evolution: {
+                cryptoPrix: [
+                    {
+                        crypto: { id: 1, label: "BTC" },
+                        details: [
+                            { prix: 50000, date: "2025-01-28T09:00:00" },
+                            { prix: 61000, date: "2025-01-29T09:00:00" }
+                        ]
+                    },
+                    {
+                        crypto: { id: 2, label: "ETH" },
+                        details: [
+                            { prix: 1000, date: "2025-01-28T09:00:00" },
+                            { prix: 2100, date: "2025-01-29T09:00:00" }
+                        ]
+                    }
+                ]
+            }
+        }
+    };
 };
 
 const options = [
     { value: 'BTC', label: 'Bitcoin (BTC)' },
     { value: 'ETH', label: 'Ethereum (ETH)' },
-    { value: 'XRP', label: 'XRP (XRP)' },
 ];
 
 export default function CryptoEvolution() {
     const [selectedCrypto, setSelectedCrypto] = useState('BTC');
+    const [cryptoData, setCryptoData] = useState([]);
 
-    // Extraire les données pour le graphique en fonction de la cryptomonnaie sélectionnée
-    const data = cryptoData[selectedCrypto];
+    useEffect(() => {
+        const loadData = async () => {
+            const data = await fetchCryptoData();
+            setCryptoData(data.data.evolution.cryptoPrix);
+        };
+        loadData();
+    }, []);
+
+    const dataForSelectedCrypto = cryptoData.find(item => item.crypto.label === selectedCrypto);
+
+    if (!dataForSelectedCrypto) return <div>Loading...</div>;
 
     const chartData = {
-        labels: data.map((entry) => entry.date),  // Dates
+        labels: dataForSelectedCrypto.details.map((entry) => new Date(entry.date).toLocaleDateString()),  // Dates formatées
         datasets: [
             {
                 label: `${selectedCrypto} Price (MGA)`,
-                data: data.map((entry) => entry.price),
+                data: dataForSelectedCrypto.details.map((entry) => entry.prix),
                 borderColor: '#4CAF50',
                 backgroundColor: 'rgba(76, 175, 80, 0.2)',
                 tension: 0.3,
@@ -86,7 +98,7 @@ export default function CryptoEvolution() {
                     <Select
                         options={options}
                         onChange={handleChange}
-                        defaultValue={options[0]}
+                        defaultValue={options.find(opt => opt.value === selectedCrypto)}
                         className="w-60"
                     />
                 </div>
