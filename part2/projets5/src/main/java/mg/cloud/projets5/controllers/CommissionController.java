@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mg.cloud.projets5.dto.DataTransfertObject;
 import mg.cloud.projets5.services.TypeCommissionService;
 
 @RestController
@@ -16,14 +17,17 @@ public class CommissionController {
     TypeCommissionService typeCommissionService;
 
        @PostMapping("/insert")
-    public void insert(
+    public DataTransfertObject insert(
         @RequestParam(required = true) Integer typeCommissionId,
         @RequestParam(required = true) Double pourcentage
     ) {
+        DataTransfertObject dto = new DataTransfertObject();
         try {
             typeCommissionService.update(typeCommissionId,pourcentage);
+            dto.success(null,"Insertion reussie");
         } catch (Exception e) {
-           
+           dto.serverError(e, "Erreur d'insertion");
         }
+        return dto;
     }
 }
