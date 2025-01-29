@@ -1,14 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart } from 'lucide-react';
+import ErrorMessage from '../fulloffice/error/ErrorMessage';
 
-const cryptoData = [
-    { name: 'Bitcoin', min: 30000, max: 50000, firstQuartile: 35000, average: 40000, stdDev: 5000 },
-    { name: 'Ethereum', min: 1000, max: 3000, firstQuartile: 1500, average: 2000, stdDev: 300 },
-    { name: 'Ripple', min: 0.2, max: 2, firstQuartile: 0.5, average: 1, stdDev: 0.5 },
-    { name: 'Litecoin', min: 50, max: 500, firstQuartile: 100, average: 200, stdDev: 50 },
-];
+const fetchCryptoData = async () => {
+    const isError = false;
+    if (isError) {
+        throw new Error('Une erreur est survenue lors de la récupération des données');
+    }
+
+    return {
+        status: "success",
+        code: 200,
+        data: {
+            analyse: {
+                analyseCryptos: [
+                    {
+                        crypto: { id: 1, label: "BTC" },
+                        min: 100000,
+                        max: 2000000,
+                        moyenne: 500000,
+                        firstQuartile: 500000,
+                        ecartType: 600000
+                    },
+                    {
+                        crypto: { id: 2, label: "ETH" },
+                        min: 50000,
+                        max: 2500000,
+                        moyenne: 1000000,
+                        firstQuartile: 500000,
+                        ecartType: 600000
+                    }
+                ]
+            }
+        },
+        error: null,
+        message: null
+    };
+};
 
 export default function CryptoAnalysis() {
+    const [cryptoData, setCryptoData] = useState([]);
+    const [error, setError] = useState(null);
+    const [stackTrace, setStackTrace] = useState(null);
+
     const [selectedCryptos, setSelectedCryptos] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [maxDate, setMaxDate] = useState('');
@@ -22,10 +56,25 @@ export default function CryptoAnalysis() {
         }
     }, [selectedCryptos]);
 
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const data = await fetchCryptoData();
+                setCryptoData(data.data.analyse.analyseCryptos);
+                setError(null);
+                setStackTrace(null);
+            } catch (err) {
+                setError(err.message);
+                setStackTrace(err.stack);
+            }
+        };
+        loadData();
+    }, []);
+
     const handleCheckboxChange = (cryptoName) => {
         setSelectedCryptos((prevSelected) =>
             prevSelected.includes(cryptoName)
-                ? prevSelected.filter((name) => name !== cryptoName)
+                ? prevSelected.filter((label) => label !== cryptoName)
                 : [...prevSelected, cryptoName]
         );
     };
@@ -34,13 +83,27 @@ export default function CryptoAnalysis() {
         if (selectAll) {
             setSelectedCryptos([]); // Deselect all
         } else {
-            setSelectedCryptos(cryptoData.map(crypto => crypto.name)); // Select all
+            setSelectedCryptos(cryptoData.map(crypto => crypto.label)); // Select all
         }
     };
 
     const handleDateChange = (e) => {
         setMaxDate(e.target.value);
         setMinDate(e.target.value);
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-900 p-6">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center mb-8">
+                        <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
+                        <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>
+                    </div>
+                    <ErrorMessage message={error} stackTrace={stackTrace} />
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -88,16 +151,16 @@ export default function CryptoAnalysis() {
                                 </label>
                             </div>
                             {cryptoData.map((crypto) => (
-                                <div key={crypto.name} className="flex items-center">
+                                <div key={crypto.crypto.id} className="flex items-center">
                                     <input
                                         type="checkbox"
-                                        id={crypto.name}
-                                        checked={selectedCryptos.includes(crypto.name)}
-                                        onChange={() => handleCheckboxChange(crypto.name)}
+                                        id={crypto.crypto.label}
+                                        checked={selectedCryptos.includes(crypto.crypto.label)}
+                                        onChange={() => handleCheckboxChange(crypto.crypto.label)}
                                         className="form-checkbox h-5 w-5 text-yellow-500"
                                     />
-                                    <label htmlFor={crypto.name} className="ml-2 text-white">
-                                        {crypto.name}
+                                    <label htmlFor={crypto.crypto.label} className="ml-2 text-white">
+                                        {crypto.crypto.label}
                                     </label>
                                 </div>
                             ))}
@@ -119,15 +182,15 @@ export default function CryptoAnalysis() {
                             </thead>
                             <tbody>
                                 {cryptoData
-                                    .filter((crypto) => selectedCryptos.includes(crypto.name))
+                                    .filter((crypto) => selectedCryptos.includes(crypto.crypto.label))
                                     .map((crypto) => (
-                                        <tr key={crypto.name}>
-                                            <td className="px-4 py-2">{crypto.name}</td>
+                                        <tr key={crypto.crypto.id}>
+                                            <td className="px-4 py-2">{crypto.crypto.label}</td>
                                             <td className="px-4 py-2">{crypto.min}</td>
                                             <td className="px-4 py-2">{crypto.max}</td>
                                             <td className="px-4 py-2">{crypto.firstQuartile}</td>
-                                            <td className="px-4 py-2">{crypto.average}</td>
-                                            <td className="px-4 py-2">{crypto.stdDev}</td>
+                                            <td className="px-4 py-2">{crypto.moyenne}</td>
+                                            <td className="px-4 py-2">{crypto.ecartType}</td>
                                         </tr>
                                     ))}
                             </tbody>

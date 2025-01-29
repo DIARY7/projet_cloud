@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, PlusCircle, MinusCircle, CreditCard } from 'lucide-react';
+import { PlusCircle, MinusCircle, CreditCard } from 'lucide-react';
 
 export default function FundsWallet() {
   return (
