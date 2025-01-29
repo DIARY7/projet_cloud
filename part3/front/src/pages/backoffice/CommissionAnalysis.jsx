@@ -11,6 +11,8 @@ const commissionData = [
 export default function CommissionAnalysis() {
     const [selectedCryptos, setSelectedCryptos] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [maxDate, setMaxDate] = useState('');
+    const [minDate, setMinDate] = useState('');
 
     useEffect(() => {
         if (selectedCryptos.length === commissionData.length) {
@@ -36,17 +38,42 @@ export default function CommissionAnalysis() {
         }
     };
 
+    const handleDateChange = (e) => {
+        setMaxDate(e.target.value);
+        setMinDate(e.target.value);
+    }
+
     return (
         <div className="min-h-screen bg-gray-900 p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center mb-8">
                     <Wallet className="h-8 w-8 text-yellow-500 mr-3" />
-                    <h1 className="text-3xl font-bold text-white">Analyse des Commissions Reçues par Cryptomonnaie</h1>
+                    <h1 className="text-3xl font-bold text-white">Analyse des Commissions</h1>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 mb-8">
                     <div className="bg-gray-800 rounded-lg p-6">
                         <h2 className="text-xl font-bold text-white mb-4">Filtres des Cryptomonnaies</h2>
+                        <div className="flex flex-wrap gap-2 items-center mb-4">
+                            <div className="me-2 flex flex-wrap gap-2 items-center"> 
+                                <label className="text-white">Date Minimum:</label>
+                                <input
+                                    type="datetime-local"
+                                    value={maxDate}
+                                    onChange={handleDateChange}
+                                    className="px-4 py-2 rounded-lg text-black"
+                                />
+                            </div>
+                            <div className="me-2 flex flex-wrap gap-2 items-center"> 
+                                <label className="text-white">Date Maximum:</label>
+                                <input
+                                    type="datetime-local"
+                                    value={minDate}
+                                    onChange={handleDateChange}
+                                    className="px-4 py-2 rounded-lg text-black"
+                                />
+                            </div>
+                        </div>
                         <div className="space-y-4">
                             <div className="flex items-center">
                                 <input

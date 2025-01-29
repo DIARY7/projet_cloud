@@ -1,7 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { DollarSign, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 export default function TransactionsList() {
+  const [maxDate, setMaxDate] = useState('');
+
+  const userTotals = [
+    {
+      user: 'user@example.com',
+      totalAchat: 10000,
+      totalVente: 20000
+    },
+    {
+      user: 'trader@example.com',
+      totalAchat: 5000,
+      totalVente: 15000
+    },
+    {
+      user: 'user2@example.com',
+      totalAchat: 0,
+      totalVente: 0
+    }
+  ];
+
   const transactions = [
     {
       id: 1,
@@ -23,25 +43,9 @@ export default function TransactionsList() {
     },
   ];
 
-  const userTotals = transactions.reduce((acc, transaction) => {
-    const { user, entree, sortie, valeur } = transaction;
-
-    if (!acc[user]) {
-      acc[user] = { totalAchat: 0, totalVente: 0 , totalValue: 0};
-    }
-
-    if (entree > 0) {
-      acc[user].totalAchat += entree * valeur;
-    }
-
-    if (sortie > 0) {
-      acc[user].totalVente += sortie * valeur;
-    }
-
-    acc[user].totalValue += entree * valeur - sortie * valeur;
-
-    return acc;
-  }, {});
+  const handleDateChange = (e) => {
+    setMaxDate(e.target.value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 p-6">
@@ -49,6 +53,16 @@ export default function TransactionsList() {
         <div className="flex items-center mb-8">
           <DollarSign className="h-8 w-8 text-yellow-500 mr-3" />
           <h1 className="text-3xl font-bold text-white">Les Transactions de Cryptomonnaies</h1>
+        </div>
+
+        <div className="mb-4 ms-1">
+          <label className="text-white mr-2">Filtrer par date maximale:</label>
+          <input
+            type="datetime-local"
+            value={maxDate}
+            onChange={handleDateChange}
+            className="px-4 py-2 rounded-lg text-black"
+          />
         </div>
 
         <div className="bg-gray-800 rounded-lg shadow mb-8 overflow-x-auto">
@@ -62,12 +76,12 @@ export default function TransactionsList() {
               </tr>
             </thead>
             <tbody className="bg-gray-800 divide-y divide-gray-700">
-              {Object.keys(userTotals).map((user) => (
-                <tr key={user}>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">{user}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">{userTotals[user].totalAchat} MGA</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">{userTotals[user].totalVente} MGA</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">{userTotals[user].totalValue} MGA</td>
+              {userTotals.map((user) => (
+                <tr key={user.user}>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">{user.user}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalVente}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat - user.totalVente}</td>
                 </tr>
               ))}
             </tbody>
@@ -83,7 +97,7 @@ export default function TransactionsList() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Entree</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sortie</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cryptomonnaie</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Valeur (en MGA)</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Valeur (MGA)</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
               </tr>
             </thead>
@@ -115,7 +129,7 @@ export default function TransactionsList() {
                     {transaction.crypto}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.valeur} MGA
+                    {transaction.valeur}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {transaction.date}
