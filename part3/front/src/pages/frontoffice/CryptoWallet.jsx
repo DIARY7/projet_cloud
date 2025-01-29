@@ -6,8 +6,8 @@ export default function CryptoWallet() {
   const [amountToSell, setAmountToSell] = useState('');
 
   const cryptos = [
-    { id: 'btc', name: 'Bitcoin', symbol: 'BTC', amount: '0.5', value: '20000' },
-    { id: 'eth', name: 'Ethereum', symbol: 'ETH', amount: '10', value: '15000' },
+    { id: 1, label: 'BTC', qte: '0.5', prix: '20000' },
+    { id: 2, label: 'ETH', qte: '10', prix: '15000' },
   ];
 
   const handleBuySubmit = (cryptoId) => {
@@ -42,25 +42,25 @@ export default function CryptoWallet() {
               <div key={crypto.id} className="bg-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-medium text-white">{crypto.name}</h3>
+                    <h3 className="text-lg font-medium text-white">{crypto.label}</h3>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-medium text-white">{crypto.amount} {crypto.symbol} = {crypto.value} MGA</p>
+                    <p className="text-lg font-medium text-white">{crypto.qte} {crypto.label} = {crypto.prix} MGA</p>
                   </div>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-4">
                   <div className="w-full sm:w-[48%]">
-                    <h3 className="text-sm text-gray-400 mb-2">Acheter {crypto.name}</h3>
+                    <h3 className="text-sm text-gray-400 mb-2">Acheter {crypto.label}</h3>
                     <input
                       type="number"
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                       placeholder="Montant"
-                      value={amountToBuy}
-                      onChange={(e) => setAmountToBuy(e.target.value)}
+                      prix={amountToBuy}
+                      onChange={(e) => setAmountToBuy(e.target.prix)}
                     />
                     <button
-                      onClick={() => handleBuySubmit(crypto.name)}
+                      onClick={() => handleBuySubmit(crypto.label)}
                       className="w-full mt-2 flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400"
                     >
                       <ArrowDownLeft className="h-4 w-4 mr-2" />
@@ -69,16 +69,16 @@ export default function CryptoWallet() {
                   </div>
 
                   <div className="w-full sm:w-[48%]">
-                    <h3 className="text-sm text-gray-400 mb-2">Vendre {crypto.name}</h3>
+                    <h3 className="text-sm text-gray-400 mb-2">Vendre {crypto.label}</h3>
                     <input
                       type="number"
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                       placeholder="Montant"
-                      value={amountToSell}
-                      onChange={(e) => setAmountToSell(e.target.value)}
+                      prix={amountToSell}
+                      onChange={(e) => setAmountToSell(e.target.prix)}
                     />
                     <button
-                      onClick={() => handleSellSubmit(crypto.name)}
+                      onClick={() => handleSellSubmit(crypto.label)}
                       className="w-full mt-2 flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
                     >
                       <ArrowUpRight className="h-4 w-4 mr-2" />
