@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, X } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
+import ErrorMessage from '../fulloffice/error/ErrorMessage';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const fetchCryptoData = async () => {
+    const isError = false;
+    if (isError) {
+        throw new Error('Une erreur est survenue lors de la récupération des données');
+    }
+
     return {
         status: "success",
         code: 200,
@@ -29,7 +35,9 @@ const fetchCryptoData = async () => {
                     }
                 ]
             }
-        }
+        },
+        error: null,
+        message: null
     };
 };
 
@@ -41,21 +49,44 @@ const options = [
 export default function CryptoEvolution() {
     const [selectedCrypto, setSelectedCrypto] = useState('BTC');
     const [cryptoData, setCryptoData] = useState([]);
+    const [error, setError] = useState(null);
+    const [stackTrace, setStackTrace] = useState(null);
 
     useEffect(() => {
         const loadData = async () => {
-            const data = await fetchCryptoData();
-            setCryptoData(data.data.evolution.cryptoPrix);
+            try {
+                const data = await fetchCryptoData();
+                setCryptoData(data.data.evolution.cryptoPrix);
+                setError(null);
+                setStackTrace(null);
+            } catch (err) {
+                setError(err.message);
+                setStackTrace(err.stack);
+            }
         };
         loadData();
     }, []);
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-900 p-6">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center mb-8">
+                        <TrendingUp className="h-8 w-8 text-yellow-500 mr-3" />
+                        <h1 className="text-3xl font-bold text-white">Évolution des Cryptomonnaies</h1>
+                    </div>
+                    <ErrorMessage message={error} stackTrace={stackTrace} />
+                </div>
+            </div>
+        );
+    }
 
     const dataForSelectedCrypto = cryptoData.find(item => item.crypto.label === selectedCrypto);
 
     if (!dataForSelectedCrypto) return <div>Loading...</div>;
 
     const chartData = {
-        labels: dataForSelectedCrypto.details.map((entry) => new Date(entry.date).toLocaleDateString()),  // Dates formatées
+        labels: dataForSelectedCrypto.details.map((entry) => new Date(entry.date).toLocaleDateString()),
         datasets: [
             {
                 label: `${selectedCrypto} Price (MGA)`,
