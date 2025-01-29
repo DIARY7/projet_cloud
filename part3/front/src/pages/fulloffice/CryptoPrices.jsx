@@ -1,4 +1,5 @@
 import React from 'react';
+import { Monitor } from 'lucide-react';
 
 export default function CryptoPrices() {
     const cryptoData = [
@@ -12,7 +13,8 @@ export default function CryptoPrices() {
     return (
         <div className="min-h-screen bg-gray-900 p-6">
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center mb-8">
+                    <Monitor className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Cours des Cryptomonnaies</h1>
                 </div>
 

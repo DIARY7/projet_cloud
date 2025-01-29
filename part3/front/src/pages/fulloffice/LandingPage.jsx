@@ -54,6 +54,21 @@ export default function LandingPage() {
             <p className="text-gray-400">Optimisez vos profits avec nos outils d'analyse et de trading.</p>
           </div>
         </div>
+
+        <section className="mt-20 text-center">
+          <h2 className="text-2xl font-bold text-white mb-6">Suivi des Cryptomonnaies</h2>
+          <div className="flex justify-center space-x-8">
+            <Link to="/cryptos/evolution" className="inline-flex items-center bg-yellow-500 px-6 py-3 rounded-lg text-gray-900 hover:bg-yellow-400">
+              Voir l'évolution des cryptos
+            </Link>
+            <Link to="/cryptos/prices" className="inline-flex items-center bg-yellow-500 px-6 py-3 rounded-lg text-gray-900 hover:bg-yellow-400">
+              Voir le cours actuel
+            </Link>
+            <Link to="/cryptos/analysis" className="inline-flex items-center bg-yellow-500 px-6 py-3 rounded-lg text-gray-900 hover:bg-yellow-400">
+              Accéder à l'analyse
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

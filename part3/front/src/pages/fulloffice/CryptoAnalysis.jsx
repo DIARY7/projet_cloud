@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wallet } from 'lucide-react';
+import { BarChart } from 'lucide-react';
 
 const cryptoData = [
     { name: 'Bitcoin', min: 30000, max: 50000, firstQuartile: 35000, average: 40000, stdDev: 5000 },
@@ -47,7 +47,7 @@ export default function CryptoAnalysis() {
         <div className="min-h-screen bg-gray-900 p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center mb-8">
-                    <Wallet className="h-8 w-8 text-yellow-500 mr-3" />
+                    <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>
                 </div>
 

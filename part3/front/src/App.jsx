@@ -8,6 +8,7 @@ import Register from './pages/fulloffice/Register';
 import PinConfirmation from './pages/fulloffice/PinConfirmation';
 import CryptoPrices from './pages/fulloffice/CryptoPrices';
 import CryptoAnalysis from './pages/fulloffice/CryptoAnalysis';
+import CryptoEvolution from './pages/fulloffice/CryptoEvolution';
 
 import Page404 from './pages/fulloffice/error/Page404';
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/pin/confirm" element={<PinConfirmation />} />
         <Route path="/cryptos/prices" element={<CryptoPrices />} />
         <Route path="/cryptos/analysis" element={<CryptoAnalysis />} />
+        <Route path="/cryptos/evolution" element={<CryptoEvolution />} />
 
         {/* Backoffice Routes */}
         <Route path="/transactions" element={<TransactionsList />} />
