@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { TrendingUp, X } from 'lucide-react';
+import { LineChart, X } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
@@ -72,7 +72,7 @@ export default function CryptoEvolution() {
             <div className="min-h-screen bg-gray-900 p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center mb-8">
-                        <TrendingUp className="h-8 w-8 text-yellow-500 mr-3" />
+                        <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
                         <h1 className="text-3xl font-bold text-white">Évolution des Cryptomonnaies</h1>
                     </div>
                     <ErrorMessage message={error} stackTrace={stackTrace} />
@@ -121,7 +121,7 @@ export default function CryptoEvolution() {
         <div className="min-h-screen bg-gray-900 p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center mb-8">
-                    <TrendingUp className="h-8 w-8 text-yellow-500 mr-3" />
+                    <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Évolution des Cryptomonnaies</h1>
                 </div>
 

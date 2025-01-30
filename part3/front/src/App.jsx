@@ -14,6 +14,7 @@ import Page404 from './pages/fulloffice/error/Page404';
 
 // BackOffice
 import TransactionsList from './pages/backoffice/TransactionsList';
+import TransactionResume from './pages/backoffice/TransactionResume';
 import EditCommission from './pages/backoffice/EditCommission';
 import CommissionAnalysis from './pages/backoffice/CommissionAnalysis';
 
@@ -36,6 +37,7 @@ function App() {
 
         {/* Backoffice Routes */}
         <Route path="/transactions" element={<TransactionsList />} />
+        <Route path="/transactions/resume" element={<TransactionResume />} />
         <Route path="/commissions/edit" element={<EditCommission />} />
         <Route path="/commissions/analysis" element={<CommissionAnalysis />} />
 

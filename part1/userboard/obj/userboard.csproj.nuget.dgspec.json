@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/app1/userboard/userboard.csproj": {}
+    "C:\\Users\\Amboara\\OneDrive\\Documents\\Projet\\Web\\Cloud\\projet_cloud\\part1\\userboard\\userboard.csproj": {}
   },
   "projects": {
-    "/app1/userboard/userboard.csproj": {
+    "C:\\Users\\Amboara\\OneDrive\\Documents\\Projet\\Web\\Cloud\\projet_cloud\\part1\\userboard\\userboard.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app1/userboard/userboard.csproj",
+        "projectUniqueName": "C:\\Users\\Amboara\\OneDrive\\Documents\\Projet\\Web\\Cloud\\projet_cloud\\part1\\userboard\\userboard.csproj",
         "projectName": "userboard",
-        "projectPath": "/app1/userboard/userboard.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app1/userboard/obj/",
+        "projectPath": "C:\\Users\\Amboara\\OneDrive\\Documents\\Projet\\Web\\Cloud\\projet_cloud\\part1\\userboard\\userboard.csproj",
+        "packagesPath": "C:\\Users\\Amboara\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Amboara\\OneDrive\\Documents\\Projet\\Web\\Cloud\\projet_cloud\\part1\\userboard\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Amboara\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -32,7 +32,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net7.0": {
@@ -68,6 +74,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -76,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.410/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
