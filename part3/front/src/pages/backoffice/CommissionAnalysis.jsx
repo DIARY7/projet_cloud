@@ -38,10 +38,13 @@ export default function CommissionAnalysis() {
         }
     };
 
-    const handleDateChange = (e) => {
+    const handleMaxDateChange = (e) => {
         setMaxDate(e.target.value);
+    };
+
+    const handleMinDateChange = (e) => {
         setMinDate(e.target.value);
-    }
+    };
 
     return (
         <div className="min-h-screen bg-gray-900 p-6">
@@ -59,8 +62,8 @@ export default function CommissionAnalysis() {
                                 <label className="text-white">Date Minimum:</label>
                                 <input
                                     type="datetime-local"
-                                    value={maxDate}
-                                    onChange={handleDateChange}
+                                    value={minDate}
+                                    onChange={handleMinDateChange}
                                     className="px-4 py-2 rounded-lg text-black"
                                 />
                             </div>
@@ -68,8 +71,8 @@ export default function CommissionAnalysis() {
                                 <label className="text-white">Date Maximum:</label>
                                 <input
                                     type="datetime-local"
-                                    value={minDate}
-                                    onChange={handleDateChange}
+                                    value={maxDate}
+                                    onChange={handleMaxDateChange}
                                     className="px-4 py-2 rounded-lg text-black"
                                 />
                             </div>

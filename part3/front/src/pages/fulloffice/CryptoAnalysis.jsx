@@ -49,14 +49,6 @@ export default function CryptoAnalysis() {
     const [minDate, setMinDate] = useState('');
 
     useEffect(() => {
-        if (selectedCryptos.length === cryptoData.length) {
-            setSelectAll(true);
-        } else {
-            setSelectAll(false);
-        }
-    }, [selectedCryptos]);
-
-    useEffect(() => {
         const loadData = async () => {
             try {
                 const data = await fetchCryptoData();
@@ -71,6 +63,14 @@ export default function CryptoAnalysis() {
         loadData();
     }, []);
 
+    useEffect(() => {
+        if (selectedCryptos.length === cryptoData.length) {
+            setSelectAll(true);
+        } else {
+            setSelectAll(false);
+        }
+    }, [selectedCryptos, cryptoData.length]);
+
     const handleCheckboxChange = (cryptoName) => {
         setSelectedCryptos((prevSelected) =>
             prevSelected.includes(cryptoName)
@@ -83,12 +83,15 @@ export default function CryptoAnalysis() {
         if (selectAll) {
             setSelectedCryptos([]); // Deselect all
         } else {
-            setSelectedCryptos(cryptoData.map(crypto => crypto.label)); // Select all
+            setSelectedCryptos(cryptoData.map(crypto => crypto.crypto.label)); // Select all
         }
     };
 
-    const handleDateChange = (e) => {
+    const handleMaxDateChange = (e) => {
         setMaxDate(e.target.value);
+    }
+
+    const handleMinDateChange = (e) => {
         setMinDate(e.target.value);
     }
 
@@ -122,8 +125,8 @@ export default function CryptoAnalysis() {
                                 <label className="text-white">Date Minimum:</label>
                                 <input
                                     type="datetime-local"
-                                    value={maxDate}
-                                    onChange={handleDateChange}
+                                    value={minDate}
+                                    onChange={handleMinDateChange}
                                     className="px-4 py-2 rounded-lg text-black"
                                 />
                             </div>
@@ -131,8 +134,8 @@ export default function CryptoAnalysis() {
                                 <label className="text-white">Date Maximum:</label>
                                 <input
                                     type="datetime-local"
-                                    value={minDate}
-                                    onChange={handleDateChange}
+                                    value={maxDate}
+                                    onChange={handleMaxDateChange}
                                     className="px-4 py-2 rounded-lg text-black"
                                 />
                             </div>
