@@ -7,17 +7,17 @@ export default function TransactionsResume() {
 
     const userTotals = [
         {
-            user: 'user@example.com',
+            user: { id: 1, fullname: 'Rakoto Bema', email: 'bema@example.com' },
             totalAchat: 10000,
             totalVente: 20000
         },
         {
-            user: 'trader@example.com',
+            user: { id: 2, fullname: 'Rasoa Lala', email: 'lala@example.com' },
             totalAchat: 5000,
             totalVente: 15000
         },
         {
-            user: 'user2@example.com',
+            user: { id: 3, fullname: 'Rabema Koto', email: 'koto@example.com' },
             totalAchat: 0,
             totalVente: 0
         }
@@ -59,8 +59,19 @@ export default function TransactionsResume() {
                         </thead>
                         <tbody className="bg-gray-800 divide-y divide-gray-700">
                             {userTotals.map((user) => (
-                                <tr key={user.user}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-yellow-500"><Link to="/transactions">{user.user}</Link></td>
+                                <tr key={user.user.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-yellow-500">
+                                        <Link to="/transactions">
+                                            <div className="flex items-center">
+                                                <img
+                                                    src={`https://robohash.org/${user.user.id}?set=set1`}
+                                                    alt={user.user.id}
+                                                    className="h-8 w-8 rounded-full mr-2"
+                                                />
+                                                <span>{user.user.email}</span>
+                                            </div>
+                                        </Link>
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalVente}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat - user.totalVente}</td>

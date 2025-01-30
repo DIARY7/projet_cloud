@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRightLeft, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 export default function TransactionsList() {
@@ -7,7 +8,7 @@ export default function TransactionsList() {
   const transactions = [
     {
       id: 1,
-      user: 'user@example.com',
+      user: {id:1, fullname: 'user', email: 'user@example.com'},
       crypto: 'BTC',
       entree: 0.5,
       sortie: 0,
@@ -16,7 +17,7 @@ export default function TransactionsList() {
     },
     {
       id: 2,
-      user: 'trader@example.com',
+      user: {id:2, fullname: 'trader', email: 'trader@example.com'},
       crypto: 'ETH',
       entree: 0,
       sortie: 10,
@@ -75,8 +76,17 @@ export default function TransactionsList() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.user}
+                  <td className="px-6 py-4 whitespace-nowrap text-yellow-500">
+                    <Link to ="/transactions">
+                      <div className="flex items-center">
+                        <img
+                          src={`https://robohash.org/${transaction.user.id}?set=set1`} 
+                          alt={transaction.user.id}
+                          className="h-8 w-8 rounded-full mr-2"
+                        />
+                        <span>{transaction.user.email}</span>
+                      </div>
+                    </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {transaction.entree}
