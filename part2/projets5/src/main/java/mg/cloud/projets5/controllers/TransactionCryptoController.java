@@ -26,9 +26,9 @@ public class TransactionCryptoController {
      @Autowired
     CryptoService cryptoService;
     
-
+    //Liste operations 
      @GetMapping("/List")
-    public DataTransfertObject getMessage(
+    public DataTransfertObject getList(
         @RequestParam(required = false) Integer cryptoId,
         @RequestParam(required = false) Integer userId,
         @RequestParam(required = false) LocalDate dateDebut,
@@ -40,6 +40,21 @@ public class TransactionCryptoController {
             map.put("listTransactionCrypto", transactionCryptoService.filterByUserIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
             map.put("listCrypto",cryptoService.findAll() );
             map.put("listUser", usersService.findAll());
+            dto.success(map,null);
+            
+        return dto;
+    }
+
+
+    // Liste Total achat , total vente (Prix et Quantite) ,Fond actuel
+     @GetMapping("/ListResume")
+    public DataTransfertObject getEtat(
+        @RequestParam(required = false) LocalDate dateFin
+    ) {
+        DataTransfertObject dto = new DataTransfertObject();
+
+        HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+            map.put("listEtat", transactionCryptoService.filterAchatVenteFond(dateFin));
             dto.success(map,null);
             
         return dto;

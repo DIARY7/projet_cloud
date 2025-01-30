@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
+import mg.cloud.projets5.dto.AchatVenteFond;
 import mg.cloud.projets5.entity.TransactionCrypto;
 
 @Service
@@ -29,5 +30,15 @@ public class TransactionCryptoService {
         .filter(t -> (dateFinTime == null || !t.getDtTransaction().isAfter(dateFinTime)))
         .collect(Collectors.toList());
        
+    }
+    public List<AchatVenteFond> filterAchatVenteFond(LocalDate date_fin){
+        LocalDateTime dateFinTime = null;
+        if (date_fin == null) {
+            dateFinTime = LocalDateTime.now();   
+        }else{
+            dateFinTime = date_fin.atTime(23, 59, 59);
+        }
+        return transactionCryptoRepo.findFilterEtat(dateFinTime);
+        
     }
 }
