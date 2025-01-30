@@ -4,12 +4,14 @@ import { ArrowRightLeft, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 export default function TransactionsList() {
   const [maxDate, setMaxDate] = useState('');
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedCrypto, setSelectedCrypto] = useState('');
 
   const transactions = [
     {
       id: 1,
       user: {id:1, fullname: 'user', email: 'user@example.com'},
-      crypto: 'BTC',
+      crypto: { id: 1, label: 'BTC' },
       entree: 0.5,
       sortie: 0,
       valeur: 20000,
@@ -18,7 +20,7 @@ export default function TransactionsList() {
     {
       id: 2,
       user: {id:2, fullname: 'trader', email: 'trader@example.com'},
-      crypto: 'ETH',
+      crypto: { id: 2, label: 'ETH' },
       entree: 0,
       sortie: 10,
       valeur: 15000,
@@ -26,8 +28,27 @@ export default function TransactionsList() {
     },
   ];
 
+  const cryptos = [
+    { id: 1, label: 'BTC' },
+    { id: 2, label: 'ETH' },
+  ];
+
+  const users = [
+    { id: 1, fullname: 'Rakoto Bema', email: 'bema@example.com' },
+    {id: 2, fullname: 'Rasoa Lala', email: 'lala@example.com'},
+    { id: 3, fullname: 'Rabema Koto', email: 'koto@example.com' },
+  ];
+
   const handleDateChange = (e) => {
     setMaxDate(e.target.value);
+  };
+
+  const handleUserChange = (e) => {
+    setSelectedUser(e.target.value);
+  };
+
+  const handleCryptoChange = (e) => {
+    setSelectedCrypto(e.target.value);
   };
 
   return (
@@ -36,6 +57,37 @@ export default function TransactionsList() {
         <div className="flex items-center mb-8">
           <ArrowRightLeft className="h-8 w-8 text-yellow-500 mr-3" />
           <h1 className="text-3xl font-bold text-white">Historique des Transactions</h1>
+        </div>
+
+        <div className="mb-4 ms-1">
+          <label className="text-white mr-2">Filtrer par utilisateur:</label>
+          <select
+            value={selectedUser}
+            onChange={handleUserChange}
+            className="px-4 py-2 rounded-lg text-black mr-4"
+          >
+            <option value="">Tous les utilisateurs</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.fullname}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className='mb-4 ms-1'>
+          <label className="text-white mr-2">Filtrer par crypto:</label>
+          <select
+            value={selectedCrypto}
+            onChange={handleCryptoChange}
+            className="px-4 py-2 rounded-lg text-black"
+          >
+            <option value="">Toutes les cryptos</option>
+            {cryptos.map((crypto) => (
+              <option key={crypto.id} value={crypto.id}>
+                {crypto.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-4 ms-1">
@@ -95,7 +147,7 @@ export default function TransactionsList() {
                     {transaction.sortie}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.crypto}
+                    {transaction.crypto.label}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {transaction.valeur}
