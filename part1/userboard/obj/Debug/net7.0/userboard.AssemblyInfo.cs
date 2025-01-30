@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("userboard")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+221ca72d3280abb2506e94efa6e1f15b132e9290")]
 [assembly: System.Reflection.AssemblyProductAttribute("userboard")]
 [assembly: System.Reflection.AssemblyTitleAttribute("userboard")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

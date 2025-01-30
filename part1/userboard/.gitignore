@@ -1,0 +1,10 @@
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.cache
+*.csproj.user
+*.pidb
+*.svclog
+*.userprefs
