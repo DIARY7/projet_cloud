@@ -416,6 +416,14 @@ BEGIN
     END LOOP;
 END $$;
 
+/* Vue */
+CREATE VIEW vue_fond_actuel AS
+SELECT 
+    user_id, 
+    COALESCE(SUM(entree), 0) - COALESCE(SUM(sortie), 0) AS solde_actuel
+FROM transaction_fond
+GROUP BY user_id;
+
 
 
 
