@@ -3,40 +3,20 @@ import { BarChart } from 'lucide-react';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
 
 const fetchCryptoData = async () => {
-    const isError = false;
-    if (isError) {
-        throw new Error('Une erreur est survenue lors de la récupération des données');
-    }
+    try {
 
-    return {
-        status: "success",
-        code: 200,
-        data: {
-            analyse: {
-                analyseCryptos: [
-                    {
-                        crypto: { id: 1, label: "BTC" },
-                        min: 100000,
-                        max: 2000000,
-                        moyenne: 500000,
-                        firstQuartile: 500000,
-                        ecartType: 600000
-                    },
-                    {
-                        crypto: { id: 2, label: "ETH" },
-                        min: 50000,
-                        max: 2500000,
-                        moyenne: 1000000,
-                        firstQuartile: 500000,
-                        ecartType: 600000
-                    }
-                ]
-            }
-        },
-        error: null,
-        message: null
-    };
-};
+        // fetch mandefa anle date
+      const response = await fetch("http://localhost:8080/crypto/analyse");
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des données");
+      }
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Erreur: ", error);
+      return null;
+    }
+  };
 
 export default function CryptoAnalysis() {
     const [cryptoData, setCryptoData] = useState([]);

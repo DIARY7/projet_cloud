@@ -54,6 +54,19 @@ CREATE TABLE type_commission(
    PRIMARY KEY(id)
 );
 
+
+CREATE TABLE transaction_crypto_attente(
+   id BIGSERIAL,
+   pu_crypto NUMERIC(15,2)  ,
+   prix NUMERIC(15,2),
+   qte NUMERIC(15,2),
+   dt_transaction TIMESTAMP NOT NULL,
+   type_commission_id INTEGER NOT NULL,
+   crypto_id INTEGER NOT NULL,
+   user_id INTEGER NOT NULL,
+)
+
+
 CREATE TABLE transaction_crypto(
    id SERIAL ,
    pu_crypto NUMERIC(15,2)  ,
@@ -77,7 +90,6 @@ CREATE TABLE commission(
    PRIMARY KEY(id),
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
-
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
@@ -393,7 +405,7 @@ BEGIN
             END IF;
 
             -- Insérer une transaction crypto et récupérer son ID
-            INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
             VALUES (pu, prix, qte, transaction_date, type_commission_id, crypto_id, usr.id)
             RETURNING id INTO transaction_id;
 
