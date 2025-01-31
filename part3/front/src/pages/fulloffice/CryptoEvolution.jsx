@@ -8,37 +8,16 @@ import ErrorMessage from '../fulloffice/error/ErrorMessage';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const fetchCryptoData = async () => {
-    const isError = false;
-    if (isError) {
+    try {
+        const response = await fetch("http://localhost:8080/crypto/evolution");
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des données");
+        }
+        const result = await response.json();
+        return result;
+    } catch (error) {
         throw new Error('Une erreur est survenue lors de la récupération des données');
     }
-
-    return {
-        status: "success",
-        code: 200,
-        data: {
-            evolution: {
-                cryptoPrix: [
-                    {
-                        crypto: { id: 1, label: "BTC" },
-                        details: [
-                            { prix: 50000, date: "2025-01-28T09:00:00" },
-                            { prix: 61000, date: "2025-01-29T09:00:00" }
-                        ]
-                    },
-                    {
-                        crypto: { id: 2, label: "ETH" },
-                        details: [
-                            { prix: 1000, date: "2025-01-28T09:00:00" },
-                            { prix: 2100, date: "2025-01-29T09:00:00" }
-                        ]
-                    }
-                ]
-            }
-        },
-        error: null,
-        message: null
-    };
 };
 
 const options = [
