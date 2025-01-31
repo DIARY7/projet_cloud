@@ -11,6 +11,7 @@ import CryptoAnalysis from './pages/fulloffice/CryptoAnalysis';
 import CryptoEvolution from './pages/fulloffice/CryptoEvolution';
 
 import Page404 from './pages/fulloffice/error/Page404';
+import Unauthorized from './pages/fulloffice/error/Unauthorized';
 
 // BackOffice
 import TransactionsList from './pages/backoffice/TransactionsList';
@@ -50,6 +51,7 @@ function App() {
         {/* Fallback route */}
         {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
         <Route path="*" element={<Page404 />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </BrowserRouter>
   );
