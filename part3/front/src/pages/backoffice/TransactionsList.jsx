@@ -35,7 +35,7 @@ export default function TransactionsList() {
 
   const users = [
     { id: 1, fullname: 'Rakoto Bema', email: 'bema@example.com' },
-    {id: 2, fullname: 'Rasoa Lala', email: 'lala@example.com'},
+    { id: 2, fullname: 'Rasoa Lala', email: 'lala@example.com' },
     { id: 3, fullname: 'Rabema Koto', email: 'koto@example.com' },
   ];
 
