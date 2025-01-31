@@ -3,8 +3,14 @@ import { BarChart } from 'lucide-react';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
 
 const fetchCryptoData = async () => {
-    const isError = false;
-    if (isError) {
+    try {
+        const response = await fetch("http://localhost:8080/crypto/analyse");
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des données");
+        }
+        const result = await response.json();
+        return result;
+    } catch (error) {
         throw new Error('Une erreur est survenue lors de la récupération des données');
     }
 
