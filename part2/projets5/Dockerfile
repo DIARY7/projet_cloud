@@ -1,23 +1,22 @@
-# Étape 1 : Utilisation de Maven pour construire le projet
+# Étape 1 : Construction avec Maven
 FROM maven:3.8.5-openjdk-17 AS build
 
-# Définit le répertoire de travail
 WORKDIR /app2
 
-# Copie les fichiers du projet dans le conteneur
-COPY . .
+# Monte seulement les fichiers nécessaires pour télécharger les dépendances
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
 
-# Exécute la commande Maven pour construire le JAR
+# Copie tout le projet après les dépendances
+COPY . . 
 RUN mvn clean package -DskipTests
 
-# Étape 2 : Utilisation d'une image légère pour exécuter l'application
+# Étape 2 : Image légère pour exécution
 FROM openjdk:17-jdk-slim
 
-# Copie le fichier JAR depuis l'étape précédente
-COPY --from=build /app2/target/projets5-0.0.1-SNAPSHOT.jar /app2/app.jar
+WORKDIR /app2
 
-# Expose le port 8080
+COPY --from=build /app2/target/projets5-0.0.1-SNAPSHOT.jar app.jar
+
 EXPOSE 8080
-
-# Commande pour exécuter l'application Spring Boot
-ENTRYPOINT ["java", "-jar", "/app2/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
