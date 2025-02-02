@@ -12,11 +12,11 @@ export default function PinConfirmation() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (pin.length === 4) {
+        if (pin.length === 6) {
             console.log('PIN correct, validation réussie !');
             setError('');
         } else {
-            setError('Le PIN doit comporter exactement 4 chiffres.');
+            setError('Le PIN doit comporter exactement 6 chiffres.');
         }
     };
 
@@ -38,9 +38,9 @@ export default function PinConfirmation() {
                             <input
                                 type="password"
                                 required
-                                maxLength="4"
+                                maxLength="6"
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white bg-gray-800 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 focus:z-10 sm:text-sm"
-                                placeholder="PIN à 4 chiffres"
+                                placeholder="PIN à 6 chiffres"
                                 value={pin}
                                 onChange={handlePinChange}
                             />
