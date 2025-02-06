@@ -7,8 +7,35 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const dto = {
+      FullName : fullname,
+      Email : email,
+      Password : password
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dto),
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        console.log(result.datas);
+        navigate('/pin/confirm', { state: { email, origin: 'register' } }); // Redirection vers PinConfirmation
+      } else {
+        console.error('Erreur:', result.error);
+      }
+    } catch (error) {
+      console.error('Erreur de requête :', error);
+    }
   };
 
   return (

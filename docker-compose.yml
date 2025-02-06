@@ -8,11 +8,12 @@ services:
       - "5001:7010" # Port HTTPS si nécessaire
     volumes:
       - ./part1:/app1 # Monte le dossier app local dans le conteneur
-    working_dir: /app1
+    working_dir: /app1/userboard
     stdin_open: true
     tty: true # Permet de garder le conteneur interactif pour les commandes
     depends_on:
       - db
+    command: ["dotnet", "run", "--urls", "http://0.0.0.0:5015"] # Commande pour démarrer l'application automatiquement
     deploy:
       resources:
         limits:

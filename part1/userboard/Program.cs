@@ -1,13 +1,11 @@
-using Microsoft.OpenApi.Models; // Pour Swagger
-using Microsoft.EntityFrameworkCore; // Pour Entity Framework Core
-using userboard.Data; // Pour votre DbContext
+using Microsoft.OpenApi.Models; 
+using Microsoft.EntityFrameworkCore; 
+using userboard.Data; 
 using userboard.Utils;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // Ajouter les services pour les contrôleurs et les vues
 builder.Services.AddControllersWithViews();
@@ -31,6 +29,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<MultiAuthCache>();
 builder.Services.AddMemoryCache();
 
+// Ajouter la configuration CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 // Spécifier l'URL du serveur
 builder.WebHost.UseUrls("http://0.0.0.0:5015");
@@ -57,6 +65,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AllowAll"); // Appliquer la politique CORS
 
 app.UseAuthorization();
 

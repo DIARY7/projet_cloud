@@ -1,9 +1,9 @@
 package mg.cloud.projets5.controllers;
 
-import java.lang.annotation.Documented;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mg.cloud.projets5.dto.DataTransfertObject;
 import mg.cloud.projets5.dto.analyseCrypto.AnalyseCryptoDTO;
+import mg.cloud.projets5.dto.crypto.CryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.EvolutionCryptoDTO;
 import mg.cloud.projets5.services.CryptoService;
 
@@ -33,7 +34,7 @@ public class CryptoController {
                 try {
                     AnalyseCryptoDTO cryptoDTO = cryptoService.analyseCryptoDTO(start, end);
                     map.put("analyse", cryptoDTO);
-                    dto.success(cryptoDTO,null);
+                    dto.success(map,null);
                 } catch (Exception e) {
                     dto.serverError(null,e.getMessage());
                 }
@@ -46,10 +47,26 @@ public class CryptoController {
         Map<String, Object> map = new HashMap<>();
         try {
             EvolutionCryptoDTO evolutionCryptoDTO = cryptoService.getEvolutionCrypto();
+            List<CryptoDTO> crypto = cryptoService.findAllDTO();
             map.put("evolution", evolutionCryptoDTO);
-            dto.success(evolutionCryptoDTO, null);
+            map.put("cryptos",crypto);
+            dto.success(map, null);
         } catch (Exception e) {
             dto.serverError(null,e.getMessage());
+        }
+        return dto;
+    }
+
+    @GetMapping("/cours")
+    public DataTransfertObject getCours(){
+        DataTransfertObject dto = new DataTransfertObject();
+        HashMap<String,Object> map = new HashMap<>();
+        try{
+            map.put("cours", cryptoService.getCoursCrypto());
+            dto.success(map, null);
+        }
+        catch(Exception e){
+            dto.error(null, e.getMessage());
         }
         return dto;
     }

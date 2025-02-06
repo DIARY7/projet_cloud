@@ -24,7 +24,8 @@ CREATE TABLE tokens(
 
 CREATE TABLE crypto(
    id SERIAL,
-   label VARCHAR(50) ,
+   label VARCHAR(50),
+   full_label VARCHAR(50),
    PRIMARY KEY(id)
 );
 
@@ -104,16 +105,16 @@ VALUES
     ('User 9', 'feurofaseipu-7684@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
 
-INSERT INTO Crypto (label) VALUES ('BTC');
-INSERT INTO Crypto (label) VALUES ('ETH');
-INSERT INTO Crypto (label) VALUES ('LTC');
-INSERT INTO Crypto (label) VALUES ('XRP');
-INSERT INTO Crypto (label) VALUES ('BCH');
-INSERT INTO Crypto (label) VALUES ('EOS');
-INSERT INTO Crypto (label) VALUES ('ADA');
-INSERT INTO Crypto (label) VALUES ('XLM');
-INSERT INTO Crypto (label) VALUES ('TRX');
-INSERT INTO Crypto (label) VALUES ('NEO');
+INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
+INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
+INSERT INTO Crypto (label, full_label) VALUES ('LTC', 'Litecoin');
+INSERT INTO Crypto (label, full_label) VALUES ('XRP', 'Ripple');
+INSERT INTO Crypto (label, full_label) VALUES ('BCH', 'Bitcoin Cash');
+INSERT INTO Crypto (label, full_label) VALUES ('EOS', 'EOS');
+INSERT INTO Crypto (label, full_label) VALUES ('ADA', 'Cardano');
+INSERT INTO Crypto (label, full_label) VALUES ('XLM', 'Stellar');
+INSERT INTO Crypto (label, full_label) VALUES ('TRX', 'TRON');
+INSERT INTO Crypto (label, full_label) VALUES ('NEO', 'NEO');
 
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 480000000.00, 1),

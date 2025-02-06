@@ -21,4 +21,7 @@ public class Crypto {
 
     @Column
     String label;
+
+    @Column
+    String fullLabel;
 }
