@@ -6,12 +6,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mg.cloud.projets5.dto.DataTransfertObject;
+import mg.cloud.projets5.entity.Users;
 import mg.cloud.projets5.services.CryptoService;
+import mg.cloud.projets5.services.TokensService;
 import mg.cloud.projets5.services.TransactionCryptoService;
 import mg.cloud.projets5.services.UsersService;
 
@@ -25,6 +28,9 @@ public class TransactionCryptoController {
     UsersService usersService;
      @Autowired
     CryptoService cryptoService;
+
+    @Autowired
+    TokensService tokenService;
     
     //Liste operations 
      @GetMapping("/List")
@@ -59,4 +65,23 @@ public class TransactionCryptoController {
             
         return dto;
     }
+
+    @GetMapping("/porteFeuille")
+    public DataTransfertObject getPorteFeuille(@RequestHeader("Authorization") String authorizationHeader) {
+        DataTransfertObject dto = new DataTransfertObject();
+        try {
+            Users user = tokenService.getUserByToken(authorizationHeader);            
+            HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+            map.put("data", transactionCryptoService.getWalletCrypto(user.getId()));
+            dto.success(map, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            dto.error(e.getMessage(), null);
+        }
+        
+        return dto;
+    }
+
+
+    
 }
