@@ -71,7 +71,7 @@ export default function CryptoAnalysis() {
         return (
             <div className="min-h-screen bg-gray-900">
                 <Navbar/>
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-7xl mx-auto p-6">
                     <div className="flex items-center justify-center mb-8">
                         <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
                         <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>

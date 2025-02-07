@@ -106,7 +106,7 @@ export default function CryptoWallet() {
   const [amountToBuy, setAmountToBuy] = useState('');
   const [amountToSell, setAmountToSell] = useState('');
   const [cryptoDatas, setCryptoDatas] = useState([]);
-  const [totalBalance, setTotalBalance] = useState(''); // for total balance
+  const [totalBalance, setTotalBalance] = useState('0'); // for total balance
   useEffect(() => {
     // Récupération du token
     const token = getToken();
@@ -144,7 +144,7 @@ export default function CryptoWallet() {
   return (
     <div className="min-h-screen bg-gray-900">
       <Navbar />
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center">
             <Wallet className="h-8 w-8 text-yellow-500 mr-3" />
