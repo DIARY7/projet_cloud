@@ -7,6 +7,7 @@ import ErrorMessage from '../fulloffice/error/ErrorMessage';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+
 const fetchCryptoData = async () => {
     try {
         const response = await fetch("http://localhost:8080/crypto/evolution");
@@ -14,20 +15,18 @@ const fetchCryptoData = async () => {
             throw new Error("Erreur lors de la récupération des données");
         }
         const result = await response.json();
+        console.log(result.data);
         return result;
     } catch (error) {
         throw new Error('Une erreur est survenue lors de la récupération des données');
     }
 };
 
-const options = [
-    { value: 'BTC', label: 'Bitcoin (BTC)' },
-    { value: 'ETH', label: 'Ethereum (ETH)' },
-];
 
 export default function CryptoEvolution() {
     const [selectedCrypto, setSelectedCrypto] = useState('BTC');
     const [cryptoData, setCryptoData] = useState([]);
+    const [options, setOptions] = useState([]);
     const [error, setError] = useState(null);
     const [stackTrace, setStackTrace] = useState(null);
 
@@ -36,6 +35,7 @@ export default function CryptoEvolution() {
             try {
                 const data = await fetchCryptoData();
                 setCryptoData(data.data.evolution.cryptoPrix);
+                setOptions(data.data.cryptos);
                 setError(null);
                 setStackTrace(null);
             } catch (err) {
@@ -65,7 +65,9 @@ export default function CryptoEvolution() {
     if (!dataForSelectedCrypto) return <div>Loading...</div>;
 
     const chartData = {
-        labels: dataForSelectedCrypto.details.map((entry) => new Date(entry.date).toLocaleDateString()),
+        labels: dataForSelectedCrypto.details.map((entry) =>
+            new Date(entry.date).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit', year: 'numeric', month: 'numeric', day: 'numeric' })
+        ),
         datasets: [
             {
                 label: `${selectedCrypto} Price (MGA)`,
@@ -77,7 +79,7 @@ export default function CryptoEvolution() {
             },
         ],
     };
-
+    
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,

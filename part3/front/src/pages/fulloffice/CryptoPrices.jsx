@@ -24,7 +24,7 @@ export default function CryptoPrices() {
         const loadData = async () => {
             try {
                 const data = await fetchCryptoPrices();
-                setCryptoData(data.data.cours);
+                setCryptoData(data.data.cours.cryptoPrix);
                 setError(null);
                 setStackTrace(null);
             } catch (err) {

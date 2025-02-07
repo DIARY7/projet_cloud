@@ -1,14 +1,43 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Coins, UserPlus } from 'lucide-react';
 
 export default function Register() {
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const dto = {
+      FullName : fullname,
+      Email : email,
+      Password : password
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/Users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dto),
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        console.log(result.datas);
+        navigate('/pin/confirm', { state: { email, origin: 'register' } }); // Redirection vers PinConfirmation
+      } else {
+        console.error('Erreur:', result.error);
+      }
+    } catch (error) {
+      console.error('Erreur de requête :', error);
+    }
   };
 
   return (

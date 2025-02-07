@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import mg.cloud.projets5.dto.analyseCrypto.AnalyseCrypto;
 import mg.cloud.projets5.dto.analyseCrypto.AnalyseCryptoDTO;
 import mg.cloud.projets5.dto.coursCrypto.CoursCryptoDTO;
+import mg.cloud.projets5.dto.crypto.CryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.EvolutionCryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.ListCryptoPrix;
 import mg.cloud.projets5.dto.evolutionCrypto.PrixDate;
@@ -85,6 +86,10 @@ public class CryptoService {
     public double getCryptoCurrentPrice(Integer cryptoId){
         double currentPrice = 0;
         return currentPrice;
+    }
+
+    public List<CryptoDTO> findAllDTO(){
+        return cryptoRepo.findCryptoDTO();
     }
 
     public List<Crypto> findAll(){

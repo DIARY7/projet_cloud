@@ -9,45 +9,17 @@ const fetchCryptoData = async () => {
             throw new Error("Erreur lors de la récupération des données");
         }
         const result = await response.json();
-        return result;
+        return result?.data?.analyse?.analyseCryptos || [];
     } catch (error) {
-        throw new Error('Une erreur est survenue lors de la récupération des données');
+        console.error("Erreur: ", error);
+        throw error;
     }
-
-    return {
-        status: "success",
-        code: 200,
-        data: {
-            analyse: {
-                analyseCryptos: [
-                    {
-                        crypto: { id: 1, label: "BTC" },
-                        min: 100000,
-                        max: 2000000,
-                        moyenne: 500000,
-                        firstQuartile: 500000,
-                        ecartType: 600000
-                    },
-                    {
-                        crypto: { id: 2, label: "ETH" },
-                        min: 50000,
-                        max: 2500000,
-                        moyenne: 1000000,
-                        firstQuartile: 500000,
-                        ecartType: 600000
-                    }
-                ]
-            }
-        },
-        error: null,
-        message: null
-    };
 };
 
 export default function CryptoAnalysis() {
     const [cryptoData, setCryptoData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [stackTrace, setStackTrace] = useState(null);
 
     const [selectedCryptos, setSelectedCryptos] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -56,25 +28,22 @@ export default function CryptoAnalysis() {
 
     useEffect(() => {
         const loadData = async () => {
+            setLoading(true);
             try {
                 const data = await fetchCryptoData();
-                setCryptoData(data.data.analyse.analyseCryptos);
+                setCryptoData(data);
                 setError(null);
-                setStackTrace(null);
             } catch (err) {
                 setError(err.message);
-                setStackTrace(err.stack);
+            } finally {
+                setLoading(false);
             }
         };
         loadData();
     }, []);
 
     useEffect(() => {
-        if (selectedCryptos.length === cryptoData.length) {
-            setSelectAll(true);
-        } else {
-            setSelectAll(false);
-        }
+        setSelectAll(selectedCryptos.length === cryptoData.length);
     }, [selectedCryptos, cryptoData.length]);
 
     const handleCheckboxChange = (cryptoName) => {
@@ -86,19 +55,15 @@ export default function CryptoAnalysis() {
     };
 
     const handleSelectAllChange = () => {
-        if (selectAll) {
-            setSelectedCryptos([]); // Deselect all
-        } else {
-            setSelectedCryptos(cryptoData.map(crypto => crypto.crypto.label)); // Select all
-        }
+        setSelectedCryptos(selectAll ? [] : cryptoData.map((crypto) => crypto.crypto.label));
     };
 
-    const handleMaxDateChange = (e) => {
-        setMaxDate(e.target.value);
-    }
+    const handleDateChange = (setter) => (e) => {
+        setter(e.target.value);
+    };
 
-    const handleMinDateChange = (e) => {
-        setMinDate(e.target.value);
+    if (loading) {
+        return <div className="text-white text-center mt-10">Chargement des données...</div>;
     }
 
     if (error) {
@@ -109,7 +74,7 @@ export default function CryptoAnalysis() {
                         <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
                         <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>
                     </div>
-                    <ErrorMessage message={error} stackTrace={stackTrace} />
+                    <ErrorMessage message={error} />
                 </div>
             </div>
         );
@@ -126,25 +91,21 @@ export default function CryptoAnalysis() {
                 <div className="grid grid-cols-1 gap-6 mb-8">
                     <div className="bg-gray-800 rounded-lg p-6">
                         <h2 className="text-xl font-bold text-white mb-4">Filtres de Cryptomonnaies</h2>
-                        <div className="flex flex-wrap gap-2 items-center mb-4">
-                            <div className="me-2 flex flex-wrap gap-2 items-center">
-                                <label className="text-white">Date Minimum:</label>
-                                <input
-                                    type="datetime-local"
-                                    value={minDate}
-                                    onChange={handleMinDateChange}
-                                    className="px-4 py-2 rounded-lg text-black"
-                                />
-                            </div>
-                            <div className="me-2 flex flex-wrap gap-2 items-center">
-                                <label className="text-white">Date Maximum:</label>
-                                <input
-                                    type="datetime-local"
-                                    value={maxDate}
-                                    onChange={handleMaxDateChange}
-                                    className="px-4 py-2 rounded-lg text-black"
-                                />
-                            </div>
+                        <div className="flex flex-wrap gap-4 items-center mb-4">
+                            <label className="text-white">Date Minimum:</label>
+                            <input
+                                type="datetime-local"
+                                value={minDate}
+                                onChange={handleDateChange(setMinDate)}
+                                className="px-4 py-2 rounded-lg text-black"
+                            />
+                            <label className="text-white">Date Maximum:</label>
+                            <input
+                                type="datetime-local"
+                                value={maxDate}
+                                onChange={handleDateChange(setMaxDate)}
+                                className="px-4 py-2 rounded-lg text-black"
+                            />
                         </div>
                         <div className="space-y-4">
                             <div className="flex items-center">

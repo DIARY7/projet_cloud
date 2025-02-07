@@ -24,7 +24,8 @@ CREATE TABLE tokens(
 
 CREATE TABLE crypto(
    id SERIAL,
-   label VARCHAR(50) ,
+   label VARCHAR(50),
+   full_label VARCHAR(50),
    PRIMARY KEY(id)
 );
 
@@ -54,6 +55,19 @@ CREATE TABLE type_commission(
    PRIMARY KEY(id)
 );
 
+
+CREATE TABLE transaction_crypto_attente(
+   id BIGSERIAL,
+   pu_crypto NUMERIC(15,2)  ,
+   prix NUMERIC(15,2),
+   qte NUMERIC(15,2),
+   dt_transaction TIMESTAMP NOT NULL,
+   type_commission_id INTEGER NOT NULL,
+   crypto_id INTEGER NOT NULL,
+   user_id INTEGER NOT NULL,
+)
+
+
 CREATE TABLE transaction_crypto(
    id SERIAL ,
    pu_crypto NUMERIC(15,2)  ,
@@ -78,7 +92,6 @@ CREATE TABLE commission(
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
 
-
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
     ('User 1', 'liffeuquogulou-6839@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
@@ -92,16 +105,16 @@ VALUES
     ('User 9', 'feurofaseipu-7684@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
 
-INSERT INTO Crypto (label) VALUES ('BTC');
-INSERT INTO Crypto (label) VALUES ('ETH');
-INSERT INTO Crypto (label) VALUES ('LTC');
-INSERT INTO Crypto (label) VALUES ('XRP');
-INSERT INTO Crypto (label) VALUES ('BCH');
-INSERT INTO Crypto (label) VALUES ('EOS');
-INSERT INTO Crypto (label) VALUES ('ADA');
-INSERT INTO Crypto (label) VALUES ('XLM');
-INSERT INTO Crypto (label) VALUES ('TRX');
-INSERT INTO Crypto (label) VALUES ('NEO');
+INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
+INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
+INSERT INTO Crypto (label, full_label) VALUES ('LTC', 'Litecoin');
+INSERT INTO Crypto (label, full_label) VALUES ('XRP', 'Ripple');
+INSERT INTO Crypto (label, full_label) VALUES ('BCH', 'Bitcoin Cash');
+INSERT INTO Crypto (label, full_label) VALUES ('EOS', 'EOS');
+INSERT INTO Crypto (label, full_label) VALUES ('ADA', 'Cardano');
+INSERT INTO Crypto (label, full_label) VALUES ('XLM', 'Stellar');
+INSERT INTO Crypto (label, full_label) VALUES ('TRX', 'TRON');
+INSERT INTO Crypto (label, full_label) VALUES ('NEO', 'NEO');
 
 INSERT INTO prix_crypto (daty, prix, crypto_id) VALUES
 ('2025-01-28 09:00:00', 480000000.00, 1),
@@ -414,8 +427,8 @@ BEGIN
             END IF;
 
             -- Insérer une transaction crypto et récupérer son ID
-            INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
-            VALUES (pu, prix, qte_al, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
+INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+            VALUES (pu, prix, qte, transaction_date, type_commission_id, crypto_id, usr.id)
             RETURNING id INTO transaction_id;
 
             -- Insérer la transaction de fonds correspondante
