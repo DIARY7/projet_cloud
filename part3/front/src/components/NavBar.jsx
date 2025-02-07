@@ -16,10 +16,12 @@ const Navbar = () => {
     return (
         <nav className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                    <Bitcoin className="h-8 w-8 text-yellow-500" />
-                    <span className="ml-2 text-xl font-bold text-white">CryptoTrade</span>
-                </div>
+                <Link to='/'>
+                    <div className="flex items-center">
+                        <Bitcoin className="h-8 w-8 text-yellow-500" />
+                        <span className="ml-2 text-xl font-bold text-white">CryptoTrade</span>
+                    </div>
+                </Link>
                 <div className="flex items-center space-x-4">
                     {!isAuth ? (
                         // Si non authentifié
