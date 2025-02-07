@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Lock, Unlock } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, Unlock, Loader2 } from 'lucide-react';
 import { saveAuthData } from '../../utils/auth';
 
 export default function PinConfirmation() {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const email = location.state?.email || 'Email inconnu';
   const origin = location.state.origin;
+  const navigate = useNavigate();
 
   const handlePinChange = (e) => {
     setPin(e.target.value);
@@ -17,8 +19,9 @@ export default function PinConfirmation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (pin.length !== 6) {
-      setError('Le PIN doit comporter exactement 4 chiffres.');
+      setError('Le PIN doit comporter exactement 6 chiffres.');
       return;
     }
 
@@ -27,43 +30,44 @@ export default function PinConfirmation() {
       pin,
     };
 
-    console.log(payload);
+    setLoading(true); // Démarre le chargement
+    setError('');
+    setSuccessMessage('');
 
     try {
-        var response;
-        if(origin === 'login'){
-            response = await fetch('http://localhost:5000/confirm', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            }); 
-        }
-        if(origin === 'register'){
-            response = await fetch('http://localhost:5000/confirmLogin', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            }); 
-        }
-      
+      let response;
+      if (origin === 'register') {
+        response = await fetch('http://localhost:5000/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else if (origin === 'login') {
+        response = await fetch('http://localhost:5000/confirmLogin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
       const result = await response.json();
+      setLoading(false); // Arrête le chargement
 
       if (result.status === 'success') {
         setSuccessMessage(result.datas.message);
-        setError('');
-        console.log('Token reçu :', result.datas.token);
-        saveAuthData(result.datas.token,false)
+        saveAuthData()
+        if (origin === 'login') {
+            saveAuthData(result.datas.token, false);
+        }
+        if (origin === 'register') {
+          navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
+        }
       } else {
         setError(result.error || 'Erreur de confirmation.');
-        setSuccessMessage('');
       }
     } catch (err) {
+      setLoading(false);
       setError('Erreur lors de la requête.');
-      setSuccessMessage('');
     }
   };
 
@@ -100,11 +104,18 @@ export default function PinConfirmation() {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              disabled={loading}
             >
-              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                <Unlock className="h-5 w-5 text-gray-900" />
-              </span>
-              Confirmer
+              {loading ? (
+                <Loader2 className="animate-spin h-5 w-5 text-gray-900" />
+              ) : (
+                <>
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <Unlock className="h-5 w-5 text-gray-900" />
+                  </span>
+                  Confirmer
+                </>
+              )}
             </button>
           </div>
 

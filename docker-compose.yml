@@ -14,11 +14,7 @@ services:
     depends_on:
       - db
     command: ["dotnet", "run", "--urls", "http://0.0.0.0:5015"] # Commande pour démarrer l'application automatiquement
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50' # Limite l'utilisation du CPU à 50%
-          memory: 512M # Limite l'utilisation de la mémoire à 512MB
+    
   spring-app:
     image: openjdk:17-jdk-slim
     container_name: spring_app
