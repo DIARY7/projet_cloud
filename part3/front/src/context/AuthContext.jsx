@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getToken, getIsAdmin, saveAuthData, removeAuthData, isAuthenticated } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -20,12 +21,15 @@ export const AuthProvider = ({ children }) => {
         saveAuthData(newToken, newIsAdmin);
         setToken(newToken);
         setIsAdmin(newIsAdmin);
+        window.location.reload();
     };
 
     const logout = () => {
         removeAuthData();
         setToken(null);
         setIsAdmin(false);
+        useNavigate('/');
+        window.location.reload();
     };
 
     const value = {

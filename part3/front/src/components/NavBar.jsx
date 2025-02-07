@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bitcoin } from 'lucide-react';
-import { isAuthenticated, getIsAdmin } from '../utils/auth';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-    const isAuth = isAuthenticated();
-    const isAdmin = getIsAdmin();
+    const { token, isAdmin, logout } = useAuth();
+
+    const isAuth = token != null;
 
     const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
     const [isCommissionsOpen, setIsCommissionsOpen] = useState(false);
@@ -75,6 +76,12 @@ const Navbar = () => {
                                     </div>
                                 )}
                             </div>
+                            <button
+                                onClick={logout} // Appeler la fonction de déconnexion
+                                className="text-white hover:text-yellow-500"
+                            >
+                                Déconnexion
+                            </button>
                         </>
                     ) : (
                         // Si authentifié mais non admin
@@ -108,6 +115,12 @@ const Navbar = () => {
                                     </div>
                                 )}
                             </div>
+                            <button
+                                onClick={logout} // Appeler la fonction de déconnexion
+                                className="text-white hover:text-yellow-500"
+                            >
+                                Déconnexion
+                            </button>
                         </>
                     )}
                 </div>
