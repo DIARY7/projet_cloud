@@ -41,8 +41,8 @@ public class TransactionCryptoService {
         .filter(t -> (dateDebutTime == null || !t.getDtTransaction().isBefore(dateDebutTime)))
         .filter(t -> (dateFinTime == null || !t.getDtTransaction().isAfter(dateFinTime)))
         .collect(Collectors.toList());
-       
     }
+
     public List<AchatVenteFond> filterAchatVenteFond(LocalDate date_fin){
         LocalDateTime dateFinTime = null;
         if (date_fin == null) {

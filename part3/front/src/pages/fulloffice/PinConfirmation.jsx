@@ -30,7 +30,7 @@ export default function PinConfirmation() {
       pin,
     };
 
-    setLoading(true);
+    setLoading(true); // Démarre le chargement
     setError('');
     setSuccessMessage('');
 

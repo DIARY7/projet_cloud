@@ -272,7 +272,7 @@ namespace userboard.Controllers
             Token tokenObj = new Token();
             tokenObj.Value = tokenValue;
             tokenObj.CreatedAt = DateTime.Now;
-            tokenObj.ExpiresAt =  DateTime.Now.AddSeconds(pinSent.ExpiresTokenSeconds);
+            tokenObj.ExpiresAt =  DateTime.Now.AddSeconds(3600);
             tokenObj.User = userMarina;
 
             _context.Tokens.Add(tokenObj);

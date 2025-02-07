@@ -1,3 +1,4 @@
+src/main/java/resources/firebase-key.json
 # Ignore les fichiers de compilation et de build
 target/
 *.jar
@@ -23,4 +24,3 @@ logs/
 # Fichiers système
 .DS_Store
 Thumbs.db
-src/main/java/resources/firebase-key.json
