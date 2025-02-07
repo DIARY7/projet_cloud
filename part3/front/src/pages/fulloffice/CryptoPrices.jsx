@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Monitor } from 'lucide-react';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
 import Navbar from '../../components/NavBar';
-import Navbar from '../../components/NavBar';
 
 const fetchCryptoPrices = async () => {
     try {
