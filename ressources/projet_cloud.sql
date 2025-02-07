@@ -457,5 +457,44 @@ SELECT
 FROM transaction_fond
 GROUP BY user_id;
 
+-- test 20 transactions pour les 3 derniers jours
+DO $$ 
+DECLARE 
+    usr RECORD;
+    crypto_id_al INT;
+    i INT;
+    transaction_date TIMESTAMP;
+    pu NUMERIC(15,2);
+    qte NUMERIC(15,2);
+    prix NUMERIC(15,2);
+    type_commission_id_al INT;
+    transaction_id INT;
+BEGIN
+    -- Boucle pour insérer 20 transactions
+    FOR i IN 1..20 LOOP
+        -- Sélectionner un utilisateur au hasard
+        SELECT id INTO usr FROM users ORDER BY RANDOM() LIMIT 1;
+
+        -- Sélectionner une crypto au hasard parmi les ID 1 à 10
+        SELECT id INTO crypto_id_al FROM crypto WHERE id BETWEEN 1 AND 10 ORDER BY RANDOM() LIMIT 1;
+
+        -- Générer une date de transaction aléatoire dans les 3 derniers jours
+        transaction_date := NOW() - INTERVAL '3 days' + INTERVAL '1 day' * FLOOR(RANDOM() * 3) 
+                            + INTERVAL '1 hour' * FLOOR(RANDOM() * 24);
+
+        -- Générer un prix unitaire et une quantité aléatoires
+        pu := ROUND((RANDOM() * 50000 + 100)::numeric, 2); -- Prix entre 100 et 50,000
+        qte := ROUND((RANDOM() * 5 + 0.1)::numeric, 2);    -- Quantité entre 0.1 et 5
+        prix := ROUND((pu * qte)::numeric, 2);             -- Prix total
+
+        -- Déterminer aléatoirement si c'est un achat (2) ou une vente (1)
+        type_commission_id_al := CASE WHEN RANDOM() > 0.5 THEN 1 ELSE 2 END;
+
+        -- Insérer la transaction crypto
+        INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+        VALUES (pu, prix, qte, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
+        RETURNING id INTO transaction_id;
+    END LOOP;
+END $$;
 
 
