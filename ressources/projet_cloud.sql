@@ -1,6 +1,6 @@
-CREATE TABLE synchro_date{
-    dt_sync TIMESTAMP;
-}
+CREATE TABLE synchro_date(
+    dt_sync TIMESTAMP
+);
 
 CREATE TABLE users(
    id SERIAL,
@@ -42,7 +42,7 @@ CREATE TABLE prix_crypto(
    FOREIGN KEY(crypto_id) REFERENCES crypto(id)
 );
 
-CREATE TABLE transaction_fond_demande{
+CREATE TABLE transaction_fond_demande(
     id VARCHAR , -- default string zay 
     entree NUMERIC(15,2),
     sortie NUMERIC(15,2),
@@ -50,7 +50,7 @@ CREATE TABLE transaction_fond_demande{
     user_id INTEGER NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
-}
+);
 
 CREATE TABLE transaction_fond(
    id SERIAL,
@@ -78,8 +78,8 @@ CREATE TABLE transaction_crypto_attente(
    dt_transaction TIMESTAMP NOT NULL,
    type_commission_id INTEGER NOT NULL,
    crypto_id INTEGER NOT NULL,
-   user_id INTEGER NOT NULL,
-)
+   user_id INTEGER NOT NULL
+);
 
 
 CREATE TABLE transaction_crypto(
@@ -105,6 +105,8 @@ CREATE TABLE commission(
    PRIMARY KEY(id),
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
+
+
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
@@ -442,7 +444,7 @@ BEGIN
 
             -- Insérer une transaction crypto et récupérer son ID
 INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
-            VALUES (pu, prix, qte, transaction_date, type_commission_id, crypto_id, usr.id)
+            VALUES (pu, prix, qte_al, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
             RETURNING id INTO transaction_id;
 
             -- Insérer la transaction de fonds correspondante
@@ -464,12 +466,13 @@ INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commi
     END LOOP;
 END $$;
 
-CREATE VIEW vue_fond_actuel AS
+CREATE VIEW vue_fond_actuel AS (
 SELECT 
     user_id, 
     COALESCE(SUM(entree), 0) - COALESCE(SUM(sortie), 0) AS solde_actuel
 FROM transaction_fond
-GROUP BY user_id;
+GROUP BY user_id);
+
 
 
 

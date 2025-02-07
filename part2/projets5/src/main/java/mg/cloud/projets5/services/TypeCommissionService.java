@@ -8,6 +8,7 @@ import mg.cloud.projets5.repo.TypeCommissionRepo;
 
 @Service
 public class TypeCommissionService {
+    
     @Autowired
     TypeCommissionRepo typeCommissionRepo;
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,6 +82,26 @@ public class TransactionCryptoController {
         
         return dto;
     }
+
+           @PostMapping("/insert")
+    public DataTransfertObject insert(
+        @RequestParam(required = true) Double puCrypto,
+        @RequestParam(required = true) Double qte,
+        @RequestParam(required = true) LocalDate dt,
+        @RequestParam(required = true) Integer typeCommissionId,
+        @RequestParam(required = true) Integer cryptoId,
+        @RequestParam(required = true) Integer userId
+    ) {
+        DataTransfertObject dto = new DataTransfertObject();
+        try {
+            transactionCryptoService.save(puCrypto,qte,dt,typeCommissionId,cryptoId,userId);
+            dto.success(null,"Insertion reussie");
+        } catch (Exception e) {
+           dto.serverError(e, "Erreur d'insertion");
+        }
+        return dto;
+    }
+
 
 
     

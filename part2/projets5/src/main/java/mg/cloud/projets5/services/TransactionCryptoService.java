@@ -25,7 +25,10 @@ public class TransactionCryptoService {
     TransactionCryptoRepo transactionCryptoRepo;
     
     @Autowired
-    FondService transactionFondService;
+    FondService fondService;
+    
+    @Autowired
+    TransactionFondService transactionFondService;
 
     @Autowired
     CryptoService cryptoService;
@@ -54,9 +57,10 @@ public class TransactionCryptoService {
         
     }
 
-    public void save(Double puCrypto,Double qte,LocalDateTime dt,Integer typeCommission , Integer cryptoId, Integer userId){
+    public void save(Double puCrypto,Double qte,LocalDate dt,Integer typeCommission , Integer cryptoId, Integer userId) throws Exception{
+        LocalDateTime date = dt.atTime(23, 59, 59);
         if (qte > 0) {
-            if (transactionFondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
+            if (fondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
             }
                 
@@ -64,14 +68,14 @@ public class TransactionCryptoService {
                 .puCrypto(puCrypto)
                 .prix(puCrypto*qte)
                 .qte(qte)
-                .dtTransaction(dt)
+                .dtTransaction(date)
                 .commission(TypeCommission.builder().id(typeCommission).build())
                 .crypto(Crypto.builder().id(cryptoId).build())
                 .users(Users.builder().id(userId).build())
                 .build();
                 transactionCryptoRepo.save(t);
                 TransactionFond tr = TransactionFond.builder()
-                                    .dtTransaction(dt)
+                                    .dtTransaction(date)
                                     .users(Users.builder().id(userId).build())
                                     .build();
                 if (typeCommission == 1) {
