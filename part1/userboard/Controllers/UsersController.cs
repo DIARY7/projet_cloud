@@ -272,7 +272,7 @@ namespace userboard.Controllers
             Token tokenObj = new Token();
             tokenObj.Value = tokenValue;
             tokenObj.CreatedAt = DateTime.Now;
-            tokenObj.ExpiresAt =  DateTime.Now.AddSeconds(pinSent.ExpiresTokenSeconds);
+            tokenObj.ExpiresAt =  DateTime.Now.AddSeconds(3600);
             tokenObj.User = userMarina;
 
             _context.Tokens.Add(tokenObj);
@@ -283,7 +283,8 @@ namespace userboard.Controllers
                 status = "success",
                 datas = new {
                     message = "2. Connexion réussie",
-                    token = tokenValue
+                    token = tokenValue,
+                    admin = userMarina.isAdmin
                 },
                 error = (object)null
             });

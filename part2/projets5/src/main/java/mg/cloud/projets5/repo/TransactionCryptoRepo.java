@@ -49,8 +49,7 @@ LEFT JOIN (
     GROUP BY user_id
 ) AS f ON u.id = f.user_id
  ORDER BY u.id asc
-
-                              
+       
                         """,nativeQuery = true)
             List<AchatVenteFond> findFilterEtat(
             @Param("endDate") LocalDateTime endDate

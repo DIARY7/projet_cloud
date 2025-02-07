@@ -9,9 +9,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import mg.cloud.projets5.dto.DataTransfertObject;
+import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.entity.Users;
 import mg.cloud.projets5.services.FondService;
 import mg.cloud.projets5.services.TokensService;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @RestController
 public class FondController {
@@ -36,5 +42,14 @@ public class FondController {
         
         return dto;
     }
+
+
+    @PostMapping("/fond")
+    public String postMethodName() {
+        TransactionFondDemande transactionFondDemande = new TransactionFondDemande();
+        return "here";
+    }
+    
+    
 
 }
