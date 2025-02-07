@@ -45,9 +45,9 @@ public class FondController {
 
 
     @PostMapping("/fond")
-    public String postMethodName(@RequestBody String entity) {
+    public String postMethodName() {
         TransactionFondDemande transactionFondDemande = new TransactionFondDemande();
-        return entity;
+        return "here";
     }
     
     

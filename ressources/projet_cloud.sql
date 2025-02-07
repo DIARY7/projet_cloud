@@ -1,6 +1,6 @@
-CREATE TABLE synchro_date{
-    dt_sync TIMESTAMP;
-}
+CREATE TABLE synchro_date(
+    dt_sync TIMESTAMP
+);
 
 CREATE TABLE users(
    id SERIAL,
@@ -10,10 +10,9 @@ CREATE TABLE users(
    n_attempt INTEGER,
    created_at TIMESTAMP NOT NULL,
    updated_at TIMESTAMP,
-   -- role_id INTEGER NOT NULL,
+   is_admin BOOLEAN DEFAULT FALSE,
    PRIMARY KEY(id),
    UNIQUE(email)
-   --FOREIGN KEY(role_id) REFERENCES roles(id)
 );
 
 CREATE TABLE tokens(
@@ -42,10 +41,7 @@ CREATE TABLE prix_crypto(
    FOREIGN KEY(crypto_id) REFERENCES crypto(id)
 );
 
--- Créer une séquence qui démarre à 1
-CREATE SEQUENCE transaction_fond_demande_seq
-START 1
-INCREMENT BY 1;
+
 
 CREATE TABLE transaction_fond_demande (
     id VARCHAR(20) PRIMARY KEY,
@@ -75,18 +71,6 @@ CREATE TABLE type_commission(
 );
 
 
-CREATE TABLE transaction_crypto_attente(
-   id BIGSERIAL,
-   pu_crypto NUMERIC(15,2)  ,
-   prix NUMERIC(15,2),
-   qte NUMERIC(15,2),
-   dt_transaction TIMESTAMP NOT NULL,
-   type_commission_id INTEGER NOT NULL,
-   crypto_id INTEGER NOT NULL,
-   user_id INTEGER NOT NULL,
-)
-
-
 CREATE TABLE transaction_crypto(
    id SERIAL ,
    pu_crypto NUMERIC(15,2)  ,
@@ -111,6 +95,11 @@ CREATE TABLE commission(
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
 
+-- Créer une séquence qui démarre à 1
+CREATE SEQUENCE transaction_fond_demande_seq
+START 1
+INCREMENT BY 1;
+
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
     ('User 1', 'liffeuquogulou-6839@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
@@ -123,6 +112,10 @@ VALUES
     ('User 8', 'lammeinnannecru-7114@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
     ('User 9', 'feurofaseipu-7684@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL),
     ('User 10', 'treuppeyafeso-1576@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL);
+
+INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
+VALUES
+    ('User 10', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
 
 INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
 INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');

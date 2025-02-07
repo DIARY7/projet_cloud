@@ -283,7 +283,8 @@ namespace userboard.Controllers
                 status = "success",
                 datas = new {
                     message = "2. Connexion réussie",
-                    token = tokenValue
+                    token = tokenValue,
+                    admin = userMarina.isAdmin
                 },
                 error = (object)null
             });

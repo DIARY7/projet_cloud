@@ -30,7 +30,6 @@ namespace userboard.Models
         [Column("n_attempt")]
         public int? NAttempt { get; set; }
 
-
         [Required]
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
@@ -38,15 +37,9 @@ namespace userboard.Models
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }
 
-        // Clé étrangère vers le rôle
-        // [Required]
-        // [Column("role_id")]
-        // public int RoleId { get; set; }
+        [Column("is_admin")]
+        public bool isAdmin {get; set;}
 
-        // [ForeignKey("role_id")]
-        // public Role Role { get; set; }
-
-        // Navigation property: un utilisateur peut avoir plusieurs tokens
         public ICollection<Token>? Tokens { get; set; }
     }
 }
