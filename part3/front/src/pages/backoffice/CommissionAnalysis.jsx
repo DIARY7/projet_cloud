@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart } from 'lucide-react';
+import Navbar from '../../components/NavBar';
 
 const commissionData = [
     { name: 'Bitcoin', somme: 1000, moyenne: 200 },
@@ -47,9 +48,10 @@ export default function CommissionAnalysis() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-gray-900">
+            <Navbar />
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center mb-8">
+                <div className="flex items-center justify-center mb-8">
                     <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Analyse des Commissions</h1>
                 </div>

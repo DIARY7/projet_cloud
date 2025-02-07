@@ -1,18 +1,11 @@
 package mg.cloud.projets5.entity;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transaction_fond")
@@ -22,19 +15,28 @@ import lombok.NoArgsConstructor;
 public class TransactionFondDemande {
 
     @Id
-    String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_fond_seq_gen")
+    @SequenceGenerator(name = "transaction_fond_seq_gen", sequenceName = "transaction_fond_seq", allocationSize = 1)
+    @Column(length = 20, unique = true, nullable = false)
+    private String id;
 
     @Column
-    Double entree;
+    private Double entree;
 
     @Column
-    Double sortie;
+    private Double sortie;
 
-    @Column
-    LocalDateTime dtTransaction;
+    @Column(name = "dt_transaction")
+    private LocalDateTime dtTransaction;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    Users users;
+    private Users users;
 
+    @PrePersist
+    public void generateId() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = "TR-" + String.format("%06d", Long.parseLong(id));
+        }
+    }
 }

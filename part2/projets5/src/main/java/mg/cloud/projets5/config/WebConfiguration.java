@@ -10,7 +10,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000") // Front React
+                .allowedOrigins("http://localhost:3000",
+                        "http://localhost:5173") // Front React
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
     

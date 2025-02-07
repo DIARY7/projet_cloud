@@ -1,14 +1,14 @@
 package mg.cloud.projets5.services;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.entity.TransactionFond;
 import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.repo.TransactionFondDemandeRepo;
 import mg.cloud.projets5.repo.TransactionFondRepo;
 
+@Service
 public class TransactionFondService {
     
     @Autowired
@@ -16,7 +16,6 @@ public class TransactionFondService {
 
     @Autowired
     TransactionFondDemandeRepo transactionFondDemandeRepo;
-
 
     public void create(String demandeId){
 

@@ -1,15 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, MinusCircle, CreditCard } from 'lucide-react';
+import Navbar from '../../components/NavBar';
+import { getToken } from '../../utils/auth';
+
+const fetchBalance = async () => {
+  try {
+    const token = getToken();
+    const response = await fetch('http://localhost:8080/fond', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la récupération des données");
+    }
+
+    const result = await response.json();
+    return result?.data?.data || 0;
+  } catch (error) {
+    console.error("Erreur: ", error);
+    throw error;
+  }
+};
+
 
 export default function FundsWallet() {
   const [amountToDeposit, setAmountToDeposit] = useState('');
   const [amountToWithdraw, setAmountToWithdraw] = useState('');
   const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true); // Ajout d'un état pour gérer le chargement
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        setLoading(true);  // Début du chargement
+        const fetchedBalance = await fetchBalance();
+        setBalance(fetchedBalance);
+      } catch (err) {
+        setError("Impossible de charger le solde");  // En cas d'erreur
+      } finally {
+        setLoading(false);  // Fin du chargement
+      }
+    };
+
+    getBalance();  // Appel de la fonction pour récupérer la balance
+  }, []);  // Le tableau vide [] signifie que l'effet s'exécute une seule fois lors du montage du composant
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-gray-900">
+      <Navbar />
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center mb-8">
+        <div className="flex items-center justify-center mb-8">
           <CreditCard className="h-8 w-8 text-yellow-500 mr-3" />
           <h1 className="text-3xl font-bold text-white">Portefeuille de Fonds</h1>
         </div>
@@ -17,7 +62,13 @@ export default function FundsWallet() {
         <div className="grid grid-cols-1 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-gray-400 mb-2">Solde Disponible</h2>
-            <p className="text-3xl font-bold text-white">{balance} MGA</p>
+            {loading ? (
+              <p className="text-3xl font-bold text-white">Chargement...</p>  // Affichage pendant le chargement
+            ) : error ? (
+              <p className="text-3xl font-bold text-red-500">{error}</p>  // Affichage d'erreur
+            ) : (
+              <p className="text-3xl font-bold text-white">{balance} MGA</p>  // Affichage du solde
+            )}
           </div>
         </div>
 
@@ -33,6 +84,8 @@ export default function FundsWallet() {
                   type="number"
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   placeholder="0.00"
+                  value={amountToDeposit}
+                  onChange={(e) => setAmountToDeposit(e.target.value)}
                 />
               </div>
               <button className="flex items-center justify-center w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400">
@@ -53,6 +106,8 @@ export default function FundsWallet() {
                   type="number"
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   placeholder="0.00"
+                  value={amountToWithdraw}
+                  onChange={(e) => setAmountToWithdraw(e.target.value)}
                 />
               </div>
               <button className="flex items-center justify-center w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400">

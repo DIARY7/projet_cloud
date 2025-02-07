@@ -5,7 +5,7 @@ import { Coins, LogIn } from 'lucide-react';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // État de chargement
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   var message = location.state?.message;
@@ -54,7 +54,7 @@ export default function Login() {
         <div className="text-center">
           <Coins className="mx-auto h-12 w-12 text-yellow-500" />
           <h2 className="mt-6 text-3xl font-bold text-white">
-            Connexion à votre compte ({message})
+            Connexion à votre compte {message ? `(${message})` : ''}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
