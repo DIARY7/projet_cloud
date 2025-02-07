@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ArrowRight, TrendingUp, CreditCard, BarChart } from 'lucide-react';
+import Navbar from '../../components/NavBar';
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-      <nav className="container mx-auto px-6 py-4">
+      {/* <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Coins className="h-8 w-8 text-yellow-500" />
@@ -18,7 +19,8 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
-      </nav>
+      </nav> */}
+      <Navbar/>
 
       <main className="container mx-auto px-6 py-16">
         <div className="text-center">
