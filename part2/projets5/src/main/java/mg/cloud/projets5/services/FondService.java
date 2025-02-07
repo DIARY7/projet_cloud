@@ -15,7 +15,7 @@ public class FondService {
     @Autowired
     TransactionFondRepo transFondRepo;
 
-    public double getMontantTotal(Integer idUser) {
+    public Double getMontantTotal(Integer idUser) {
         return transFondRepo.getFondActuel(idUser).orElse(0.0);
     }
 }

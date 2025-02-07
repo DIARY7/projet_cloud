@@ -10,5 +10,5 @@ import mg.cloud.projets5.entity.TransactionFond;
 
 public interface TransactionFondRepo extends JpaRepository<TransactionFond,Integer>{
     @Query(value = "SELECT solde_actuel FROM vue_fond_actuel WHERE user_id = :user_id", nativeQuery = true)
-    Optional<Double> getFondActuel(@Param("user_id") int user_id);
+    Optional<Double> getFondActuel(@Param("user_id") Integer user_id);
 }

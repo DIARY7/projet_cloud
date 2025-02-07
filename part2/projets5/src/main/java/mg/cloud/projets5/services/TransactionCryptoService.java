@@ -75,6 +75,8 @@ public class TransactionCryptoService {
                 .build();
                 transactionCryptoRepo.save(t);
                 TransactionFond tr = TransactionFond.builder()
+                                    .entree(0.0)
+                                    .sortie(0.0)
                                     .dtTransaction(date)
                                     .users(Users.builder().id(userId).build())
                                     .build();
