@@ -5,15 +5,16 @@ import Navbar from '../../components/NavBar';
 
 export default function EditCommission() {
     const [commissionValue, setCommissionValue] = useState('');
+    const [commissionType, setCommissionType] = useState('1'); // Ajout de l'état pour le type de commission
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Commission enregistrée:', commissionValue);
+        console.log('Commission enregistrée:', commissionValue, 'Type:', commissionType);
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 ">
-            <Navbar/>
+        <div className="min-h-screen bg-gray-900">
+            <Navbar />
             <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
                     <div className="text-center">
@@ -34,6 +35,19 @@ export default function EditCommission() {
                                     onChange={(e) => setCommissionValue(e.target.value)}
                                     min="0"
                                 />
+                            </div>
+
+                            <div className="mt-4">
+                                <select
+                                    id="commissionType"
+                                    name="commissionType"
+                                    value={commissionType}
+                                    onChange={(e) => setCommissionType(e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                                >
+                                    <option value="1">Commission sur vente</option>
+                                    <option value="2">Commission sur achat</option>
+                                </select>
                             </div>
                         </div>
 

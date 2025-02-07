@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Lock, Unlock, Loader2 } from 'lucide-react';
 import { saveAuthData } from '../../utils/auth';
+import {useAuth} from '../../context/AuthContext';
+import { use } from 'react';
 
 export default function PinConfirmation() {
   const [pin, setPin] = useState('');
@@ -12,6 +14,7 @@ export default function PinConfirmation() {
   const email = location.state?.email || 'Email inconnu';
   const origin = location.state.origin;
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   const handlePinChange = (e) => {
     setPin(e.target.value);
@@ -57,11 +60,12 @@ export default function PinConfirmation() {
         setSuccessMessage(result.datas.message);
         saveAuthData()
         if (origin === 'login') {
-            console.log(result.datas);
-            saveAuthData(result.datas.token,result.datas.admin);
+            // saveAuthData(result.datas.token, false);
+            // window.location.reload();
+            login(result.datas.token, false);
         }
         if (origin === 'register') {
-          navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
+            navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
         }
       } else {
         setError(result.error || 'Erreur de confirmation.');
