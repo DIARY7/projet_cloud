@@ -10,13 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
+import mg.cloud.projets5.repo.TransactionFondRepo;
 import mg.cloud.projets5.dto.AchatVenteFond;
+import mg.cloud.projets5.entity.TypeCommission;
+import mg.cloud.projets5.entity.Crypto;
+import mg.cloud.projets5.entity.Users;
 import mg.cloud.projets5.entity.TransactionCrypto;
+import mg.cloud.projets5.entity.TransactionFond;
 
 @Service
 public class TransactionCryptoService {
     @Autowired
     TransactionCryptoRepo transactionCryptoRepo;
+    
+    @Autowired
+    FondService transactionFondService;
 
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
@@ -40,5 +48,37 @@ public class TransactionCryptoService {
         }
         return transactionCryptoRepo.findFilterEtat(dateFinTime);
         
+    }
+
+    public void save(Double puCrypto,Double qte,LocalDateTime dt,Integer typeCommission , Integer cryptoId, Integer userId){
+        if (qte > 0) {
+            if (transactionFondService.MontantTotal() < puCrypto*qte  && typeCommission == 2){
+                 throw new Exception("Fond insuffisant");
+            }
+                
+                TransactionCrypto t = TransactionCrypto.builder()
+                .puCrypto(puCrypto)
+                .prix(puCrypto*qte)
+                .qte(qte)
+                .dtTransaction(dt)
+                .commission(TypeCommission.builder().id(typeCommission).build())
+                .crypto(Crypto.builder().id(cryptoId).build())
+                .users(Users.builder().id(userId).build())
+                .build();
+                transactionCryptoRepo.save(t);
+                TransactionFond tr = TransactionFond.builder()
+                                    .dtTransaction(dt)
+                                    .users(Users.builder().id(userId).build())
+                                    .build();
+                if (typeCommission == 1) {
+                    tr.setEntree(qte*puCrypto);
+                }else{
+                    tr.setSortie(qte*puCrypto);
+                }
+                transactionFondService.create(tr);
+          
+        }else{
+            throw new IllegalArgumentException("Quantite positive uniquement");
+        }
     }
 }

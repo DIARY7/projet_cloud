@@ -14,12 +14,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import lombok.Builder;
+
 
 @Entity
 @Table(name = "transaction_crypto")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TransactionCrypto {
     
     @Id
