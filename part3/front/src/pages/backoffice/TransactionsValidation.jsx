@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRightLeft, PlusCircle, MinusCircle } from 'lucide-react';
+import Navbar from '../../components/NavBar';
 
 export default function TransactionsValidation() {
 
@@ -22,9 +23,10 @@ export default function TransactionsValidation() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-gray-900">
+            <Navbar/>
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center mb-8">
+                <div className="flex items-center justify-center mb-8">
                     <ArrowRightLeft className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Transactions à valider</h1>
                 </div>

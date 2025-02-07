@@ -16,6 +16,7 @@ import mg.cloud.projets5.dto.crypto.CryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.EvolutionCryptoDTO;
 import mg.cloud.projets5.dto.evolutionCrypto.ListCryptoPrix;
 import mg.cloud.projets5.dto.evolutionCrypto.PrixDate;
+import mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto;
 import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
 import mg.cloud.projets5.repo.CryptoRepo;
@@ -94,4 +95,5 @@ public class CryptoService {
     public List<Crypto> findAll(){
         return cryptoRepo.findAll();
     }
+
 }

@@ -1,1 +1,26 @@
+# Ignore les fichiers de compilation et de build
+target/
+*.jar
+*.war
+*.ear
+
+# Fichiers spécifiques à IntelliJ IDEA
+.idea/
+*.iml
+
+# Fichiers spécifiques à Eclipse
+.classpath
+.project
+.settings/
+
+# Fichiers spécifiques à NetBeans
+nbproject/private/
+
+# Fichiers de logs
+logs/
+*.log
+
+# Fichiers système
+.DS_Store
+Thumbs.db
 src/main/java/resources/firebase-key.json

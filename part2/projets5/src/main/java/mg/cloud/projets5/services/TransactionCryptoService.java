@@ -15,6 +15,7 @@ import mg.cloud.projets5.dto.AchatVenteFond;
 import mg.cloud.projets5.entity.TypeCommission;
 import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.Users;
+import mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto;
 import mg.cloud.projets5.entity.TransactionCrypto;
 import mg.cloud.projets5.entity.TransactionFond;
 
@@ -25,6 +26,9 @@ public class TransactionCryptoService {
     
     @Autowired
     FondService transactionFondService;
+
+    @Autowired
+    CryptoService cryptoService;
 
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
@@ -81,4 +85,14 @@ public class TransactionCryptoService {
             throw new IllegalArgumentException("Quantite positive uniquement");
         }
     }
+    public  List<PorteFeuilleCrypto> getWalletCrypto(int idUser){
+        List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser(idUser);
+        for (int i = 0; i < listePorteFeuilles.size(); i++) {
+            double valeur = listePorteFeuilles.get(i).getQte() * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto()); 
+            listePorteFeuilles.get(i).setValeur(valeur);
+        }     
+        return listePorteFeuilles;
+    }
 }
+
+

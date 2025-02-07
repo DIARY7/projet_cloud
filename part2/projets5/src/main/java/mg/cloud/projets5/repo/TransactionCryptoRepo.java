@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import mg.cloud.projets5.dto.AchatVenteFond;
+import mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto;
 import mg.cloud.projets5.entity.TransactionCrypto;
 
 public interface TransactionCryptoRepo extends JpaRepository<TransactionCrypto,Integer> {
@@ -55,5 +56,10 @@ LEFT JOIN (
             @Param("endDate") LocalDateTime endDate
             );
 
-
+    @Query( value = """
+            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id,tc.crypto.label, SUM(qte) ) 
+            FROM TransactionCrypto tc  WHERE tc.users.id = :idUser
+            GROUP BY tc.crypto.id,tc.crypto.label
+            """)
+    List<PorteFeuilleCrypto> getWalletUser(@Param("idUser") int idUser );
 }
