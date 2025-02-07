@@ -33,7 +33,7 @@ public class TransactionFond {
     @Column
     Double sortie;
 
-    @Column
+    @Column(name = "dt_transaction")
     LocalDateTime dtTransaction;
 
     @ManyToOne
