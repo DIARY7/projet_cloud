@@ -1,8 +1,6 @@
 package mg.cloud.projets5.entity;
-
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,27 +13,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "transaction_fond")
+@Table(name = "tokens") // Facultatif si le nom de la table est différent
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionFond {
-
+public class Tokens {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column
-    Double entree;
+    String token;
 
-    @Column
-    Double sortie;
-
-    @Column(name = "dt_transaction")
-    LocalDateTime dtTransaction;
+    LocalDateTime createdAt;
+    LocalDateTime expiresAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    Users users;
-
+    Users user;
 }

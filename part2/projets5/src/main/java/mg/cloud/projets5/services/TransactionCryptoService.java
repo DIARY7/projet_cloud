@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
 import mg.cloud.projets5.dto.AchatVenteFond;
+import mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto;
 import mg.cloud.projets5.entity.TransactionCrypto;
 
 @Service
 public class TransactionCryptoService {
     @Autowired
     TransactionCryptoRepo transactionCryptoRepo;
+
+    @Autowired
+    CryptoService cryptoService;
 
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
@@ -29,8 +33,8 @@ public class TransactionCryptoService {
         .filter(t -> (dateDebutTime == null || !t.getDtTransaction().isBefore(dateDebutTime)))
         .filter(t -> (dateFinTime == null || !t.getDtTransaction().isAfter(dateFinTime)))
         .collect(Collectors.toList());
-       
     }
+
     public List<AchatVenteFond> filterAchatVenteFond(LocalDate date_fin){
         LocalDateTime dateFinTime = null;
         if (date_fin == null) {
@@ -40,5 +44,14 @@ public class TransactionCryptoService {
         }
         return transactionCryptoRepo.findFilterEtat(dateFinTime);
         
+    }
+
+    public  List<PorteFeuilleCrypto> getWalletCrypto(int idUser){
+        List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser(idUser);
+        for (int i = 0; i < listePorteFeuilles.size(); i++) {
+            double valeur = listePorteFeuilles.get(i).getQte() * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto()); 
+            listePorteFeuilles.get(i).setValeur(valeur);
+        }     
+        return listePorteFeuilles;
     }
 }

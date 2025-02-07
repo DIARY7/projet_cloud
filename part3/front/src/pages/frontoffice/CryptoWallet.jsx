@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Wallet, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import Navbar from '../../components/NavBar';
 
 export default function CryptoWallet() {
   const [amountToBuy, setAmountToBuy] = useState('');
@@ -19,9 +20,10 @@ export default function CryptoWallet() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-gray-900">
+      <Navbar />
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-center mb-8">
           <div className="flex items-center">
             <Wallet className="h-8 w-8 text-yellow-500 mr-3" />
             <h1 className="text-3xl font-bold text-white">Portefeuille Crypto</h1>

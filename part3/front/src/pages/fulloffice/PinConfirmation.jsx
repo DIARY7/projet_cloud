@@ -57,7 +57,8 @@ export default function PinConfirmation() {
         setSuccessMessage(result.datas.message);
         saveAuthData()
         if (origin === 'login') {
-            saveAuthData(result.datas.token, false);
+            console.log(result.datas);
+            saveAuthData(result.datas.token,result.datas.admin);
         }
         if (origin === 'register') {
           navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });

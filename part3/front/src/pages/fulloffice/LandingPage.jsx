@@ -1,25 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Coins, ArrowRight, TrendingUp, CreditCard, BarChart } from 'lucide-react';
+import Navbar from '../../components/NavBar';
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-      <nav className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Coins className="h-8 w-8 text-yellow-500" />
-            <span className="ml-2 text-xl font-bold text-white">CryptoTrade</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/login" className="text-white hover:text-yellow-500">Connexion</Link>
-            <Link to="/register" className="bg-yellow-500 px-4 py-2 rounded-lg text-gray-900 hover:bg-yellow-400">
-              Inscription
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar/>
       <main className="container mx-auto px-6 py-16">
         <div className="text-center">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6">

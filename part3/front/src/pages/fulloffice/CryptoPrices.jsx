@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Monitor } from 'lucide-react';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
+import Navbar from '../../components/NavBar';
 
 const fetchCryptoPrices = async () => {
     try {
@@ -24,6 +25,7 @@ export default function CryptoPrices() {
         const loadData = async () => {
             try {
                 const data = await fetchCryptoPrices();
+                console.log(data.data.cours);
                 setCryptoData(data.data.cours.cryptoPrix);
                 setError(null);
                 setStackTrace(null);
@@ -37,9 +39,10 @@ export default function CryptoPrices() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-900 p-6">
+            <div className="min-h-screen bg-gray-900">
+                <Navbar/>
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center mb-8">
+                    <div className="flex items-center justify-center mb-8">
                         <Monitor className="h-8 w-8 text-yellow-500 mr-3" />
                         <h1 className="text-3xl font-bold text-white">Cours des Cryptomonnaies</h1>
                     </div>
@@ -50,9 +53,11 @@ export default function CryptoPrices() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-gray-900">
+            <Navbar/>
+
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center mb-8">
+                <div className="flex items-center justify-center mb-8">
                     <Monitor className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Cours des Cryptomonnaies</h1>
                 </div>
@@ -73,8 +78,8 @@ export default function CryptoPrices() {
                             <tbody className="bg-gray-800 divide-y divide-gray-700">
                                 {cryptoData.map((crypto) => (
                                     <tr key={crypto.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.label.toUpperCase()}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.price.toLocaleString()} MGA</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.crypto.fullLabel+" ("+crypto.crypto.label+")"}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.prix} MGA</td>
                                     </tr>
                                 ))}
                             </tbody>

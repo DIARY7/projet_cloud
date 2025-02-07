@@ -4,6 +4,7 @@ import { LineChart, X } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
+import Navbar from '../../components/NavBar';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -48,9 +49,10 @@ export default function CryptoEvolution() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-900 p-6">
+            <div className="min-h-screen bg-gray-900">
+                <Navbar/>
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center mb-8">
+                    <div className="flex items-center justify-center mb-8">
                         <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
                         <h1 className="text-3xl font-bold text-white">Évolution des Cryptomonnaies</h1>
                     </div>
@@ -99,9 +101,10 @@ export default function CryptoEvolution() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-gray-900">
+            <Navbar/>
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center mb-8">
+                <div className="flex items-center justify-center mb-8">
                     <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Évolution des Cryptomonnaies</h1>
                 </div>
