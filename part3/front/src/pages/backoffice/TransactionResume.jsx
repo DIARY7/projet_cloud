@@ -9,20 +9,55 @@ export default function TransactionsResume() {
     const userTotals = [
         {
             user: { id: 1, fullname: 'Rakoto Bema', email: 'bema@example.com' },
-            totalAchat: 10000,
-            totalVente: 20000
+            achatPrix: 10000,
+            ventePrix: 20000
         },
         {
             user: { id: 2, fullname: 'Rasoa Lala', email: 'lala@example.com' },
-            totalAchat: 5000,
-            totalVente: 15000
+            achatPrix: 5000,
+            ventePrix: 15000
         },
         {
             user: { id: 3, fullname: 'Rabema Koto', email: 'koto@example.com' },
-            totalAchat: 0,
-            totalVente: 0
+            achatPrix: 0,
+            ventePrix: 0
         }
     ];
+
+
+    const fetchData = async (e) => {
+        e.preventDefault();
+        setLoading(true); // Activer le chargement
+    
+    
+        try {
+          const response = await fetch('http://localhost:8080/TransCrypto/ListResume', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: null,
+          });
+    
+          const result = await response.json();
+    
+          if (result.status === 'success') {
+            console.log(result.datas);
+            userTotals = result.datas.listEtat;
+          } else {
+            console.error('Erreur:', result.error);
+          }
+        } catch (error) {
+          console.error('Erreur de requête :', error);
+        } finally {
+          setLoading(false); // Désactiver le chargement
+        }
+      };
+
+      useEffect(() => {
+        fetchData();
+    }, []);
+
 
     const handleDateChange = (e) => {
         setMaxDate(e.target.value);
@@ -38,7 +73,6 @@ export default function TransactionsResume() {
                 </div>
 
 
-
                 <div className="mb-4 ms-1">
                     <label className="text-white mr-2">Filtrer par date maximale:</label>
                     <input
@@ -48,7 +82,7 @@ export default function TransactionsResume() {
                         className="px-4 py-2 rounded-lg text-black"
                     />
                 </div>
-
+                
                 <div className="bg-gray-800 rounded-lg shadow mb-8 overflow-x-auto">
                     <table className="min-w-full table-auto divide-y divide-gray-700">
                         <thead className="bg-gray-700">
@@ -74,9 +108,9 @@ export default function TransactionsResume() {
                                             </div>
                                         </Link>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalVente}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.totalAchat - user.totalVente}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.achatPrix}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.ventePrix}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-white">{user.achatPrix - user.ventePrix}</td>
                                 </tr>
                             ))}
                         </tbody>

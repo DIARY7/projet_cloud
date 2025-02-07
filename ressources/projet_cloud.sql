@@ -115,7 +115,7 @@ VALUES
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
 VALUES
-    ('User 10', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+    ('User 11', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
 
 INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
 INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
@@ -511,3 +511,37 @@ BEGIN
 END $$;
 
 
+          SELECT 
+    COALESCE(v.prix, 0) AS ventePrix,
+    COALESCE(v.qte, 0) AS venteQte,
+    COALESCE(a.prix, 0) AS achatPrix,
+    COALESCE(a.qte, 0) AS achatQte,
+    u.full_name AS user,
+    COALESCE(f.fond, 0) AS fond
+FROM users u
+LEFT JOIN (
+    SELECT  
+        user_id, 
+        COALESCE(SUM(prix), 0) AS prix, 
+        COALESCE(SUM(qte), 0) AS qte
+    FROM transaction_crypto  
+    WHERE type_commission_id = 1 
+    GROUP BY user_id
+) AS v ON u.id = v.user_id
+LEFT JOIN (
+    SELECT 
+        user_id, 
+        COALESCE(SUM(prix), 0) AS prix, 
+        COALESCE(SUM(qte), 0) AS qte
+    FROM transaction_crypto  
+    WHERE type_commission_id = 2 
+    GROUP BY user_id
+) AS a ON u.id = a.user_id
+LEFT JOIN (
+    SELECT 
+        user_id,
+        COALESCE(SUM(entree - sortie), 0) AS fond 
+    FROM transaction_fond 
+    GROUP BY user_id
+) AS f ON u.id = f.user_id
+ ORDER BY u.id asc;
