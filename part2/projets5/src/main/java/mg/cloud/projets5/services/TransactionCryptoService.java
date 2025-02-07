@@ -56,7 +56,7 @@ public class TransactionCryptoService {
 
     public void save(Double puCrypto,Double qte,LocalDateTime dt,Integer typeCommission , Integer cryptoId, Integer userId){
         if (qte > 0) {
-            if (transactionFondService.MontantTotal() < puCrypto*qte  && typeCommission == 2){
+            if (transactionFondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
             }
                 
