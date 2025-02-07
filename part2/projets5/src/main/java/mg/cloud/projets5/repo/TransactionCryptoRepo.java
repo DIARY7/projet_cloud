@@ -20,6 +20,7 @@ public interface TransactionCryptoRepo extends JpaRepository<TransactionCrypto,I
     COALESCE(a.prix, 0.00) AS achatPrix,
     COALESCE(a.qte, 0.00) AS achatQte,
     u.full_name AS user,
+    u.id AS userId,
     COALESCE(f.fond, 0.00) AS fond
 FROM users u
 LEFT JOIN (

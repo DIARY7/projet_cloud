@@ -14,5 +14,6 @@ public class AchatVenteFond {
     BigDecimal achatPrix;
     BigDecimal achatQte;
     String user;
+    Integer userId;
     BigDecimal fond;
 }
