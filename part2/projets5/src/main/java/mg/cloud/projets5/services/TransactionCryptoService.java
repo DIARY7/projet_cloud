@@ -54,4 +54,14 @@ public class TransactionCryptoService {
         }     
         return listePorteFeuilles;
     }
+
+    public List<PorteFeuilleCrypto> getWalletCrypto2(int idUser) {
+        List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser2(idUser);
+        for (int i = 0; i < listePorteFeuilles.size(); i++) {
+            double valeur = listePorteFeuilles.get(i).getQte()
+                    * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto());
+            listePorteFeuilles.get(i).setValeur(valeur);
+        }
+        return listePorteFeuilles;
+    }
 }

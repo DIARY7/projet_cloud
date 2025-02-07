@@ -65,7 +65,7 @@ export default function PinConfirmation() {
             login(result.datas.token, false);
         }
         if (origin === 'register') {
-          navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
+            navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
         }
       } else {
         setError(result.error || 'Erreur de confirmation.');
