@@ -1,3 +1,7 @@
+CREATE TABLE synchro_date{
+    dt_sync TIMESTAMP;
+}
+
 CREATE TABLE users(
    id SERIAL,
    full_name VARCHAR(255)  NOT NULL,
@@ -38,10 +42,20 @@ CREATE TABLE prix_crypto(
    FOREIGN KEY(crypto_id) REFERENCES crypto(id)
 );
 
+CREATE TABLE transaction_fond_demande{
+    id VARCHAR , -- default string zay 
+    entree NUMERIC(15,2),
+    sortie NUMERIC(15,2),
+    dt_transaction TIMESTAMP,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+}
+
 CREATE TABLE transaction_fond(
    id SERIAL,
-   entree NUMERIC(15,2)  ,
-   sortie NUMERIC(15,2)  ,
+   entree NUMERIC(15,2),
+   sortie NUMERIC(15,2),
    dt_transaction TIMESTAMP,
    user_id INTEGER NOT NULL,
    PRIMARY KEY(id),

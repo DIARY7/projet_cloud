@@ -24,6 +24,7 @@ export default function CryptoPrices() {
         const loadData = async () => {
             try {
                 const data = await fetchCryptoPrices();
+                console.log(data.data.cours);
                 setCryptoData(data.data.cours.cryptoPrix);
                 setError(null);
                 setStackTrace(null);
@@ -73,8 +74,8 @@ export default function CryptoPrices() {
                             <tbody className="bg-gray-800 divide-y divide-gray-700">
                                 {cryptoData.map((crypto) => (
                                     <tr key={crypto.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.label.toUpperCase()}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.price.toLocaleString()} MGA</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.crypto.fullLabel+" ("+crypto.crypto.label+")"}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-white">{crypto.prix} MGA</td>
                                     </tr>
                                 ))}
                             </tbody>
