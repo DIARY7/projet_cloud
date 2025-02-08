@@ -11,15 +11,10 @@ import mg.cloud.projets5.entity.Crypto;
 public class PorteFeuilleCrypto {
     int idCrypto;
     String nomCrypto;
-    Crypto crypto;
     double qte;
     double valeur;
 
     public PorteFeuilleCrypto(int idCrypto,String nomCrypto,double qte){
                 
-    }
-
-    public PorteFeuilleCrypto(Crypto crypto, double qte){
-        
     }
 }

@@ -115,7 +115,7 @@ VALUES
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
 VALUES
-    ('User 10', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+    ('User 11', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
 
 INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
 INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
@@ -440,7 +440,7 @@ BEGIN
 
             -- Insérer une transaction crypto et récupérer son ID
 INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
-            VALUES (pu, prix, qte, transaction_date, type_commission_id, crypto_id, usr.id)
+            VALUES (pu, prix, qte_al, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
             RETURNING id INTO transaction_id;
 
             -- Insérer la transaction de fonds correspondante
@@ -462,12 +462,13 @@ INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commi
     END LOOP;
 END $$;
 
-CREATE VIEW vue_fond_actuel AS
+CREATE VIEW vue_fond_actuel AS (
 SELECT 
     user_id, 
-    COALESCE(SUM(entree), 0) - COALESCE(SUM(sortie), 0) AS solde_actuel
+    COALESCE(COALESCE(SUM(entree), 0.0) - COALESCE(SUM(sortie), 0.0),0.0) AS solde_actuel
 FROM transaction_fond
-GROUP BY user_id;
+GROUP BY user_id);
+
 
 -- test 20 transactions pour les 3 derniers jours
 DO $$ 
