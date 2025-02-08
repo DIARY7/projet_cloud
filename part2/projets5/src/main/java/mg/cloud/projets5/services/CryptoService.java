@@ -84,8 +84,7 @@ public class CryptoService {
     }
 
     public double getCryptoCurrentPrice(Integer cryptoId){
-        double currentPrice = 0;
-        return currentPrice;
+        return prixCryptoRepo.findLatestPriceByCryptoId(cryptoId).orElse(0.0);
     }
 
     public List<CryptoDTO> findAllDTO(){

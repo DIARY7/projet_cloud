@@ -15,6 +15,8 @@ public class PorteFeuilleCrypto {
     double valeur;
 
     public PorteFeuilleCrypto(int idCrypto,String nomCrypto,double qte){
-                
+        setIdCrypto(idCrypto);
+        setNomCrypto(nomCrypto);
+        setQte(qte);
     }
 }
