@@ -1,15 +1,42 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Settings, Save } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 
 export default function EditCommission() {
     const [commissionValue, setCommissionValue] = useState('');
-    const [commissionType, setCommissionType] = useState('1'); // Ajout de l'état pour le type de commission
+    const [commissionType, setCommissionType] = useState('1');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Commission enregistrée:', commissionValue, 'Type:', commissionType);
+        setError('');
+        setSuccessMessage('');
+
+        try {
+            const response = await fetch('http://localhost:8080/commission/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    typeCommissionId: commissionType,
+                    pourcentage: commissionValue,
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status == 'success') {
+                setSuccessMessage('Commission mise à jour avec succès!');
+            } else {
+                setError('Erreur lors de la mise à jour de la commission');
+                console.error(data.error);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de la commission", error);
+            setError('Une erreur est survenue lors de la mise à jour.');
+        }
     };
 
     return (
@@ -23,6 +50,11 @@ export default function EditCommission() {
                             Modifier la commission
                         </h2>
                     </div>
+
+                    {/* Affichage du message de succès ou d'erreur */}
+                    {successMessage && <div className="text-green-500 text-center">{successMessage}</div>}
+                    {error && <div className="text-red-500 text-center">{error}</div>}
+
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>
