@@ -9,23 +9,41 @@ export default function TransactionsValidation() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            try {
-                const response = await fetch('http://localhost:8080/fond/transaction');
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la récupération des données');
-                }
-                const result = await response.json();
-                setTransactions(result.data.demandes || []);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchTransactions();
     }, []);
+
+    const fetchTransactions = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:8080/fond/transaction');
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données');
+            }
+            const result = await response.json();
+            setTransactions(result.data.demandes || []);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleTransactionAction = async (demandeId, valider) => {
+        try {
+            const response = await fetch('http://localhost:8080/fond/transaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ demandeId, valider })
+            });
+            if (!response.ok) {
+                throw new Error('Erreur lors du traitement de la transaction');
+            }
+            alert(valider ? 'Transaction validée' : 'Transaction refusée');
+            fetchTransactions(); // Rafraîchir la liste après validation/refus
+        } catch (error) {
+            setError(error.message);
+        }
+    };
 
     if (loading) {
         return <div className="text-white text-center">Chargement des transactions...</div>;
@@ -94,8 +112,18 @@ export default function TransactionsValidation() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">
                                         <div className="flex items-center gap-4">
-                                            <Link className="text-green-500">Valider</Link>
-                                            <Link className="text-red-500">Refuser</Link>
+                                            <button
+                                                className="text-green-500"
+                                                onClick={() => handleTransactionAction(transaction.id, true)}
+                                            >
+                                                Valider
+                                            </button>
+                                            <button
+                                                className="text-red-500"
+                                                onClick={() => handleTransactionAction(transaction.id, false)}
+                                            >
+                                                Refuser
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

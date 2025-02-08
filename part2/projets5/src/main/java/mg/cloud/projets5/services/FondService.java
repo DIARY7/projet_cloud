@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,25 +27,13 @@ public class FondService {
     @Autowired
     TransactionFondDemandeRepo transactionFondDemandeRepo;
 
-    
+    @Autowired
+    TransactionFondService transactionFondService;
 
+    
     public Double getMontantTotal(Integer idUser) {
         return transFondRepo.getFondActuel(idUser).orElse(0.0);
     }
-
-    public List<TransactionFondDemande> getAll(){
-        return transactionFondDemandeRepo.findAll();
-    }
-
-    public List<TransactionFondDemandeDTO> getAlldto(){
-        return transactionFondDemandeRepo.findAllTransaction();
-    }
-
-    public void deleteFondDemande(String id){
-        TransactionFondDemande fondDemande = transactionFondDemandeRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("not found"));
-            transactionFondDemandeRepo.delete(fondDemande);
-    }   
 
     public void createDemandeFond(TransactionFondDemande fondDemande){
         transactionFondDemandeRepo.save(fondDemande);
@@ -71,4 +61,28 @@ public class FondService {
 
         return transactions;
     }
+
+
+    public void traiterDemande(String demandeId,Boolean valider){
+        if(valider) transactionFondService.create(demandeId);
+        deleteFondDemande(demandeId);
+    }
+
+
+    public List<TransactionFondDemandeDTO> getAlldto(){
+        return transactionFondDemandeRepo.findAllTransaction();
+    }
+
+    public void deleteFondDemande(String id){
+        TransactionFondDemande fondDemande = transactionFondDemandeRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("not found"));
+            transactionFondDemandeRepo.delete(fondDemande);
+    }   
+
+
+    public TransactionFondDemande getDemandeFondById(String id){
+        return transactionFondDemandeRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("No found"));
+    }
+    
 }

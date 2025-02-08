@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mg.cloud.projets5.services.TransactionFondDemandeService;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
