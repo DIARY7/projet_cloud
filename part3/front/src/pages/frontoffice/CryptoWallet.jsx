@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Wallet, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 import { getToken } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 
 export default function CryptoWallet() {
   const [amounts, setAmounts] = useState({});
@@ -9,14 +10,13 @@ export default function CryptoWallet() {
   const [totalBalance, setTotalBalance] = useState('0');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const {checkAuth} = useAuth();
 
   const fetchCryptoData = () => {
     const token = getToken();
 
     if (!token) {
-      console.error("Token non trouvé");
-      setErrorMessage("Token non trouvé. Veuillez vous reconnecter.");
-      return;
+      checkAuth();
     }
 
     fetch('http://localhost:8080/TransCrypto/porteFeuille', {

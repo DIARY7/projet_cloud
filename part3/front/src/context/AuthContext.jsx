@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getToken, getIsAdmin, saveAuthData, removeAuthData, isAuthenticated } from '../utils/auth';
-import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -17,13 +16,16 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    const checkAuth = () => {
+        if (!isAuthenticated()) {
+            window.location.href = '/login';
+        }
+    };
+
     const login = (newToken, newIsAdmin) => {
         saveAuthData(newToken, newIsAdmin);
         setToken(newToken);
         setIsAdmin(newIsAdmin);
-        
-        // useNavigate('/')();
-        // window.location.reload();
         window.location.href = '/'; 
     };
 
@@ -47,9 +49,6 @@ export const AuthProvider = ({ children }) => {
         removeAuthData();
         setToken(null);
         setIsAdmin(false);
-
-        // useNavigate('/')();
-        // window.location.reload();
         window.location.href = '/'; 
     };
 
@@ -59,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        checkAuth,
         isAuthenticated: () => isAuthenticated()
     };
 
