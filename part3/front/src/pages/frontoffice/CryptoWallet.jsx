@@ -188,60 +188,65 @@ export default function CryptoWallet() {
 
         <div className="bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-white mb-4">Vos Cryptomonnaies</h2>
-          <div className="space-y-4">
-            {cryptoDatas.map((cryptoData) => (
-              <div key={cryptoData.idCrypto} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium text-white">{cryptoData.nomCrypto}</h3>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-medium text-white">{cryptoData.qte} {cryptoData.nomCrypto} = {cryptoData.valeur} MGA</p>
-                  </div>
-                </div>
 
-                <div className="mt-4 flex flex-wrap gap-4">
-                  <div className="w-full sm:w-[48%]">
-                    <h3 className="text-sm text-gray-400 mb-2">Acheter {cryptoData.nomCrypto}</h3>
-                    <input
-                      type="number"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Montant"
-                      value={amounts[cryptoData.idCrypto]?.buy || ''}
-                      onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'buy', e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'buy')}
-                    />
-                    <button
-                      onClick={() => handleBuySubmit(cryptoData.idCrypto)}
-                      className="w-full mt-2 flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400"
-                    >
-                      <ArrowDownLeft className="h-4 w-4 mr-2" />
-                      Acheter
-                    </button>
+          {cryptoDatas.length === 0 ? (
+            <p className="text-white text-center">Vous n'avez pas encore de cryptomonnaie.</p>
+          ) : (
+            <div className="space-y-4">
+              {cryptoDatas.map((cryptoData) => (
+                <div key={cryptoData.idCrypto} className="bg-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium text-white">{cryptoData.nomCrypto}</h3>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-medium text-white">{cryptoData.qte} {cryptoData.nomCrypto} = {cryptoData.valeur} MGA</p>
+                    </div>
                   </div>
 
-                  <div className="w-full sm:w-[48%]">
-                    <h3 className="text-sm text-gray-400 mb-2">Vendre {cryptoData.nomCrypto}</h3>
-                    <input
-                      type="number"
-                      className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Montant"
-                      value={amounts[cryptoData.idCrypto]?.sell || ''}
-                      onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'sell', e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'sell')}
-                    />
-                    <button
-                      onClick={() => handleSellSubmit(cryptoData.idCrypto)}
-                      className="w-full mt-2 flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
-                    >
-                      <ArrowUpRight className="h-4 w-4 mr-2" />
-                      Vendre
-                    </button>
+                  <div className="mt-4 flex flex-wrap gap-4">
+                    <div className="w-full sm:w-[48%]">
+                      <h3 className="text-sm text-gray-400 mb-2">Acheter {cryptoData.nomCrypto}</h3>
+                      <input
+                        type="number"
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        placeholder="Montant"
+                        value={amounts[cryptoData.idCrypto]?.buy || ''}
+                        onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'buy', e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'buy')}
+                      />
+                      <button
+                        onClick={() => handleBuySubmit(cryptoData.idCrypto)}
+                        className="w-full mt-2 flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400"
+                      >
+                        <ArrowDownLeft className="h-4 w-4 mr-2" />
+                        Acheter
+                      </button>
+                    </div>
+
+                    <div className="w-full sm:w-[48%]">
+                      <h3 className="text-sm text-gray-400 mb-2">Vendre {cryptoData.nomCrypto}</h3>
+                      <input
+                        type="number"
+                        className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        placeholder="Montant"
+                        value={amounts[cryptoData.idCrypto]?.sell || ''}
+                        onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'sell', e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'sell')}
+                      />
+                      <button
+                        onClick={() => handleSellSubmit(cryptoData.idCrypto)}
+                        className="w-full mt-2 flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
+                      >
+                        <ArrowUpRight className="h-4 w-4 mr-2" />
+                        Vendre
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
