@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Lock, Unlock, Loader2 } from 'lucide-react';
 import { saveAuthData } from '../../utils/auth';
 import {useAuth} from '../../context/AuthContext';
-import { use } from 'react';
 
 export default function PinConfirmation() {
   const [pin, setPin] = useState('');

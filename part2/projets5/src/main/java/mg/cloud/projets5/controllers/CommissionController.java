@@ -15,17 +15,17 @@ public class CommissionController {
       @Autowired
     TypeCommissionService typeCommissionService;
 
-       @PostMapping("/insert")
-    public DataTransfertObject insert(
+    @PostMapping("/edit")
+    public DataTransfertObject edit(
         @RequestParam(required = true) Integer typeCommissionId,
         @RequestParam(required = true) Double pourcentage
     ) {
         DataTransfertObject dto = new DataTransfertObject();
         try {
             typeCommissionService.update(typeCommissionId,pourcentage);
-            dto.success(null,"Insertion reussie");
+            dto.success(null,"Mise à jour réussie");
         } catch (Exception e) {
-           dto.serverError(e, "Erreur d'insertion");
+           dto.serverError(e, e.getMessage());
         }
         return dto;
     }

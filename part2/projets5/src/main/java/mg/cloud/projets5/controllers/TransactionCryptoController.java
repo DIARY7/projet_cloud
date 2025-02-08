@@ -83,21 +83,21 @@ public class TransactionCryptoController {
         return dto;
     }
 
-           @PostMapping("/insert")
+    @PostMapping("/insert")
     public DataTransfertObject insert(
-        @RequestParam(required = true) Double puCrypto,
         @RequestParam(required = true) Double qte,
-        @RequestParam(required = true) LocalDate dt,
         @RequestParam(required = true) Integer typeCommissionId,
         @RequestParam(required = true) Integer cryptoId,
-        @RequestParam(required = true) Integer userId
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
         DataTransfertObject dto = new DataTransfertObject();
         try {
-            transactionCryptoService.save(puCrypto,qte,dt,typeCommissionId,cryptoId,userId);
-            dto.success(null,"Insertion reussie");
+            Users user = tokenService.getUserByToken(authorizationHeader);
+            Double puCrypto = cryptoService.getCryptoCurrentPrice(cryptoId);
+            transactionCryptoService.save(puCrypto,qte,LocalDate.now(),typeCommissionId,cryptoId,user.getId());
+            dto.success(null,"Insertion réussie");
         } catch (Exception e) {
-           dto.serverError(e, "Erreur d'insertion");
+           dto.serverError(e, "Echec de la transaction: "+e.getMessage());
         }
         return dto;
     }

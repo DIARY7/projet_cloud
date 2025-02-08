@@ -63,6 +63,15 @@ LEFT JOIN (
             """)
     List<PorteFeuilleCrypto> getWalletUser(@Param("idUser") int idUser );
 
+    @Query(value = """
+            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id, tc.crypto.label, COALESCE(SUM(tc.qte), 0))
+            FROM TransactionCrypto tc
+            WHERE tc.users.id = :idUser
+            AND tc.crypto.id = :cryptoId
+            GROUP BY tc.crypto.id, tc.crypto.label
+            """)
+    PorteFeuilleCrypto getQteCryptoUser(@Param("idUser") int idUser, @Param("cryptoId") int cryptoId);
+
     // @Query(value = """
     //         SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto, SUM(qte))
     //         FROM TransactionCrypto tc  WHERE tc.users.id = :idUser

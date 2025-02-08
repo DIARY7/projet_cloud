@@ -61,7 +61,14 @@ public class TransactionCryptoService {
         if (qte > 0) {
             if (fondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
-            }
+            }   
+                if (typeCommission == 1) {
+                    PorteFeuilleCrypto porteFeuilleCrypto = transactionCryptoRepo.getQteCryptoUser(userId, cryptoId);
+                    if (qte>porteFeuilleCrypto.getQte()) {
+                        throw new Exception("Vous n'avez pas assez de "+porteFeuilleCrypto.getNomCrypto()+" pour cette transaction");
+                    }
+                    qte = qte * -1;
+                }
                 
                 TransactionCrypto t = TransactionCrypto.builder()
                 .puCrypto(puCrypto)
@@ -73,23 +80,27 @@ public class TransactionCryptoService {
                 .users(Users.builder().id(userId).build())
                 .build();
                 transactionCryptoRepo.save(t);
+
                 TransactionFond tr = TransactionFond.builder()
                                     .entree(0.0)
                                     .sortie(0.0)
                                     .dtTransaction(date)
                                     .users(Users.builder().id(userId).build())
                                     .build();
-                if (typeCommission == 1) {
+
+                if (typeCommission == 2) {
                     tr.setEntree(qte*puCrypto);
                 }else{
                     tr.setSortie(qte*puCrypto);
                 }
+                
                 transactionFondService.create(tr);
           
         }else{
             throw new IllegalArgumentException("Quantite positive uniquement");
         }
     }
+
     public  List<PorteFeuilleCrypto> getWalletCrypto(int idUser){
         List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser(idUser);
         for (int i = 0; i < listePorteFeuilles.size(); i++) {

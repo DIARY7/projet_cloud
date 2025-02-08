@@ -30,7 +30,7 @@ public class TokensService {
             }
         }
         else{
-            throw new Exception("Token innexistant ");
+            throw new Exception("Token inexistant ");
         }
         return user;
     }

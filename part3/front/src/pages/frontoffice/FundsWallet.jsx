@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { PlusCircle, MinusCircle, CreditCard } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 import { getToken } from '../../utils/auth';
+import { useAuth } from '../../context/AuthContext';
 
 const fetchBalance = async () => {
   try {
     const token = getToken();
+
     const response = await fetch('http://localhost:8080/fond', {
       method: 'GET',
       headers: {
@@ -31,24 +33,26 @@ export default function FundsWallet() {
   const [amountToDeposit, setAmountToDeposit] = useState('');
   const [amountToWithdraw, setAmountToWithdraw] = useState('');
   const [balance, setBalance] = useState(0);
-  const [loading, setLoading] = useState(true); // Ajout d'un état pour gérer le chargement
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { checkAuth } = useAuth();
 
   useEffect(() => {
+    checkAuth();
     const getBalance = async () => {
       try {
-        setLoading(true);  // Début du chargement
+        setLoading(true);
         const fetchedBalance = await fetchBalance();
         setBalance(fetchedBalance);
       } catch (err) {
-        setError("Impossible de charger le solde");  // En cas d'erreur
+        setError("Impossible de charger le solde");
       } finally {
-        setLoading(false);  // Fin du chargement
+        setLoading(false);
       }
     };
 
-    getBalance();  // Appel de la fonction pour récupérer la balance
-  }, []);  // Le tableau vide [] signifie que l'effet s'exécute une seule fois lors du montage du composant
+    getBalance();
+  }, []); 
 
   return (
     <div className="min-h-screen bg-gray-900">
