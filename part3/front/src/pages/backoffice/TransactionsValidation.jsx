@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRightLeft, PlusCircle, MinusCircle } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 
 export default function TransactionsValidation() {
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const transactions = [
-        {
-            id: 1,
-            user: { id: 1, fullname: 'user', email: 'user@example.com' },
-            entree: 20000,
-            sortie: 0,
-            date: '2024-03-15'
-        },
-        {
-            id: 2,
-            user: { id: 2, fullname: 'trader', email: 'trader@example.com' },
-            entree: 0,
-            sortie: 50000,
-            date: '2024-03-14'
-        },
-    ];
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/fond/transaction');
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données');
+                }
+                const result = await response.json();
+                setTransactions(result.data.demandes || []);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTransactions();
+    }, []);
+
+    if (loading) {
+        return <div className="text-white text-center">Chargement des transactions...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500 text-center">Erreur : {error}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-gray-900">
-            <Navbar/>
+            <Navbar />
             <div className="max-w-7xl mx-auto p-6">
                 <div className="flex items-center justify-center mb-8">
                     <ArrowRightLeft className="h-8 w-8 text-yellow-500 mr-3" />
@@ -37,7 +50,7 @@ export default function TransactionsValidation() {
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Type</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Entree</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Entrée</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sortie</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
@@ -54,7 +67,7 @@ export default function TransactionsValidation() {
                                                 <PlusCircle className="h-5 w-5 text-red-500 mr-2" />
                                             )}
                                             <span className="text-white">
-                                                {transaction.entree > 0 ? 'Dépot' : 'Retrait'}
+                                                {transaction.entree > 0 ? 'Dépôt' : 'Retrait'}
                                             </span>
                                         </div>
                                     </td>
@@ -77,12 +90,12 @@ export default function TransactionsValidation() {
                                         {transaction.sortie}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">
-                                        {transaction.date}
+                                        {new Date(transaction.date).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-white">
                                         <div className="flex items-center gap-4">
-                                            <Link className='text-green-500'>Valider</Link>
-                                            <Link className='text-red-500' >Refuser</Link>
+                                            <Link className="text-green-500">Valider</Link>
+                                            <Link className="text-red-500">Refuser</Link>
                                         </div>
                                     </td>
                                 </tr>

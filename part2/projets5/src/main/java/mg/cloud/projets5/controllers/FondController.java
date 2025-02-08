@@ -42,6 +42,19 @@ public class FondController {
     }
 
 
+    @GetMapping("/fond/demande")
+    public DataTransfertObject getDemandeFond(){
+        DataTransfertObject dto = new DataTransfertObject();
+        try {
+            HashMap<String , Double> map = new HashMap<String,Double>();
+           
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return dto;
+    }
+
+
     @PostMapping("/fond")
     public String postMethodName() {
         TransactionFondDemande transactionFondDemande = new TransactionFondDemande();

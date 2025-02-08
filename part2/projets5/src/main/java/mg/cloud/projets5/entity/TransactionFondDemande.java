@@ -4,20 +4,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mg.cloud.projets5.services.TransactionFondDemandeService;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "transaction_fond")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionFondDemande {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_fond_seq_gen")
-    @SequenceGenerator(name = "transaction_fond_seq_gen", sequenceName = "transaction_fond_seq", allocationSize = 1)
-    @Column(length = 20, unique = true, nullable = false)
     private String id;
 
     @Column
@@ -34,9 +32,19 @@ public class TransactionFondDemande {
     private Users users;
 
     @PrePersist
-    public void generateId() {
+    private void generateIdAndSetTransactionDate() {
+        // Générer un ID unique si non déjà défini
         if (this.id == null || this.id.isEmpty()) {
-            this.id = "TR-" + String.format("%06d", Long.parseLong(id));
+            this.id = UUID.randomUUID().toString();
+        }
+        // Définit automatiquement la date de transaction si elle est nulle
+        if (this.dtTransaction == null) {
+            this.dtTransaction = LocalDateTime.now();
         }
     }
+
+
+
+
+
 }

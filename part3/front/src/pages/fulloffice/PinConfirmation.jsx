@@ -62,7 +62,7 @@ export default function PinConfirmation() {
         if (origin === 'login') {
             // saveAuthData(result.datas.token, false);
             // window.location.reload();
-            login(result.datas.token, false);
+            login(result.datas.token, result.datas.admin);
         }
         if (origin === 'register') {
             navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });

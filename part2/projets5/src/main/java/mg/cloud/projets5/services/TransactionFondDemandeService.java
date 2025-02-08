@@ -10,10 +10,10 @@ import mg.cloud.projets5.repo.TransactionFondDemandeRepo;
 public class TransactionFondDemandeService {
     
     @Autowired
-    TransactionFondDemandeRepo transactionFondDemandeRepo;
+    static TransactionFondDemandeRepo transactionFondDemandeRepo;
 
     public void create(TransactionFondDemande transactionFondDemande){
         transactionFondDemandeRepo.save(transactionFondDemande);
     }
-    
+
 }

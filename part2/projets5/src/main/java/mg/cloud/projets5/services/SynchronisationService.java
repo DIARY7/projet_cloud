@@ -12,6 +12,8 @@ public class SynchronisationService {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    
+
     public void synchroToLocalAndOnline(){
         LocalDateTime lastSynchro = getLastSync();
         synchroToLocal(lastSynchro);

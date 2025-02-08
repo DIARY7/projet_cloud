@@ -42,9 +42,8 @@ CREATE TABLE prix_crypto(
 );
 
 
-
 CREATE TABLE transaction_fond_demande (
-    id VARCHAR(20) PRIMARY KEY,
+    id VARCHAR PRIMARY KEY,
     entree NUMERIC(15, 2),
     sortie NUMERIC(15, 2),
     dt_transaction TIMESTAMP,
@@ -95,10 +94,7 @@ CREATE TABLE commission(
    FOREIGN KEY(transaction_crypto_id) REFERENCES transaction_crypto(id)
 );
 
--- Créer une séquence qui démarre à 1
-CREATE SEQUENCE transaction_fond_demande_seq
-START 1
-INCREMENT BY 1;
+
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at)
 VALUES
