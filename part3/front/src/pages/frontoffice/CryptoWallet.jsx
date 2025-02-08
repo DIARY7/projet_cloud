@@ -4,15 +4,18 @@ import Navbar from '../../components/NavBar';
 import { getToken } from '../../utils/auth';
 
 export default function CryptoWallet() {
-  const [amountToBuy, setAmountToBuy] = useState('');
-  const [amountToSell, setAmountToSell] = useState('');
+  const [amounts, setAmounts] = useState({});
   const [cryptoDatas, setCryptoDatas] = useState([]);
   const [totalBalance, setTotalBalance] = useState('0');
-  useEffect(() => {
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const fetchCryptoData = () => {
     const token = getToken();
 
     if (!token) {
       console.error("Token non trouvé");
+      setErrorMessage("Token non trouvé. Veuillez vous reconnecter.");
       return;
     }
 
@@ -23,27 +26,134 @@ export default function CryptoWallet() {
         'Content-Type': 'application/json'
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données');
+        }
+        return response.json();
+      })
       .then((data) => {
         setCryptoDatas(data.data.data);
-
         const total = data.data.data.reduce((acc, cryptoData) => {
           return acc + cryptoData.valeur;
         }, 0);
-
         setTotalBalance(total.toFixed(2));
       })
       .catch((error) => {
         console.error('Erreur lors de la récupération des données:', error);
+        setErrorMessage("Erreur lors de la récupération des données. Veuillez réessayer.");
       });
+  };
+
+  useEffect(() => {
+    fetchCryptoData();
   }, []);
 
   const handleBuySubmit = (cryptoId) => {
-    console.log(`Acheter ${amountToBuy} de ${cryptoId}`);
+    const amountToBuy = amounts[cryptoId]?.buy || '';
+    if (!amountToBuy || isNaN(amountToBuy) || amountToBuy <= 0) {
+      setErrorMessage("Veuillez entrer un montant valide à acheter.");
+      return;
+    }
+
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    const token = getToken();
+
+    const url = new URL('http://localhost:8080/TransCrypto/insert');
+    const params = new URLSearchParams({
+      qte: amountToBuy.toString(),
+      typeCommissionId: '2', // 2 = buy transaction
+      cryptoId: cryptoId.toString()
+    });
+
+    fetch(`${url}?${params.toString()}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status == 'success') {
+          console.log('Transaction réussie:', data.message);
+          fetchCryptoData();
+          setSuccessMessage('Transaction réussie');
+        } else {
+          console.error('Erreur transaction:', data.message);
+          setErrorMessage(data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la transaction:', error);
+        setErrorMessage("Erreur lors de la transaction.");
+      });
   };
 
   const handleSellSubmit = (cryptoId) => {
-    console.log(`Vendre ${amountToSell} de ${cryptoId}`);
+    const amountToSell = amounts[cryptoId]?.sell || '';
+    if (!amountToSell || isNaN(amountToSell) || amountToSell <= 0) {
+      setErrorMessage("Veuillez entrer un montant valide à vendre.");
+      return;
+    }
+
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    const token = getToken();
+
+    const url = new URL('http://localhost:8080/TransCrypto/insert');
+    const params = new URLSearchParams({
+      qte: amountToSell.toString(),
+      typeCommissionId: '1', // 1 = sell transaction
+      cryptoId: cryptoId.toString()
+    });
+
+    fetch(`${url}?${params.toString()}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status == 'success') {
+          setErrorMessage("");
+          fetchCryptoData();
+          setSuccessMessage('Transaction réussie');
+        } else {
+          console.error('Erreur transaction:', data.message);
+          setErrorMessage(data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la transaction:', error);
+        setErrorMessage("Erreur lors de la transaction.");
+      });
+  };
+
+  const handleAmountChange = (cryptoId, type, value) => {
+    setAmounts((prevAmounts) => ({
+      ...prevAmounts,
+      [cryptoId]: {
+        ...prevAmounts[cryptoId],
+        [type]: value
+      }
+    }));
+  };
+
+  // Handle the Enter key press for submit
+  const handleKeyDown = (e, cryptoId, type) => {
+    if (e.key === 'Enter') {
+      if (type === 'buy') {
+        handleBuySubmit(cryptoId);
+      } else if (type === 'sell') {
+        handleSellSubmit(cryptoId);
+      }
+    }
   };
 
   return (
@@ -56,6 +166,18 @@ export default function CryptoWallet() {
             <h1 className="text-3xl font-bold text-white">Portefeuille Crypto</h1>
           </div>
         </div>
+
+        {errorMessage && (
+          <div className="bg-red-600 text-white p-4 mb-6 rounded-lg">
+            {errorMessage}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-600 text-white p-4 mb-6 rounded-lg">
+            {successMessage}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg p-6">
@@ -85,11 +207,12 @@ export default function CryptoWallet() {
                       type="number"
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                       placeholder="Montant"
-                      value={amountToBuy}
-                      onChange={(e) => setAmountToBuy(e.target.value)}
+                      value={amounts[cryptoData.idCrypto]?.buy || ''}
+                      onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'buy', e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'buy')}
                     />
                     <button
-                      onClick={() => handleBuySubmit(cryptoData.nomCrypto)}
+                      onClick={() => handleBuySubmit(cryptoData.idCrypto)}
                       className="w-full mt-2 flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400"
                     >
                       <ArrowDownLeft className="h-4 w-4 mr-2" />
@@ -103,11 +226,12 @@ export default function CryptoWallet() {
                       type="number"
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                       placeholder="Montant"
-                      value={amountToSell}
-                      onChange={(e) => setAmountToSell(e.target.value)}
+                      value={amounts[cryptoData.idCrypto]?.sell || ''}
+                      onChange={(e) => handleAmountChange(cryptoData.idCrypto, 'sell', e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, cryptoData.idCrypto, 'sell')}
                     />
                     <button
-                      onClick={() => handleSellSubmit(cryptoData.nomCrypto)}
+                      onClick={() => handleSellSubmit(cryptoData.idCrypto)}
                       className="w-full mt-2 flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
                     >
                       <ArrowUpRight className="h-4 w-4 mr-2" />
