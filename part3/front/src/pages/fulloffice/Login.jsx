@@ -6,13 +6,15 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(''); // État pour les messages d'erreur
   const navigate = useNavigate();
   const location = useLocation();
-  var message = location.state?.message;
+  const message = location.state?.message;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Activer le chargement
+    setError(''); // Réinitialiser les messages d'erreur
 
     const formData = {
       Login: email,
@@ -34,12 +36,13 @@ export default function Login() {
         console.log(result.datas);
         navigate('/pin/confirm', { state: { email, origin: 'login' } });
       } else {
-        console.error('Erreur:', result.error);
+        setError(result.error || 'Une erreur est survenue lors de la connexion.');
       }
     } catch (error) {
+      setError('Erreur de réseau. Veuillez vérifier votre connexion internet.');
       console.error('Erreur de requête :', error);
     } finally {
-      setLoading(false); // Désactiver le chargement
+      setLoading(false);
     }
   };
 
@@ -80,6 +83,13 @@ export default function Login() {
               />
             </div>
           </div>
+
+          {/* Affichage des messages d'erreur */}
+          {error && (
+            <div className="text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
 
           <div>
             <button

@@ -21,9 +21,10 @@ export const AuthProvider = ({ children }) => {
         saveAuthData(newToken, newIsAdmin);
         setToken(newToken);
         setIsAdmin(newIsAdmin);
-
-        window.location.reload();
-        useNavigate('/')();
+        
+        // useNavigate('/')();
+        // window.location.reload();
+        window.location.href = '/'; 
     };
 
     const logout = async () => {
@@ -47,8 +48,9 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         setIsAdmin(false);
 
-        window.location.reload();
-        useNavigate('/')();
+        // useNavigate('/')();
+        // window.location.reload();
+        window.location.href = '/'; 
     };
 
     const value = {
