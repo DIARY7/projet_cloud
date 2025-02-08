@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Lock, Unlock, Loader2 } from 'lucide-react';
 import { saveAuthData } from '../../utils/auth';
 import {useAuth} from '../../context/AuthContext';
-import { use } from 'react';
 
 export default function PinConfirmation() {
   const [pin, setPin] = useState('');
@@ -62,7 +61,7 @@ export default function PinConfirmation() {
         if (origin === 'login') {
             // saveAuthData(result.datas.token, false);
             // window.location.reload();
-          login(result.datas.token, result.datas.isAdmin);
+            login(result.datas.token, result.datas.admin);
         }
         if (origin === 'register') {
             navigate('/login', { state: { message: 'Veuillez vous connecter maintenant' } });
