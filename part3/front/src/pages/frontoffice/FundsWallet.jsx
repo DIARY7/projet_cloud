@@ -28,13 +28,13 @@ const fetchBalance = async () => {
   }
 };
 
-
 export default function FundsWallet() {
   const [amountToDeposit, setAmountToDeposit] = useState('');
   const [amountToWithdraw, setAmountToWithdraw] = useState('');
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
   const { checkAuth } = useAuth();
 
   useEffect(() => {
@@ -50,9 +50,72 @@ export default function FundsWallet() {
         setLoading(false);
       }
     };
-
     getBalance();
-  }, []); 
+  }, []);
+
+  const handleDeposit = async () => {
+    if (!amountToDeposit || parseFloat(amountToDeposit) <= 0) return alert('Veuillez entrer un montant valide.');
+
+    try {
+      setLoading(true);
+      const token = getToken();
+      const response = await fetch('http://localhost:8080/fond', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ entree: parseFloat(amountToDeposit), sortie: 0.0 }),
+        
+      });
+
+      if (!response.ok) throw new Error("Erreur lors du dépôt");
+      const data = await response.json();
+      console.log(data);
+      if(data.status === 'success'){
+        setSuccessMessage("Dépôt effectué avec succès !");
+      }
+      if(data.status === 'error'){
+        setError(data.error.message)
+      } 
+      
+    } catch (err) {
+      setError("Erreur lors du dépôt");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!amountToWithdraw || parseFloat(amountToWithdraw) <= 0) return alert('Veuillez entrer un montant valide.');
+
+    try {
+      setLoading(true);
+      const token = getToken();
+      const response = await fetch('http://localhost:8080/fond', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ entree : 0.0, sortie: parseFloat(amountToWithdraw) }),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors du retrait");
+      const data = await response.json();
+      console.log(data); // Récupération des données
+      if(data.status === 'success'){
+        setSuccessMessage("Dépôt effectué avec succès !");
+      }
+      if(data.status === 'error'){
+        setError(data.error.message)
+      } 
+    } catch (err) {
+      setError("Erreur lors du retrait");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -63,15 +126,20 @@ export default function FundsWallet() {
           <h1 className="text-3xl font-bold text-white">Portefeuille de Fonds</h1>
         </div>
 
+        {successMessage && (
+          <p className="text-green-500 text-lg font-semibold mb-4">{successMessage}</p>
+        )}
+        {error && (
+          <p className="text-red-500 text-lg font-semibold mb-4">{error}</p>
+        )}
+
         <div className="grid grid-cols-1 gap-6 mb-8">
           <div className="bg-gray-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-gray-400 mb-2">Solde Disponible</h2>
             {loading ? (
-              <p className="text-3xl font-bold text-white">Chargement...</p>  // Affichage pendant le chargement
-            ) : error ? (
-              <p className="text-3xl font-bold text-red-500">{error}</p>  // Affichage d'erreur
+              <p className="text-3xl font-bold text-white">Chargement...</p>
             ) : (
-              <p className="text-3xl font-bold text-white">{balance} MGA</p>  // Affichage du solde
+              <p className="text-3xl font-bold text-white">{balance} MGA</p>
             )}
           </div>
         </div>
@@ -92,7 +160,10 @@ export default function FundsWallet() {
                   onChange={(e) => setAmountToDeposit(e.target.value)}
                 />
               </div>
-              <button className="flex items-center justify-center w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400">
+              <button
+                onClick={handleDeposit}
+                className="flex items-center justify-center w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400"
+              >
                 <PlusCircle className="h-5 w-5 mr-2" />
                 Déposer
               </button>
@@ -114,14 +185,16 @@ export default function FundsWallet() {
                   onChange={(e) => setAmountToWithdraw(e.target.value)}
                 />
               </div>
-              <button className="flex items-center justify-center w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400">
+              <button
+                onClick={handleWithdraw}
+                className="flex items-center justify-center w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400"
+              >
                 <MinusCircle className="h-5 w-5 mr-2" />
                 Retirer
               </button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

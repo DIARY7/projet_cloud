@@ -26,44 +26,6 @@ public class TestController {
     FondService service;
 
      
-
-
-   @GetMapping("/fond/transaction")
-   public DataTransfertObject getListDemande() {
-       DataTransfertObject dto = new DataTransfertObject();
-       HashMap<String, Object> data = new HashMap<>();
-       try{
-        List<TransactionFondDemandeDTO>  fondDemandeDTOs = service.getAlldto();
-        data.put("demandes", fondDemandeDTOs);
-        dto.success(data,"Donnée bien pris ");
-       }
-       catch(Exception e){
-            dto.serverError(e, null);
-       }
-       return dto;
-       
-   }
-
-
-   @PostMapping("/fond/transaction")
-   public DataTransfertObject insert(
-            @RequestParam(name = "demandeId") String demandeIde,
-            @RequestParam(name = "valider") Boolean valider)
-        {
-       DataTransfertObject dto = new DataTransfertObject();
-       HashMap<String, Object> data = new HashMap<>();
-        try{
-            service.traiterDemande(demandeIde, valider); 
-            List<TransactionFondDemandeDTO>  fondDemandeDTOs = service.getAlldto();
-            data.put("demandes", fondDemandeDTOs);
-            dto.success(data, "Transaction Valider");
-        }
-        catch(Exception e){
-            dto.serverError(e, null);
-        }
-        return dto;
-   }
-   
    
 
 }

@@ -36,6 +36,16 @@ public class FondService {
     }
 
     public void createDemandeFond(TransactionFondDemande fondDemande){
+        if(fondDemande.getSortie() < 0 || fondDemande.getEntree() < 0) throw new RuntimeException("Montant invalide , veuillez reverfier");
+
+        if(fondDemande.getSortie() > 0){
+            
+            Double fondActuel = getMontantTotal(fondDemande.getUsers().getId());
+            System.out.println(fondDemande.getSortie() +" > "+ fondActuel);
+            if(fondDemande.getSortie() > fondActuel){
+                throw new RuntimeException("Solde Insuffisant pour un retrait");
+            } 
+        }
         transactionFondDemandeRepo.save(fondDemande);
     }
 

@@ -38,7 +38,7 @@ export default function TransactionsValidation() {
             if (!response.ok) {
                 throw new Error('Erreur lors du traitement de la transaction');
             }
-            alert(valider ? 'Transaction validée' : 'Transaction refusée');
+            
             fetchTransactions(); // Rafraîchir la liste après validation/refus
         } catch (error) {
             setError(error.message);
