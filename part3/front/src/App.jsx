@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // FullOffice
 import LandingPage from './pages/fulloffice/LandingPage';
@@ -38,18 +39,52 @@ function App() {
         <Route path="/cryptos/evolution" element={<CryptoEvolution />} />
 
         {/* Backoffice Routes */}
-        <Route path="/transactions" element={<TransactionsList />} />
-        <Route path="/transactions/resume" element={<TransactionResume />} />
-        <Route path="/transactions/validation" element={<TransactionsValidation />} />
-        <Route path="/commissions/edit" element={<EditCommission />} />
-        <Route path="/commissions/analysis" element={<CommissionAnalysis />} />
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <TransactionsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/transactions/resume"
+          element={
+            <ProtectedRoute>
+              <TransactionResume />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/transactions/validation"
+          element={
+            <ProtectedRoute>
+              <TransactionsValidation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/commissions/edit"
+          element={
+            <ProtectedRoute>
+              <EditCommission />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/commissions/analysis"
+          element={
+            <ProtectedRoute>
+              <CommissionAnalysis />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Frontoffice Routes */}
         <Route path="/wallet/cryptos" element={<CryptoWallet />} />
         <Route path="/wallet/funds" element={<FundsWallet />} />
 
         {/* Fallback route */}
-        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
         <Route path="*" element={<Page404 />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>

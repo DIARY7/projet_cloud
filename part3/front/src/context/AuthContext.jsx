@@ -21,14 +21,32 @@ export const AuthProvider = ({ children }) => {
         saveAuthData(newToken, newIsAdmin);
         setToken(newToken);
         setIsAdmin(newIsAdmin);
+        useNavigate('/')();
         window.location.reload();
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la déconnexion');
+            }
+        } catch (error) {
+            console.error('Erreur API:', error);
+        }
+
         removeAuthData();
         setToken(null);
         setIsAdmin(false);
-        useNavigate('/');
+
+        useNavigate('/')();
         window.location.reload();
     };
 

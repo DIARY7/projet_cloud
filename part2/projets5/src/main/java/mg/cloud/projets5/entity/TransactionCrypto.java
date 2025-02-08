@@ -13,11 +13,15 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
+
+
 @Entity
 @Table(name = "transaction_crypto")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TransactionCrypto {
     
     @Id

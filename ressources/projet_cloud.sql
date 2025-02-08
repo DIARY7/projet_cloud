@@ -115,7 +115,7 @@ VALUES
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
 VALUES
-    ('User 10', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+    ('User 11', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
 
 INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
 INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
@@ -369,4 +369,145 @@ VALUES
 (100000.50, 0.00, '2025-01-29 12:00:00', 8),
 (100000.50, 0.00, '2025-01-29 12:00:00', 9),
 (100000.75, 0.00, '2025-01-29 14:00:00', 10);
+
+
+
+-- Insérer des transactions crypto et des transactions de fonds correspondantes pour 3 jours
+DO $$ 
+DECLARE 
+    usr RECORD;
+    crypto_id_al INT;
+    i INT;
+    transaction_date TIMESTAMP;
+    pu NUMERIC(15,2);
+    qte_al NUMERIC(15,2);
+    prix NUMERIC(15,2);
+    type_commission_id_al INT;
+    solde_actuel NUMERIC(15,2);
+    solde_crypto NUMERIC(15,2);
+    taux_commission NUMERIC(2,2);
+    montant_commission NUMERIC(15,2);
+    transaction_id INT;
+BEGIN
+    -- Boucle sur chaque utilisateur
+    FOR usr IN (SELECT id FROM users) LOOP
+        -- Boucle sur chaque jour (3 jours)
+        FOR i IN 0..2 LOOP
+            -- Générer une date de transaction aléatoire dans la journée
+            transaction_date := NOW() - INTERVAL '3 days' + INTERVAL '1 day' * i 
+                                + INTERVAL '1 hour' * FLOOR(RANDOM() * 24);
+
+            -- Sélectionner une crypto au hasard
+            SELECT id INTO crypto_id_al FROM crypto ORDER BY RANDOM() LIMIT 1;
+
+            -- Générer un prix unitaire et une quantité aléatoires
+            pu := ROUND((RANDOM() * 50000 + 100)::numeric, 2); -- Prix entre 100 et 50,000
+            qte_al := ROUND((RANDOM() * 5 + 0.1)::numeric, 2);    -- Quantité entre 0.1 et 5
+            prix := ROUND((pu * qte_al)::numeric, 2);             -- Prix total
+
+            -- Déterminer aléatoirement si c'est un achat (2) ou une vente (1)
+            type_commission_id_al := CASE WHEN RANDOM() > 0.5 THEN 1 ELSE 2 END;
+
+            -- Récupérer le taux de commission (déjà divisé à l'insertion)
+            SELECT commission INTO taux_commission FROM type_commission WHERE id = type_commission_id_al;
+            
+            -- Calcul du montant de la commission
+            montant_commission := ROUND((prix * taux_commission)::numeric, 2);
+
+            -- Calcul du solde actuel en fonds (argent)
+            SELECT COALESCE(SUM(entree) - SUM(sortie), 0) 
+            INTO solde_actuel
+            FROM transaction_fond
+            WHERE user_id = usr.id;
+
+            -- Calcul du solde actuel en crypto
+            SELECT COALESCE(SUM(CASE WHEN type_commission_id = 2 THEN qte ELSE -qte END), 0)
+            INTO solde_crypto
+            FROM transaction_crypto
+            WHERE user_id = usr.id AND crypto_id = crypto_id_al;
+
+            -- Vérification avant un achat (sortie de fonds)
+            IF type_commission_id_al = 2 AND solde_actuel < (prix) THEN
+                -- Si pas assez de fonds, on saute cette transaction
+                CONTINUE;
+            END IF;
+
+            -- Vérification avant une vente (sortie de crypto)
+            IF type_commission_id_al = 1 AND solde_crypto < qte_al THEN
+                -- Si pas assez de crypto, on saute cette transaction
+                CONTINUE;
+            END IF;
+
+            -- Insérer une transaction crypto et récupérer son ID
+INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+            VALUES (pu, prix, qte_al, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
+            RETURNING id INTO transaction_id;
+
+            -- Insérer la transaction de fonds correspondante
+            IF type_commission_id_al = 1 THEN
+                -- Vente : entrée de fonds
+                INSERT INTO transaction_fond (entree, sortie, dt_transaction, user_id)
+                VALUES (prix - montant_commission, 0, transaction_date, usr.id);
+            ELSE
+                -- Achat : sortie de fonds (vérifié avant)
+                INSERT INTO transaction_fond (entree, sortie, dt_transaction, user_id)
+                VALUES (0, prix , transaction_date, usr.id);
+            END IF;
+
+            -- Insérer la commission dans la table `commission`
+            INSERT INTO commission (commission, pourcentage, transaction_crypto_id)
+            VALUES (montant_commission, taux_commission, transaction_id);
+
+        END LOOP;
+    END LOOP;
+END $$;
+
+CREATE VIEW vue_fond_actuel AS (
+SELECT 
+    user_id, 
+    COALESCE(COALESCE(SUM(entree), 0.0) - COALESCE(SUM(sortie), 0.0),0.0) AS solde_actuel
+FROM transaction_fond
+GROUP BY user_id);
+
+
+-- test 20 transactions pour les 3 derniers jours
+DO $$ 
+DECLARE 
+    usr RECORD;
+    crypto_id_al INT;
+    i INT;
+    transaction_date TIMESTAMP;
+    pu NUMERIC(15,2);
+    qte NUMERIC(15,2);
+    prix NUMERIC(15,2);
+    type_commission_id_al INT;
+    transaction_id INT;
+BEGIN
+    -- Boucle pour insérer 20 transactions
+    FOR i IN 1..20 LOOP
+        -- Sélectionner un utilisateur au hasard
+        SELECT id INTO usr FROM users ORDER BY RANDOM() LIMIT 1;
+
+        -- Sélectionner une crypto au hasard parmi les ID 1 à 10
+        SELECT id INTO crypto_id_al FROM crypto WHERE id BETWEEN 1 AND 10 ORDER BY RANDOM() LIMIT 1;
+
+        -- Générer une date de transaction aléatoire dans les 3 derniers jours
+        transaction_date := NOW() - INTERVAL '3 days' + INTERVAL '1 day' * FLOOR(RANDOM() * 3) 
+                            + INTERVAL '1 hour' * FLOOR(RANDOM() * 24);
+
+        -- Générer un prix unitaire et une quantité aléatoires
+        pu := ROUND((RANDOM() * 50000 + 100)::numeric, 2); -- Prix entre 100 et 50,000
+        qte := ROUND((RANDOM() * 5 + 0.1)::numeric, 2);    -- Quantité entre 0.1 et 5
+        prix := ROUND((pu * qte)::numeric, 2);             -- Prix total
+
+        -- Déterminer aléatoirement si c'est un achat (2) ou une vente (1)
+        type_commission_id_al := CASE WHEN RANDOM() > 0.5 THEN 1 ELSE 2 END;
+
+        -- Insérer la transaction crypto
+        INSERT INTO transaction_crypto (pu_crypto, prix, qte, dt_transaction, type_commission_id, crypto_id, user_id)
+        VALUES (pu, prix, qte, transaction_date, type_commission_id_al, crypto_id_al, usr.id)
+        RETURNING id INTO transaction_id;
+    END LOOP;
+END $$;
+
 
