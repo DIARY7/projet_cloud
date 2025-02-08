@@ -32,10 +32,6 @@ services:
       - ~/.m2/repository:/root/.m2/repository
     depends_on:
       - db
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
 
   react-app:
     container_name: react_app
