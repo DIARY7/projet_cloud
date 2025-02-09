@@ -124,9 +124,13 @@ namespace userboard.Controllers
             var pwdhached = Hasher.HashString(newuser.Password);
             newuser.Password = pwdhached;
 
-            // initialisation de creation et modification
-            newuser.CreatedAt = DateTime.Now;
-            newuser.UpdatedAt = DateTime.Now;
+            TimeZoneInfo utcPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+            DateTime currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, utcPlus3);
+
+            newuser.CreatedAt = currentTime;
+            newuser.UpdatedAt = currentTime;
+
+
 
             // nb tentatives
             newuser.NAttempt = 0;

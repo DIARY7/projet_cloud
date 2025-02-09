@@ -366,6 +366,9 @@ VALUES
 (100000.50, 0.00, '2025-01-29 12:00:00', 9),
 (100000.75, 0.00, '2025-01-29 14:00:00', 10);
 
+INSERT INTO synchro_date VALUES (NOW());
+
+select max(dt_sync) from synchro_date; 
 
 
 -- Insérer des transactions crypto et des transactions de fonds correspondantes pour 3 jours

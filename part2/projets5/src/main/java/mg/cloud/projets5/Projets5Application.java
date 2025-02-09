@@ -8,17 +8,19 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.services.FondService;
+import mg.cloud.projets5.services.SynchronisationService;
 
 @SpringBootApplication
 public class Projets5Application {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(Projets5Application.class, args);
-		// FondService fondService = context.getBean(FondService.class);
-		// List<TransactionFondDemande> fondDemandes = fondService.generateTest();
-		// for (TransactionFondDemande fondDemande : fondDemandes) {
-		// 	System.out.println(fondDemande);
-		// }
+		SynchronisationService synchronisationService = context.getBean(SynchronisationService.class);
+		try {
+			synchronisationService.synchroToLocalAndOnline();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
