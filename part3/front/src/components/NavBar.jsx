@@ -52,7 +52,7 @@ const Navbar = () => {
                                 toggleDropdown={(state) => toggleDropdown('transactions', state)}
                                 items={[
                                     { label: 'Résumé', link: '/transactions/resume' },
-                                    { label: 'Liste', link: '/transactions' },
+                                    // { label: 'Liste', link: '/transactions' },
                                     { label: 'Validation', link: '/transactions/validation' },
                                 ]}
                             />
