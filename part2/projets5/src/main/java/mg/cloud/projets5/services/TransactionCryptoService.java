@@ -3,6 +3,7 @@ package mg.cloud.projets5.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class TransactionCryptoService {
 
     public void save(Double puCrypto,Double qte,LocalDate dt,Integer typeCommission , Integer cryptoId, Integer userId) throws Exception{
         // LocalDateTime date = dt.atTime(23, 59, 59);
-        LocalDateTime date = dt.atTime(LocalTime.now());
+        LocalDateTime date = dt.atTime(LocalTime.now(ZoneId.of("Africa/Nairobi")));
         if (qte > 0) {
             if (fondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
@@ -77,9 +78,10 @@ public class TransactionCryptoService {
                     qte = qte * -1;
                 }
                 
+                double montantTotal = puCrypto*Math.abs(qte);
                 TransactionCrypto t = TransactionCrypto.builder()
                 .puCrypto(puCrypto)
-                .prix(puCrypto*qte)
+                .prix(montantTotal)
                 .qte(qte)
                 .dtTransaction(date)
                 .commission(TypeCommission.builder().id(typeCommission).build())
@@ -96,9 +98,9 @@ public class TransactionCryptoService {
                                     .build();
 
                 if (typeCommission == 2) {
-                    tr.setEntree(qte*puCrypto);
+                    tr.setEntree(montantTotal);
                 }else{
-                    tr.setSortie(qte*puCrypto);
+                    tr.setSortie(montantTotal);
                 }
                 
                 transactionFondService.create(tr);
