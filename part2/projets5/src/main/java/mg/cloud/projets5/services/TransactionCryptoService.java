@@ -2,6 +2,8 @@ package mg.cloud.projets5.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
+import mg.cloud.projets5.utils.ProjectUtils;
 import mg.cloud.projets5.dto.AchatVenteFond;
 import mg.cloud.projets5.entity.TypeCommission;
 import mg.cloud.projets5.entity.Crypto;
@@ -32,6 +35,10 @@ public class TransactionCryptoService {
     @Autowired
     CryptoService cryptoService;
 
+    public List<TransactionCrypto> getAllToSynchro(LocalDateTime synchDateTime){
+        return transactionCryptoRepo.findTransactionAfterDtTransaction(synchDateTime);
+    }
+
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
         LocalDateTime dateFinTime = (date_fin != null) ? date_fin.atTime(23, 59, 59) : null;
@@ -48,7 +55,7 @@ public class TransactionCryptoService {
     public List<AchatVenteFond> filterAchatVenteFond(LocalDate date_fin){
         LocalDateTime dateFinTime = null;
         if (date_fin == null) {
-            dateFinTime = LocalDateTime.now();   
+            dateFinTime = ProjectUtils.getTimeNow();
         }else{
             dateFinTime = date_fin.atTime(23, 59, 59);
         }
@@ -57,7 +64,8 @@ public class TransactionCryptoService {
     }
 
     public void save(Double puCrypto,Double qte,LocalDate dt,Integer typeCommission , Integer cryptoId, Integer userId) throws Exception{
-        LocalDateTime date = dt.atTime(23, 59, 59);
+        // LocalDateTime date = dt.atTime(23, 59, 59);
+        LocalDateTime date = dt.atTime(LocalTime.now(ZoneId.of("Africa/Nairobi")));
         if (qte > 0) {
             if (fondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
@@ -70,9 +78,10 @@ public class TransactionCryptoService {
                     qte = qte * -1;
                 }
                 
+                double montantTotal = puCrypto*Math.abs(qte);
                 TransactionCrypto t = TransactionCrypto.builder()
                 .puCrypto(puCrypto)
-                .prix(puCrypto*qte)
+                .prix(montantTotal)
                 .qte(qte)
                 .dtTransaction(date)
                 .commission(TypeCommission.builder().id(typeCommission).build())
@@ -89,9 +98,9 @@ public class TransactionCryptoService {
                                     .build();
 
                 if (typeCommission == 2) {
-                    tr.setEntree(qte*puCrypto);
+                    tr.setEntree(montantTotal);
                 }else{
-                    tr.setSortie(qte*puCrypto);
+                    tr.setSortie(montantTotal);
                 }
                 
                 transactionFondService.create(tr);

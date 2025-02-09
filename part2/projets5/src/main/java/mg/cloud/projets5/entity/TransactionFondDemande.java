@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mg.cloud.projets5.utils.ProjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class TransactionFondDemande {
         }
         // Définit automatiquement la date de transaction si elle est nulle
         if (this.dtTransaction == null) {
-            this.dtTransaction = LocalDateTime.now();
+            this.dtTransaction = ProjectUtils.getTimeNow();
         }
     }
 
