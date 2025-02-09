@@ -63,9 +63,9 @@ public class TransactionCryptoService {
         
     }
 
-    public void save(Double puCrypto,Double qte,LocalDate dt,Integer typeCommission , Integer cryptoId, Integer userId) throws Exception{
+    public void save(Double puCrypto,Double qte,Integer typeCommission , Integer cryptoId, Integer userId) throws Exception{
         // LocalDateTime date = dt.atTime(23, 59, 59);
-        LocalDateTime date = dt.atTime(LocalTime.now(ZoneId.of("Africa/Nairobi")));
+        LocalDateTime date = ProjectUtils.getTimeNow();
         if (qte > 0) {
             if (fondService.getMontantTotal(userId) < puCrypto*qte  && typeCommission == 2){
                  throw new Exception("Fond insuffisant");
