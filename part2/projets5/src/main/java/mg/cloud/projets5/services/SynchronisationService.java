@@ -1,5 +1,6 @@
 package mg.cloud.projets5.services;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,6 +30,10 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.cloud.FirestoreClient;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import mg.cloud.projets5.dto.AchatVenteFond;
 import mg.cloud.projets5.dto.coursCrypto.CoursCryptoDTO;
 import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
@@ -117,6 +123,67 @@ public class SynchronisationService {
         localToFirestorePrixCrypto(db);
         // transactio_crypto 
         localToFirestoretransactionCrypto(lastSync,db);
+        // portefeuille
+
+        localToFirestorePortefeuille(db);
+        
+    }
+
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    class DocumentPortefeuille {
+        private Integer user_id;
+        private Double valeur;
+    }
+    private void localToFirestorePortefeuille(Firestore db) throws InterruptedException, ExecutionException{
+        CollectionReference collection = db.collection("porte_feuille");
+        List<AchatVenteFond> achatVenteFonds = transactionCryptoService.filterAchatVenteFond(null);
+
+        // Lire les documents existants
+        ApiFuture<QuerySnapshot> querySnapshot = collection.get();
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+        // Mapping des données Firestore
+        var firestoreData = documents.stream()
+            .collect(Collectors.toMap(
+                doc -> doc.getLong("user_id").intValue(),
+                doc -> doc.getDouble("valeur")
+            ));
+
+        for (AchatVenteFond fond : achatVenteFonds) {
+            Integer userId = fond.getUserId();
+            Double valeur = fond.getFond().doubleValue();
+
+            if (userId == null || valeur == null) continue;
+
+            // Si l'utilisateur existe avec la même valeur, ignorer
+            if (firestoreData.containsKey(userId) && firestoreData.get(userId).compareTo(valeur) == 0) {
+                continue;
+            }
+
+            if (firestoreData.containsKey(userId)) {
+                // Mise à jour du document si la valeur a changé
+                collection.whereEqualTo("user_id", userId)
+                        .get()
+                        .get()
+                        .getDocuments()
+                        .forEach(doc -> {
+                            try {
+                                doc.getReference().update("valeur", valeur).get();
+                                System.out.println("Document pour user_id " + userId + " mis à jour.");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+            } else {
+                // Ajouter un nouveau document
+                collection.add(new DocumentPortefeuille(userId, valeur)).get();
+                System.out.println("Document pour user_id " + userId + " ajouté.");
+            }
+        
+        }
     }
 
     private void updateDate() {
