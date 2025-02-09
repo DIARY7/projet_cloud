@@ -56,13 +56,23 @@ public class TransactionCryptoController {
     // Liste Total achat , total vente (Prix et Quantite) ,Fond actuel
      @GetMapping("/ListResume")
     public DataTransfertObject getEtat(
-        @RequestParam(required = false) LocalDate dateFin
+        @RequestParam(required = false) LocalDate dateFin,
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
         DataTransfertObject dto = new DataTransfertObject();
-
-        HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+        try {
+            Users user = tokenService.getUserByToken(authorizationHeader); 
+            if (user != null && user.getIsAdmin() == false) {
+                dto.unauthorized("Vous n'avez pas les droits pour effectuer cette action");
+                return dto;
+            }           
+            HashMap<String , List<?>> map = new HashMap<String,List<?>>();
             map.put("listEtat", transactionCryptoService.filterAchatVenteFond(dateFin));
             dto.success(map,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            dto.error(e.getMessage(), null);
+        }
             
         return dto;
     }

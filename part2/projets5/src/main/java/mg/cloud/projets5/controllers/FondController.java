@@ -70,10 +70,15 @@ public class FondController {
 
 
     @GetMapping("/fond/transaction")
-   public DataTransfertObject getListDemande() {
+   public DataTransfertObject getListDemande(@RequestHeader("Authorization") String authorizationHeader) {
        DataTransfertObject dto = new DataTransfertObject();
        HashMap<String, Object> data = new HashMap<>();
        try{
+           Users user = tokenService.getUserByToken(authorizationHeader);
+           if (user != null && user.getIsAdmin() == false) {
+               dto.unauthorized("Vous n'avez pas les droits pour effectuer cette action");
+               return dto;
+           }
         List<TransactionFondDemandeDTO>  fondDemandeDTOs = fondService.getAlldto();
         data.put("demandes", fondDemandeDTOs);
         dto.success(data,"Donnée bien pris ");
@@ -88,11 +93,17 @@ public class FondController {
 
    @PostMapping("/fond/transaction")
    public DataTransfertObject insert(
+           @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam(name = "demandeId") String demandeIde,
             @RequestParam(name = "valider") Boolean valider)
         {
        DataTransfertObject dto = new DataTransfertObject();
         try{
+            Users user = tokenService.getUserByToken(authorizationHeader);
+            if (user != null && user.getIsAdmin() == false) {
+                dto.unauthorized("Vous n'avez pas les droits pour effectuer cette action");
+                return dto;
+            }
             fondService.traiterDemande(demandeIde, valider);
             dto.success(null, "transaction traité avec success"); 
         }

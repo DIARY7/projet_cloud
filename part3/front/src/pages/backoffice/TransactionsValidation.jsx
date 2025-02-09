@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRightLeft, PlusCircle, MinusCircle } from 'lucide-react';
 import Navbar from '../../components/NavBar';
+import { getToken } from '../../utils/auth';
 
 export default function TransactionsValidation() {
     const [transactions, setTransactions] = useState([]);
@@ -15,11 +16,18 @@ export default function TransactionsValidation() {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/fond/transaction');
+            const response = await fetch('http://localhost:8080/fond/transaction', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Erreur lors de la récupération des données');
             }
             const result = await response.json();
+            if (result.status === 'unauthorized') {
+                window.location.href = '/unauthorized';
+            }
             setTransactions(result.data.demandes || []);
         } catch (err) {
             setError(err.message);
@@ -32,14 +40,19 @@ export default function TransactionsValidation() {
         try {
             const response = await fetch('http://localhost:8080/fond/transaction', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+            },
                 body: new URLSearchParams({ demandeId, valider })
             });
             if (!response.ok) {
                 throw new Error('Erreur lors du traitement de la transaction');
             }
-            
-            fetchTransactions(); // Rafraîchir la liste après validation/refus
+            if (result.status === 'unauthorized') {
+                window.location.href = '/unauthorized';
+            }
+            fetchTransactions();
         } catch (error) {
             setError(error.message);
         }
