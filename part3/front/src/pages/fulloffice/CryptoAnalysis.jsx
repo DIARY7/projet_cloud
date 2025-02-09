@@ -85,7 +85,7 @@ export default function CryptoAnalysis() {
     return (
         <div className="min-h-screen bg-gray-900">
             <Navbar/>
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto p-6">
                 <div className="flex items-center justify-center mb-8">
                     <BarChart className="h-8 w-8 text-yellow-500 mr-3" />
                     <h1 className="text-3xl font-bold text-white">Analyse des Cryptomonnaies</h1>
@@ -111,7 +111,7 @@ export default function CryptoAnalysis() {
                             />
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-center">
+                            <div className="flex items-center space-x-3">
                                 <input
                                     type="checkbox"
                                     id="selectAll"
@@ -119,24 +119,27 @@ export default function CryptoAnalysis() {
                                     onChange={handleSelectAllChange}
                                     className="form-checkbox h-5 w-5 text-yellow-500"
                                 />
-                                <label htmlFor="selectAll" className="ml-2 text-white">
-                                    Tous
+                                <label htmlFor="selectAll" className="text-white text-sm">
+                                    Sélectionner toutes les cryptomonnaies
                                 </label>
                             </div>
-                            {cryptoData.map((crypto) => (
-                                <div key={crypto.crypto.id} className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={crypto.crypto.label}
-                                        checked={selectedCryptos.includes(crypto.crypto.label)}
-                                        onChange={() => handleCheckboxChange(crypto.crypto.label)}
-                                        className="form-checkbox h-5 w-5 text-yellow-500"
-                                    />
-                                    <label htmlFor={crypto.crypto.label} className="ml-2 text-white">
-                                        {crypto.crypto.label}
-                                    </label>
-                                </div>
-                            ))}
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {cryptoData.map((crypto) => (
+                                    <div key={crypto.crypto.id} className="flex items-center space-x-3">
+                                        <input
+                                            type="checkbox"
+                                            id={crypto.crypto.label}
+                                            checked={selectedCryptos.includes(crypto.crypto.label)}
+                                            onChange={() => handleCheckboxChange(crypto.crypto.label)}
+                                            className="form-checkbox h-5 w-5 text-yellow-500"
+                                        />
+                                        <label htmlFor={crypto.crypto.label} className="text-white text-sm">
+                                            {crypto.crypto.label}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 

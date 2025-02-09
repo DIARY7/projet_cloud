@@ -80,7 +80,7 @@ export default function CommissionAnalysis() {
                             </div>
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-center">
+                            <div className="flex items-center space-x-3">
                                 <input
                                     type="checkbox"
                                     id="selectAll"
@@ -88,24 +88,27 @@ export default function CommissionAnalysis() {
                                     onChange={handleSelectAllChange}
                                     className="form-checkbox h-5 w-5 text-yellow-500"
                                 />
-                                <label htmlFor="selectAll" className="ml-2 text-white">
-                                    Tous
+                                <label htmlFor="selectAll" className="text-white text-sm">
+                                    Sélectionner toutes les cryptomonnaies
                                 </label>
                             </div>
-                            {commissionData.map((crypto) => (
-                                <div key={crypto.name} className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={crypto.name}
-                                        checked={selectedCryptos.includes(crypto.name)}
-                                        onChange={() => handleCheckboxChange(crypto.name)}
-                                        className="form-checkbox h-5 w-5 text-yellow-500"
-                                    />
-                                    <label htmlFor={crypto.name} className="ml-2 text-white">
-                                        {crypto.name}
-                                    </label>
-                                </div>
-                            ))}
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {commissionData.map((crypto) => (
+                                    <div key={crypto.name} className="flex items-center space-x-3">
+                                        <input
+                                            type="checkbox"
+                                            id={crypto.name}
+                                            checked={selectedCryptos.includes(crypto.name)}
+                                            onChange={() => handleCheckboxChange(crypto.name)}
+                                            className="form-checkbox h-5 w-5 text-yellow-500"
+                                        />
+                                        <label htmlFor={crypto.name} className="text-white text-sm">
+                                            {crypto.name}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
