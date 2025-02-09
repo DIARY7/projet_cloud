@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { LineChart, X } from 'lucide-react';
+import { LineChart } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import ErrorMessage from '../fulloffice/error/ErrorMessage';
 import Navbar from '../../components/NavBar';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
 
 const fetchCryptoData = async () => {
     try {
@@ -22,7 +21,6 @@ const fetchCryptoData = async () => {
         throw new Error('Une erreur est survenue lors de la récupération des données');
     }
 };
-
 
 export default function CryptoEvolution() {
     const [selectedCrypto, setSelectedCrypto] = useState('BTC');
@@ -44,13 +42,21 @@ export default function CryptoEvolution() {
                 setStackTrace(err.stack);
             }
         };
+
+        // Initial fetch
         loadData();
+
+        // Set an interval to fetch data every 10 seconds
+        const interval = setInterval(loadData, 10000);
+
+        // Cleanup the interval when the component unmounts
+        return () => clearInterval(interval);
     }, []);
 
     if (error) {
         return (
             <div className="min-h-screen bg-gray-900">
-                <Navbar/>
+                <Navbar />
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center justify-center mb-8">
                         <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
@@ -81,7 +87,7 @@ export default function CryptoEvolution() {
             },
         ],
     };
-    
+
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -102,7 +108,7 @@ export default function CryptoEvolution() {
 
     return (
         <div className="min-h-screen bg-gray-900">
-            <Navbar/>
+            <Navbar />
             <div className="max-w-7xl mx-auto p-6">
                 <div className="flex items-center justify-center mb-8">
                     <LineChart className="h-8 w-8 text-yellow-500 mr-3" />
