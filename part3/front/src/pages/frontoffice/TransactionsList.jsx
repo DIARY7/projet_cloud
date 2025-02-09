@@ -43,9 +43,9 @@ export default function TransactionsList() {
               }
           };
   
-          useEffect(() => {
-              fetchData();
-          }, []);
+  useEffect(() => {
+    fetchData();
+  }, [selectedUser, minDate, maxDate, selectedCrypto]);
 
   const handleDateMaxChange = (e) => {
     setMaxDate(e.target.value);
@@ -173,16 +173,20 @@ export default function TransactionsList() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-yellow-500">
-                    <Link to ="/transactions">
-                      <div className="flex items-center">
-                        <img
-                          src={`https://robohash.org/${transaction.users.id}?set=set1`} 
-                          alt={transaction.users.id}
-                          className="h-8 w-8 rounded-full mr-2"
-                        />
-                        <span>{transaction.users.email}</span>
-                      </div>
-                    </Link>
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() => {
+                        setSelectedUser(transaction.users.id);  // Définit l'ID de l'utilisateur sélectionné
+                        fetchData();  // Rafraîchit les données avec le nouvel ID d'utilisateur
+                      }}
+                    >
+                      <img
+                        src={`https://robohash.org/${transaction.users.id}?set=set1`}
+                        alt={transaction.users.id}
+                        className="h-8 w-8 rounded-full mr-2"
+                      />
+                      <span>{transaction.users.email}</span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                   {transaction.commission.id == 2 ? transaction.qte : 0.0 }
