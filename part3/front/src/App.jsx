@@ -15,13 +15,13 @@ import Page404 from './pages/fulloffice/error/Page404';
 import Unauthorized from './pages/fulloffice/error/Unauthorized';
 
 // BackOffice
-import TransactionsList from './pages/backoffice/TransactionsList';
 import TransactionResume from './pages/backoffice/TransactionResume';
 import TransactionsValidation from './pages/backoffice/TransactionsValidation';
 import EditCommission from './pages/backoffice/EditCommission';
 import CommissionAnalysis from './pages/backoffice/CommissionAnalysis';
 
 // FrontOffice
+import TransactionsList from './pages/frontoffice/TransactionsList';
 import CryptoWallet from './pages/frontoffice/CryptoWallet';
 import FundsWallet from './pages/frontoffice/FundsWallet';
 
@@ -39,14 +39,6 @@ function App() {
         <Route path="/cryptos/evolution" element={<CryptoEvolution />} />
 
         {/* Backoffice Routes */}
-        <Route
-          path="/transactions"
-          element={
-            <ProtectedRoute>
-              <TransactionsList />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/transactions/resume"
           element={
@@ -81,6 +73,7 @@ function App() {
         />
 
         {/* Frontoffice Routes */}
+        <Route path="/transactions" element={<TransactionsList />} />
         <Route path="/wallet/cryptos" element={<CryptoWallet />} />
         <Route path="/wallet/funds" element={<FundsWallet />} />
 

@@ -56,19 +56,23 @@ LEFT JOIN (
             @Param("endDate") LocalDateTime endDate
             );
 
-    @Query( value = """
-            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id,tc.crypto.label, COALESCE(SUM(qte), 0) ) 
-            FROM TransactionCrypto tc  WHERE tc.users.id = :idUser
-            GROUP BY tc.crypto.id,tc.crypto.label
+    @Query(value = """
+            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(c.id, c.label, COALESCE(SUM(tc.qte), 0))
+            FROM Crypto c
+            LEFT JOIN TransactionCrypto tc ON tc.crypto.id = c.id
+            GROUP BY c.id, c.label
             """)
-    List<PorteFeuilleCrypto> getWalletUser(@Param("idUser") int idUser );
+    List<PorteFeuilleCrypto> getWallet();
 
     @Query(value = """
-            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id, tc.crypto.label, COALESCE(SUM(tc.qte), 0))
-            FROM TransactionCrypto tc
-            WHERE tc.users.id = :idUser
-            AND tc.crypto.id = :cryptoId
-            GROUP BY tc.crypto.id, tc.crypto.label
+            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(c.id, c.label, COALESCE(SUM(tc.qte), 0))
+            FROM Crypto c
+            CROSS JOIN Users u
+            LEFT JOIN TransactionCrypto tc ON tc.crypto.id = c.id
+            AND tc.users.id = u.id
+            WHERE u.id = :idUser
+            AND c.id = :cryptoId
+            GROUP BY c.id, c.label
             """)
     PorteFeuilleCrypto getQteCryptoUser(@Param("idUser") int idUser, @Param("cryptoId") int cryptoId);
 

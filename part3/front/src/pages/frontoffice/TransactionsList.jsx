@@ -16,7 +16,6 @@ export default function TransactionsList() {
   const [loading, setLoading] = useState(false);
       
   const fetchData = async () => {
-              // setLoading(true); // Activer le chargement
               setLoading(true);
           
               try {
@@ -30,7 +29,6 @@ export default function TransactionsList() {
           
               const result = await response.json();
           
-              console.log(result);
               if (result.status === 'success') {
                   setTrans(result.data.listTransactionCrypto);
                   setcryptos(result.data.listCrypto);
@@ -39,9 +37,9 @@ export default function TransactionsList() {
                   console.error('Erreur:', result.error);
               }
               } catch (error) {
-              console.error('Erreur de requête :', error);
+                console.error('Erreur de requête :', error);
               } finally {
-              setLoading(false); // Désactiver le chargement
+              setLoading(false);
               }
           };
   

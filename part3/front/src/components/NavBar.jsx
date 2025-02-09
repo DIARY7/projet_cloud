@@ -94,6 +94,14 @@ const Navbar = () => {
                                 ]}
                             />
                             <Dropdown
+                                label="Overview"
+                                isOpen={dropdowns.transactions}
+                                toggleDropdown={(state) => toggleDropdown('transactions', state)}
+                                items={[
+                                    { label: 'Transactions', link: '/transactions' },
+                                ]}
+                            />
+                            <Dropdown
                                 label="Cryptos"
                                 isOpen={dropdowns.cryptos}
                                 toggleDropdown={(state) => toggleDropdown('cryptos', state)}

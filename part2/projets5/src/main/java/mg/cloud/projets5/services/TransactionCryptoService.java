@@ -102,8 +102,10 @@ public class TransactionCryptoService {
     }
 
     public  List<PorteFeuilleCrypto> getWalletCrypto(int idUser){
-        List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser(idUser);
+        List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWallet();
         for (int i = 0; i < listePorteFeuilles.size(); i++) {
+            PorteFeuilleCrypto porteFeuilleCrypto = transactionCryptoRepo.getQteCryptoUser(idUser, listePorteFeuilles.get(i).getIdCrypto());
+            listePorteFeuilles.get(i).setQte(porteFeuilleCrypto.getQte());
             double valeur = listePorteFeuilles.get(i).getQte() * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto()); 
             listePorteFeuilles.get(i).setValeur(valeur);
         }     
