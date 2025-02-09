@@ -32,6 +32,10 @@ public class TransactionCryptoService {
     @Autowired
     CryptoService cryptoService;
 
+    public List<TransactionCrypto> getAllToSynchro(LocalDateTime synchDateTime){
+        return transactionCryptoRepo.findTransactionAfterDtTransaction(synchDateTime);
+    }
+
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
         LocalDateTime dateFinTime = (date_fin != null) ? date_fin.atTime(23, 59, 59) : null;

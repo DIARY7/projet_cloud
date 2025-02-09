@@ -22,6 +22,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time");
+DateTime localTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZone);
+
+Console.WriteLine($"Heure actuelle à Madagascar : {localTime}");
+
+
 // Configurer la connexion à la base de données Postgres
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

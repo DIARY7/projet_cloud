@@ -1,5 +1,7 @@
 package mg.cloud.projets5.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,10 @@ public class TransactionFondService {
 
     public void create(TransactionFond transaction){
         transactionFondRepo.save(transaction);
+    }
+
+    public void saveAll(List<TransactionFondDemande> transaction){
+        transactionFondDemandeRepo.saveAll(transaction);
     }
 
     

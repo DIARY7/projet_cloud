@@ -130,8 +130,6 @@ namespace userboard.Controllers
             newuser.CreatedAt = currentTime;
             newuser.UpdatedAt = currentTime;
 
-
-
             // nb tentatives
             newuser.NAttempt = 0;
 
@@ -275,8 +273,10 @@ namespace userboard.Controllers
             var tokenValue = Generator.GenererToken();
             Token tokenObj = new Token();
             tokenObj.Value = tokenValue;
-            tokenObj.CreatedAt = DateTime.Now;
-            tokenObj.ExpiresAt =  DateTime.Now.AddSeconds(3600);
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("E. Africa Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTime(DateTime.Now, timeZone);
+            tokenObj.CreatedAt = localTime;
+            tokenObj.ExpiresAt =  localTime.AddSeconds(3600);
             tokenObj.User = userMarina;
 
             _context.Tokens.Add(tokenObj);

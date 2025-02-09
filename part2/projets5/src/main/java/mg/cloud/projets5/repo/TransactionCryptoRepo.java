@@ -78,4 +78,8 @@ LEFT JOIN (
     //         GROUP BY tc.crypto
     //         """)
     // List<PorteFeuilleCrypto> getWalletUser2(@Param("idUser") int idUser);
+
+
+    @Query("SELECT tc FROM TransactionCrypto tc WHERE tc.dtTransaction > :synchDate")
+    List<TransactionCrypto> findTransactionAfterDtTransaction(@Param("synchDate") LocalDateTime date);
 }

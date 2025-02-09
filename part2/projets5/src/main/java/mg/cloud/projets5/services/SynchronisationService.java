@@ -1,7 +1,10 @@
 package mg.cloud.projets5.services;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.google.api.core.ApiFuture;
@@ -17,7 +21,9 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
@@ -28,7 +34,9 @@ import mg.cloud.projets5.dto.coursCrypto.CoursCryptoDTO;
 import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
 import mg.cloud.projets5.entity.TransactionCrypto;
+import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.entity.Users;
+import mg.cloud.projets5.utils.ProjectUtils;
 
 @Service
 public class SynchronisationService {
@@ -43,8 +51,13 @@ public class SynchronisationService {
     TransactionCryptoService transactionCryptoService;
 
     @Autowired
+    TransactionFondService transactionFondService;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
+    @Scheduled(fixedRate = 60000)
     public void synchroToLocalAndOnline() throws Exception {
 
         Firestore db = FirestoreClient.getFirestore();
@@ -54,25 +67,62 @@ public class SynchronisationService {
         updateDate();
     }
 
-    private void synchroToLocal(LocalDateTime lastSync,Firestore db) {
-        // Synchronisation vers local
+    public void synchroToLocal(LocalDateTime lastSync, Firestore db) throws Exception {
+        CollectionReference collection = db.collection("transaction_fond_demande");
+        
+        // Obtenir les documents dont `dt_transaction` est supérieur à `lastSync`
+        ApiFuture<QuerySnapshot> query = collection.whereGreaterThan("dt_transaction", Timestamp.valueOf(lastSync)).get();
+    
+        List<QueryDocumentSnapshot> documents = query.get().getDocuments();
+    
+        // Vérification si la collection est vide
+        if (documents.isEmpty()) {
+            System.out.println("Aucune transaction à synchroniser.");
+            return;
+        }
+    
+        List<TransactionFondDemande> transactions = new ArrayList<>();
+    
+        for (QueryDocumentSnapshot doc : documents) {
+            // Transformer chaque document en TransactionFondDemande
+            TransactionFondDemande transaction = new TransactionFondDemande();
+            transaction.setId(doc.getId());
+            transaction.setEntree(doc.getDouble("entree"));
+            transaction.setSortie(doc.getDouble("sortie"));
+            transaction.setDtTransaction(
+                    doc.getTimestamp("dt_transaction").toDate().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime()
+            );
+            Users users = new Users();
+            users.setId(doc.getLong("user_id").intValue());
+            transaction.setUsers(users);
+    
+            transactions.add(transaction);
+        }
+    
+        // Enregistrer les transactions dans la base locale
+        transactionFondService.saveAll(transactions);
+    
+        // Effacer les documents après synchronisation
+        clearCollection("transaction_fond_demande", db);
+        System.out.println("Synchronisation vers la base locale terminée. Documents traités : " + transactions.size());
     }
+    
 
     private void synchroToOnline(LocalDateTime lastSync,Firestore db) throws Exception {
         
-        // localToFirestoreUsers(lastSync, db);
-
+        localToFirestoreUsers(lastSync, db);
         // crypto
-        localToFirestoreCrypto(db);
+        // localToFirestoreCrypto(db);
         // prix_crypto
-        localToFirestorePrixCrypto(lastSync,db);
-
+        localToFirestorePrixCrypto(db);
         // transactio_crypto 
-        // localToFirestoretransactionCrypto(lastSync,db);
+        localToFirestoretransactionCrypto(lastSync,db);
     }
 
     private void updateDate() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = ProjectUtils.getTimeNow();
         String sql = "INSERT INTO synchro_date (dt_sync) VALUES (?)";
         jdbcTemplate.update(sql, now);
     }
@@ -125,7 +175,7 @@ public class SynchronisationService {
     
     private void localToFirestoretransactionCrypto(LocalDateTime lastSync, Firestore db) throws Exception {
         // à changer aveo
-        List<TransactionCrypto> listTransactionCryptos = transactionCryptoService.filterByUserIdAndDateAndCryptoId(null,null,null,null);
+        List<TransactionCrypto> listTransactionCryptos = transactionCryptoService.getAllToSynchro(lastSync);
         
         WriteBatch batch = db.batch();
         int count = 0;
@@ -161,7 +211,7 @@ public class SynchronisationService {
     }
 
 
-    private void localToFirestorePrixCrypto(LocalDateTime lastSync, Firestore db) throws Exception {
+    private void localToFirestorePrixCrypto(Firestore db) throws Exception {
     clearCollection("prix_crypto", db);
     CoursCryptoDTO coursCryptoDTO = cryptoService.getCoursCrypto();
 
@@ -221,9 +271,6 @@ public class SynchronisationService {
           System.out.println("Utilisateur ajouté à Firebase Auth: " + userRecord.getUid());
 
         }
-
-
-        
     }
 
     public void clearCollection(String collectionName, Firestore db) {
