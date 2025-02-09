@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Coins, ArrowRight, TrendingUp, CreditCard, BarChart } from 'lucide-react';
+import { ArrowRight, TrendingUp, CreditCard, BarChart } from 'lucide-react';
 import Navbar from '../../components/NavBar';
+import { isAuthenticated } from '../../utils/auth';
 
 export default function LandingPage() {
   return (
@@ -15,13 +16,15 @@ export default function LandingPage() {
           <p className="text-lg sm:text-xl text-gray-300 mb-8">
             Plateforme légère pour gérer, acheter et vendre vos cryptomonnaies.
           </p>
-          <Link
-            to="/register"
-            className="inline-flex items-center bg-yellow-500 px-6 py-3 rounded-lg text-gray-900 hover:bg-yellow-400"
-          >
-            Commencer maintenant
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          {!isAuthenticated() && (
+            <Link
+              to="/register"
+              className="inline-flex items-center bg-yellow-500 px-6 py-3 rounded-lg text-gray-900 hover:bg-yellow-400"
+            >
+              Commencer maintenant
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-20">
