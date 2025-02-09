@@ -12,4 +12,6 @@ public class ProjectUtils {
     public static LocalDateTime getTimeNow(){
         return ZonedDateTime.now(zoneMadagascar).toLocalDateTime();
     }
+
+    
 }

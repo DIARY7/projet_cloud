@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.dto.analyseCrypto.AnalyseCrypto;
@@ -20,6 +22,7 @@ import mg.cloud.projets5.entity.Crypto;
 import mg.cloud.projets5.entity.PrixCrypto;
 import mg.cloud.projets5.repo.CryptoRepo;
 import mg.cloud.projets5.repo.PrixCryptoRepo;
+import mg.cloud.projets5.utils.ProjectUtils;
 
 
 @Service
@@ -46,6 +49,35 @@ public class CryptoService {
         analyseCryptoDTO.setAnalyseCryptos(analyseCryptos);
         return analyseCryptoDTO;
     }
+
+    @Scheduled(fixedRate = 10000)
+    public void coursEnTousReelle() {
+        List<PrixCrypto> prixCryptos = prixCryptoRepo.findLastPrice();
+        Random random = new Random();
+        List<PrixCrypto> newPrixCryptos = new ArrayList<>();
+
+        for (PrixCrypto prixCrypto : prixCryptos) {
+            double currentPrice = prixCrypto.getPrix();
+            double minPrice = currentPrice * 0.95;
+            double maxPrice = currentPrice * 1.05;
+
+            // Generate a random price within ±5% of the current price
+            double newPrice = minPrice + (maxPrice - minPrice) * random.nextDouble();
+
+            // Create a new PrixCrypto object with the generated price
+            PrixCrypto newPrixCrypto = new PrixCrypto();
+            newPrixCrypto.setDaty(ProjectUtils.getTimeNow());
+            newPrixCrypto.setPrix(newPrice);
+            newPrixCrypto.setCrypto(prixCrypto.getCrypto());
+
+            // Add the new price to the list
+            newPrixCryptos.add(newPrixCrypto);
+        }
+
+        // Save all new prices to the database in a single batch
+        prixCryptoRepo.saveAll(newPrixCryptos);
+    }
+
 
 
     public CoursCryptoDTO getCoursCrypto(){

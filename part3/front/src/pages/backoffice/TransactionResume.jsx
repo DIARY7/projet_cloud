@@ -2,21 +2,21 @@
     import { Link } from 'react-router-dom';
     import { Table } from 'lucide-react';
     import Navbar from '../../components/NavBar';
+    import { getToken } from '../../utils/auth';
 
     export default function TransactionsResume() {
-         const [userTotals, setuserTotals] = useState([]);
-           const [loading, setLoading] = useState(false);
-
-
+        const [userTotals, setuserTotals] = useState([]);
+        const [loading, setLoading] = useState(false);
 
         const fetchData = async (date = '') => {
-            // setLoading(true); // Activer le chargement
+            const token = getToken();
             setLoading(true);
         
             try {
             const response = await fetch('http://localhost:8080/TransCrypto/ListResume?dateFin='+date, {
                 method: 'GET',
                 headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 },
                 body: null,
@@ -28,13 +28,15 @@
             if (result.status === 'success') {
                 console.log(result.data.listEtat);
                 setuserTotals(result.data.listEtat);
+            } else if (result.status === 'unauthorized') {
+                window.location.href = '/unauthorized';
             } else {
                 console.error('Erreur:', result.error);
             }
             } catch (error) {
             console.error('Erreur de requête :', error);
             } finally {
-            setLoading(false); // Désactiver le chargement
+            setLoading(false);
             }
         };
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRightLeft, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 import { Search } from 'lucide-react';
+import { formatDate } from '../../utils/formattage';
 
 export default function TransactionsList() {
   const [maxDate, setMaxDate] = useState('');
@@ -153,8 +154,7 @@ export default function TransactionsList() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Type</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Entree</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sortie</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Quantité</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Cryptomonnaie</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Valeur (MGA)</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
@@ -191,10 +191,7 @@ export default function TransactionsList() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.commission.id == 2 ? transaction.qte : 0.0}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.commission.id == 2 ? 0.0 : transaction.qte}
+                    {Math.abs(transaction.qte)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {transaction.crypto.label}
@@ -203,7 +200,7 @@ export default function TransactionsList() {
                     {transaction.prix}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.dtTransaction}
+                    {formatDate(transaction.dtTransaction)}
                   </td>
                 </tr>
               ))}
