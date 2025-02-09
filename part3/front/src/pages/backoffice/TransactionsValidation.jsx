@@ -9,6 +9,7 @@ export default function TransactionsValidation() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [pfp,setpfp] = useState([]);
     const token = getToken();
 
     useEffect(() => {
@@ -32,7 +33,8 @@ export default function TransactionsValidation() {
                 window.location.href = '/unauthorized';
             }
             setTransactions(result.data?.demandes || []);
-        } catch (err) {
+            setpfp(result.data.pfp)
+        } catch (err) {result.data.pfp
             console.error('Erreur: ', err);
             setError(err.message || 'Une erreur est survenue');
         } finally {
@@ -61,6 +63,12 @@ export default function TransactionsValidation() {
             setLoading(false);
         }
     };
+
+    
+  const getUserImage = (userId) => {
+    return pfp[userId] || `https://robohash.org/${userId}?set=set1`;
+  };
+
 
     return (
         <div className="min-h-screen bg-gray-900">
@@ -120,7 +128,7 @@ export default function TransactionsValidation() {
                                             <Link to="/transactions">
                                                 <div className="flex items-center">
                                                     <img
-                                                        src={`https://robohash.org/${transaction.user.id}?set=set1`}
+                                                        src={getUserImage(transaction.user.id)}
                                                         alt={transaction.user.id}
                                                         className="h-8 w-8 rounded-full mr-2"
                                                     />

@@ -89,7 +89,8 @@ public class CryptoService {
 
     public EvolutionCryptoDTO getEvolutionCrypto() {
         // à changer
-        List<PrixCrypto> prixCryptos = prixCryptoRepo.findAll();
+        LocalDateTime oneHourAgo = ProjectUtils.getTimeNow().minusHours(1);
+        List<PrixCrypto> prixCryptos = prixCryptoRepo.findLastHourPrices(oneHourAgo);
         Map<Crypto, List<PrixDate>> cryptoPrixMap = new HashMap<>();
 
         for (PrixCrypto prixCrypto : prixCryptos) {

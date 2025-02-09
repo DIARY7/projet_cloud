@@ -2,6 +2,8 @@ CREATE TABLE synchro_date(
     dt_sync TIMESTAMP
 );
 
+INSERT INTO synchro_date VALUES (NOW());
+
 CREATE TABLE users(
    id SERIAL,
    full_name VARCHAR(255)  NOT NULL,
@@ -111,7 +113,9 @@ VALUES
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
 VALUES
-    ('User 11', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+    ('Admin', 'rollogetroussi-5108@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+
+UPDATE users set is_admin = true  where email = 'ramavoharinaivo.nyony@gmail.com';
 
 INSERT INTO Crypto (label, full_label) VALUES ('BTC', 'Bitcoin');
 INSERT INTO Crypto (label, full_label) VALUES ('ETH', 'Ethereum');
@@ -365,10 +369,6 @@ VALUES
 (100000.50, 0.00, '2025-01-29 12:00:00', 8),
 (100000.50, 0.00, '2025-01-29 12:00:00', 9),
 (100000.75, 0.00, '2025-01-29 14:00:00', 10);
-
-INSERT INTO synchro_date VALUES (NOW());
-
-select max(dt_sync) from synchro_date; 
 
 
 -- Insérer des transactions crypto et des transactions de fonds correspondantes pour 3 jours

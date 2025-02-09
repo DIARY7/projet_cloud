@@ -17,6 +17,11 @@ public interface PrixCryptoRepo extends JpaRepository<PrixCrypto, Integer> {
     @Query("SELECT pc FROM PrixCrypto pc ORDER BY pc.daty ASC")
     List<PrixCrypto> findAll();
 
+    @Query("SELECT pc FROM PrixCrypto pc WHERE pc.daty >= :date ORDER BY pc.daty ASC")
+    List<PrixCrypto> findLastHourPrices(@Param("date") LocalDateTime date);
+
+    
+
     @Query("SELECT pc FROM PrixCrypto pc WHERE pc.daty = (SELECT MAX(subPc.daty) FROM PrixCrypto subPc WHERE subPc.crypto.id = pc.crypto.id)")
     List<PrixCrypto> findLastPrice();
 

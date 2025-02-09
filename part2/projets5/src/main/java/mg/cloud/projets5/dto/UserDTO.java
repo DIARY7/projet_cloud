@@ -11,7 +11,7 @@ public class UserDTO {
     Integer id;
     String fullname;
     String email;
-    String php;
+    String pdp;
 
     public UserDTO(Integer id,String fullname,String email){
         setId(id);

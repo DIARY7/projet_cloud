@@ -42,13 +42,16 @@ public class TransactionCryptoController {
         @RequestParam(required = false) LocalDate dateFin
     ) {
         DataTransfertObject dto = new DataTransfertObject();
-
-        HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+        try {
+            HashMap<String , Object> map = new HashMap<String,Object>();
+            map.put("pfp",usersService.getUsersProfile());
             map.put("listTransactionCrypto", transactionCryptoService.filterByUserIdAndDateAndCryptoId(cryptoId, userId, dateDebut, dateFin));
             map.put("listCrypto",cryptoService.findAll() );
             map.put("listUser", usersService.findAll());
             dto.success(map,null);
-            
+        } catch (Exception e) {
+            dto.serverError(e, null);
+        }
         return dto;
     }
 
@@ -66,7 +69,8 @@ public class TransactionCryptoController {
                 dto.unauthorized("Vous n'avez pas les droits pour effectuer cette action");
                 return dto;
             }           
-            HashMap<String , List<?>> map = new HashMap<String,List<?>>();
+            HashMap<String , Object> map = new HashMap<String,Object>();
+            map.put("pfp",usersService.getUsersProfile());
             map.put("listEtat", transactionCryptoService.filterAchatVenteFond(dateFin));
             dto.success(map,null);
         } catch (Exception e) {

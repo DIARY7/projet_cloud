@@ -13,7 +13,7 @@ export default function TransactionsList() {
   const [transactions, setTrans] = useState([]);
   const [cryptos, setcryptos] = useState([]);
   const [users, setusers] = useState([]);
-
+  const [pfp,setpfp] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
@@ -29,9 +29,11 @@ export default function TransactionsList() {
 
       const result = await response.json();
       if (result.status === 'success') {
+        console.log(result.data);
         setTrans(result.data.listTransactionCrypto);
         setcryptos(result.data.listCrypto);
         setusers(result.data.listUser);
+        setpfp(result.data.pfp)
       } else {
         console.error('Erreur:', result.error);
       }
@@ -64,6 +66,10 @@ export default function TransactionsList() {
 
   const handleSubmit = (e) => {
     fetchData();
+  };
+
+  const getUserImage = (userId) => {
+    return pfp[userId] || `https://robohash.org/${userId}?set=set1`;
   };
 
   return (
@@ -183,7 +189,7 @@ export default function TransactionsList() {
                       }}
                     >
                       <img
-                        src={`https://robohash.org/${transaction.users.id}?set=set1`}
+                        src={getUserImage(transaction.users.id)}
                         alt={transaction.users.id}
                         className="h-8 w-8 rounded-full mr-2"
                       />

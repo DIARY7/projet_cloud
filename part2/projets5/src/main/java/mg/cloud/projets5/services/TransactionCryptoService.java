@@ -11,6 +11,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
+
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
 import mg.cloud.projets5.utils.ProjectUtils;
 import mg.cloud.projets5.dto.AchatVenteFond;
@@ -34,6 +41,9 @@ public class TransactionCryptoService {
 
     @Autowired
     CryptoService cryptoService;
+
+    @Autowired
+    NotificationService notificationService;
 
     public List<TransactionCrypto> getAllToSynchro(LocalDateTime synchDateTime){
         return transactionCryptoRepo.findTransactionAfterDtTransaction(synchDateTime);
@@ -104,6 +114,21 @@ public class TransactionCryptoService {
                 }
                 
                 transactionFondService.create(tr);
+
+                Firestore db = FirestoreClient.getFirestore();
+
+                Query query = db.collection("FCM_Token")
+                .whereEqualTo("user_id", userId.toString());
+                    ApiFuture<QuerySnapshot> querySnapshot = query.get();
+                    List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+                    QueryDocumentSnapshot documentSnapshot = documents.isEmpty() ? null : documents.get(0);
+                    System.out.println(documents.isEmpty());
+                    if (documentSnapshot != null) {
+                        String fcmToken = documentSnapshot.getString("token");
+                        System.out.println(fcmToken);
+                        notificationService.envoyerNotification(fcmToken, "Transaction Crypto favoris", "Mercie bcp");
+                       
+                    }
           
         }else{
             throw new IllegalArgumentException("Quantite positive uniquement");

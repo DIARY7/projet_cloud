@@ -7,6 +7,7 @@
     export default function TransactionsResume() {
         const [userTotals, setuserTotals] = useState([]);
         const [loading, setLoading] = useState(false);
+        const [pfp,setpfp] = useState([]);
 
         const fetchData = async (date = '') => {
             const token = getToken();
@@ -28,6 +29,7 @@
             if (result.status === 'success') {
                 console.log(result.data.listEtat);
                 setuserTotals(result.data.listEtat);
+                setpfp(result.data.pfp);
             } else if (result.status === 'unauthorized') {
                 window.location.href = '/unauthorized';
             } else {
@@ -49,6 +51,10 @@
             fetchData(e.target.value);
         };
 
+
+        const getUserImage = (userId) => {
+            return pfp[userId] || `https://robohash.org/${userId}?set=set1`;
+          };
         return (
             <div className="min-h-screen bg-gray-900">
                  {loading && (
@@ -90,7 +96,7 @@
                                             <Link to="/transactions">
                                                 <div className="flex items-center">
                                                     <img
-                                                        src={`https://robohash.org/${user.userId}?set=set1`}
+                                                        src={getUserImage(user.userId)}
                                                         alt={user.userId}
                                                         className="h-8 w-8 rounded-full mr-2"
                                                     />
