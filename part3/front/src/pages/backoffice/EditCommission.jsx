@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings, Save } from 'lucide-react';
 import Navbar from '../../components/NavBar';
+import { getToken } from '../../utils/auth';
 
 export default function EditCommission() {
     const [commissionValue, setCommissionValue] = useState('');
@@ -9,6 +10,7 @@ export default function EditCommission() {
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleSubmit = async (e) => {
+        const token = getToken();
         e.preventDefault();
         setError('');
         setSuccessMessage('');
@@ -17,6 +19,7 @@ export default function EditCommission() {
             const response = await fetch('http://localhost:8080/commission/edit', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
