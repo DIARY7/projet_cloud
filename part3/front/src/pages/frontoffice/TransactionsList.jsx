@@ -176,8 +176,8 @@ export default function TransactionsList() {
                     <div
                       className="flex items-center cursor-pointer"
                       onClick={() => {
-                        setSelectedUser(transaction.users.id);  // Définit l'ID de l'utilisateur sélectionné
-                        fetchData();  // Rafraîchit les données avec le nouvel ID d'utilisateur
+                        setSelectedUser(transaction.users.id); 
+                        // fetchData();
                       }}
                     >
                       <img
