@@ -3,7 +3,6 @@ package mg.cloud.projets5.repo;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import mg.cloud.projets5.entity.Tokens;
 

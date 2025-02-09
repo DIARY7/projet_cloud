@@ -75,4 +75,15 @@ LEFT JOIN (
             GROUP BY c.id, c.label
             """)
     PorteFeuilleCrypto getQteCryptoUser(@Param("idUser") int idUser, @Param("cryptoId") int cryptoId);
+
+    // @Query(value = """
+    //         SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto, SUM(qte))
+    //         FROM TransactionCrypto tc  WHERE tc.users.id = :idUser
+    //         GROUP BY tc.crypto
+    //         """)
+    // List<PorteFeuilleCrypto> getWalletUser2(@Param("idUser") int idUser);
+
+
+    @Query("SELECT tc FROM TransactionCrypto tc WHERE tc.dtTransaction > :synchDate")
+    List<TransactionCrypto> findTransactionAfterDtTransaction(@Param("synchDate") LocalDateTime date);
 }

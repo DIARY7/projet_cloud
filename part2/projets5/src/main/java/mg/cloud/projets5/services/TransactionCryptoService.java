@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.repo.TransactionCryptoRepo;
+import mg.cloud.projets5.utils.ProjectUtils;
 import mg.cloud.projets5.dto.AchatVenteFond;
 import mg.cloud.projets5.entity.TypeCommission;
 import mg.cloud.projets5.entity.Crypto;
@@ -32,6 +33,10 @@ public class TransactionCryptoService {
     @Autowired
     CryptoService cryptoService;
 
+    public List<TransactionCrypto> getAllToSynchro(LocalDateTime synchDateTime){
+        return transactionCryptoRepo.findTransactionAfterDtTransaction(synchDateTime);
+    }
+
     public List<TransactionCrypto> filterByUserIdAndDateAndCryptoId(Integer cryptoId,Integer userId,LocalDate date_debut,LocalDate date_fin){
         LocalDateTime dateDebutTime = (date_debut != null) ? date_debut.atStartOfDay() : null;
         LocalDateTime dateFinTime = (date_fin != null) ? date_fin.atTime(23, 59, 59) : null;
@@ -48,7 +53,7 @@ public class TransactionCryptoService {
     public List<AchatVenteFond> filterAchatVenteFond(LocalDate date_fin){
         LocalDateTime dateFinTime = null;
         if (date_fin == null) {
-            dateFinTime = LocalDateTime.now();   
+            dateFinTime = ProjectUtils.getTimeNow();
         }else{
             dateFinTime = date_fin.atTime(23, 59, 59);
         }

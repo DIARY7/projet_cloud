@@ -1,13 +1,12 @@
 package mg.cloud.projets5.services;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mg.cloud.projets5.entity.Tokens;
 import mg.cloud.projets5.entity.Users;
 import mg.cloud.projets5.repo.TokensRepo;
+import mg.cloud.projets5.utils.ProjectUtils;
 
 @Service
 public class TokensService {
@@ -20,7 +19,7 @@ public class TokensService {
             try {
                 String token = authorizationHeader.substring(7);            
                 Tokens tok = tokenRepo.findByToken(token).orElseThrow(()-> new Exception("Token invalide"));
-                if (tok.getExpiresAt().isBefore(LocalDateTime.now())) {
+                if (tok.getExpiresAt().isBefore(ProjectUtils.getTimeNow())) {
                     throw new Exception(" Ce token est obsolète ");
                 }
                 user = tok.getUser();

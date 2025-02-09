@@ -1,10 +1,9 @@
 package mg.cloud.projets5.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.entity.Users;
 import mg.cloud.projets5.repo.TransactionFondDemandeRepo;
 import mg.cloud.projets5.repo.TransactionFondRepo;
+import mg.cloud.projets5.utils.ProjectUtils;
 
 @Service
 public class FondService {
@@ -34,6 +34,7 @@ public class FondService {
     public Double getMontantTotal(Integer idUser) {
         return transFondRepo.getFondActuel(idUser).orElse(0.0);
     }
+
 
     public void createDemandeFond(TransactionFondDemande fondDemande){
         if(fondDemande.getSortie() < 0 || fondDemande.getEntree() < 0) throw new RuntimeException("Montant invalide , veuillez reverfier");
@@ -61,7 +62,7 @@ public class FondService {
                 TransactionFondDemande transaction = new TransactionFondDemande();
                 transaction.setEntree(Math.random() * 1000);
                 transaction.setSortie(Math.random() * 500);
-                transaction.setDtTransaction(LocalDateTime.now().minusDays(i));
+                transaction.setDtTransaction(ProjectUtils.getTimeNow().minusDays(i));
                 transaction.setUsers(user);
                 transactions.add(transaction);
             }

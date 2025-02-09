@@ -1,5 +1,6 @@
 package mg.cloud.projets5.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,5 +16,9 @@ public class UsersService {
 
      public List<Users> findAll(){
         return usersRepo.findAll();
+    }
+
+    public List<Users> getUsersAddedAfter(LocalDateTime date) {
+        return usersRepo.findUsersAddedAfter(date);
     }
 }
