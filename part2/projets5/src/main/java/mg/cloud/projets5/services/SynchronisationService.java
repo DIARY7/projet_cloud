@@ -1,6 +1,5 @@
 package mg.cloud.projets5.services;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,7 +22,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.*;
 import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
@@ -62,17 +60,16 @@ public class SynchronisationService {
 
         Firestore db = FirestoreClient.getFirestore();
         LocalDateTime lastSynchro = getLastSync();
-        synchroToLocal(lastSynchro,db);
+        synchroToLocal(db);
         synchroToOnline(lastSynchro,db);
         updateDate();
     }
 
-    public void synchroToLocal(LocalDateTime lastSync, Firestore db) throws Exception {
+    public void synchroToLocal(Firestore db) throws Exception {
         CollectionReference collection = db.collection("transaction_fond_demande");
-        
-        // Obtenir les documents dont `dt_transaction` est supérieur à `lastSync`
-        ApiFuture<QuerySnapshot> query = collection.whereGreaterThan("dt_transaction", Timestamp.valueOf(lastSync)).get();
     
+        // Obtenir tous les documents de la collection
+        ApiFuture<QuerySnapshot> query = collection.get();
         List<QueryDocumentSnapshot> documents = query.get().getDocuments();
     
         // Vérification si la collection est vide
@@ -90,9 +87,9 @@ public class SynchronisationService {
             transaction.setEntree(doc.getDouble("entree"));
             transaction.setSortie(doc.getDouble("sortie"));
             transaction.setDtTransaction(
-                    doc.getTimestamp("dt_transaction").toDate().toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDateTime()
+                doc.getTimestamp("dt_transaction").toDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime()
             );
             Users users = new Users();
             users.setId(doc.getLong("user_id").intValue());
@@ -108,6 +105,7 @@ public class SynchronisationService {
         clearCollection("transaction_fond_demande", db);
         System.out.println("Synchronisation vers la base locale terminée. Documents traités : " + transactions.size());
     }
+    
     
 
     private void synchroToOnline(LocalDateTime lastSync,Firestore db) throws Exception {

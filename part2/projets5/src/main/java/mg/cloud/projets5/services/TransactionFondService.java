@@ -9,7 +9,6 @@ import mg.cloud.projets5.entity.TransactionFond;
 import mg.cloud.projets5.entity.TransactionFondDemande;
 import mg.cloud.projets5.repo.TransactionFondDemandeRepo;
 import mg.cloud.projets5.repo.TransactionFondRepo;
-import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionFondService {
