@@ -71,9 +71,9 @@ export default function FundsWallet() {
 
       if (!response.ok) throw new Error("Erreur lors du dépôt");
       const data = await response.json();
-      console.log(data);
+
       if(data.status === 'success'){
-        setSuccessMessage("Dépôt effectué avec succès !");
+        setSuccessMessage("Demande de dépôt effectué avec succès !");
       }
       if(data.status === 'error'){
         setError(data.error.message)
@@ -103,9 +103,9 @@ export default function FundsWallet() {
 
       if (!response.ok) throw new Error("Erreur lors du retrait");
       const data = await response.json();
-      console.log(data); // Récupération des données
+
       if(data.status === 'success'){
-        setSuccessMessage("Dépôt effectué avec succès !");
+        setSuccessMessage("Demande de retrait effectué avec succès !");
       }
       if(data.status === 'error'){
         setError(data.error.message)
