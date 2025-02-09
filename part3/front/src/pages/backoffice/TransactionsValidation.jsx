@@ -8,6 +8,7 @@ export default function TransactionsValidation() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const token = getToken();
 
     useEffect(() => {
         fetchTransactions();
