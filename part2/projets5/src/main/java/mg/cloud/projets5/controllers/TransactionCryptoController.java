@@ -104,7 +104,7 @@ public class TransactionCryptoController {
         try {
             Users user = tokenService.getUserByToken(authorizationHeader);
             Double puCrypto = cryptoService.getCryptoCurrentPrice(cryptoId);
-            transactionCryptoService.save(puCrypto,qte,typeCommissionId,cryptoId,user.getId());
+            transactionCryptoService.save(puCrypto,qte, LocalDate.now(),typeCommissionId,cryptoId,user.getId());
             dto.success(null,"Insertion réussie");
         } catch (Exception e) {
            dto.serverError(e, "Echec de la transaction: "+e.getMessage());
