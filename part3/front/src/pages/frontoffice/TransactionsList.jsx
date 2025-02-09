@@ -43,7 +43,7 @@ export default function TransactionsList() {
 
   useEffect(() => {
     fetchData();
-  }, [selectedUser, minDate, maxDate, selectedCrypto]);
+  }, [selectedUser]);
 
   const handleDateMaxChange = (e) => {
     setMaxDate(e.target.value);
