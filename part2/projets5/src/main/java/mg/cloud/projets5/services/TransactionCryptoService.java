@@ -109,18 +109,11 @@ public class TransactionCryptoService {
             double valeur = listePorteFeuilles.get(i).getQte() * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto()); 
             listePorteFeuilles.get(i).setValeur(valeur);
         }     
-        return listePorteFeuilles;
+        // return listePorteFeuilles;
+        return listePorteFeuilles.stream()
+                .sorted((p1, p2) -> Double.compare(p2.getQte(), p1.getQte()))
+                .collect(Collectors.toList());
     }
-
-    // public List<PorteFeuilleCrypto> getWalletCrypto2(int idUser) {
-    //     List<PorteFeuilleCrypto> listePorteFeuilles = transactionCryptoRepo.getWalletUser2(idUser);
-    //     for (int i = 0; i < listePorteFeuilles.size(); i++) {
-    //         double valeur = listePorteFeuilles.get(i).getQte()
-    //                 * cryptoService.getCryptoCurrentPrice(listePorteFeuilles.get(i).getIdCrypto());
-    //         listePorteFeuilles.get(i).setValeur(valeur);
-    //     }
-    //     return listePorteFeuilles;
-    // }
 }
 
 

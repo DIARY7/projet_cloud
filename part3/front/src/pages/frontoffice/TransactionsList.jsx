@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRightLeft, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import Navbar from '../../components/NavBar';
@@ -12,37 +12,35 @@ export default function TransactionsList() {
   const [transactions, setTrans] = useState([]);
   const [cryptos, setcryptos] = useState([]);
   const [users, setusers] = useState([]);
-  
+
   const [loading, setLoading] = useState(false);
-      
+
   const fetchData = async () => {
-              setLoading(true);
-          
-              try {
-              const response = await fetch('http://localhost:8080/TransCrypto/List?dateDebut='+minDate+'&dateFin='+maxDate+'&userId='+selectedUser+'&cryptoId='+selectedCrypto, {
-                  method: 'GET',
-                  headers: {
-                  'Content-Type': 'application/json',
-                  },
-                  body: null,
-              });
-          
-              const result = await response.json();
-          
-              if (result.status === 'success') {
-                  setTrans(result.data.listTransactionCrypto);
-                  setcryptos(result.data.listCrypto);
-                  setusers(result.data.listUser);
-              } else {
-                  console.error('Erreur:', result.error);
-              }
-              } catch (error) {
-                console.error('Erreur de requête :', error);
-              } finally {
-              setLoading(false);
-              }
-          };
-  
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8080/TransCrypto/List?dateDebut=' + minDate + '&dateFin=' + maxDate + '&userId=' + selectedUser + '&cryptoId=' + selectedCrypto, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: null,
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        setTrans(result.data.listTransactionCrypto);
+        setcryptos(result.data.listCrypto);
+        setusers(result.data.listUser);
+      } else {
+        console.error('Erreur:', result.error);
+      }
+    } catch (error) {
+      console.error('Erreur de requête :', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, [selectedUser, minDate, maxDate, selectedCrypto]);
@@ -50,7 +48,7 @@ export default function TransactionsList() {
   const handleDateMaxChange = (e) => {
     setMaxDate(e.target.value);
   };
-  
+
   const handleDateMinChange = (e) => {
     setMinDate(e.target.value);
   };
@@ -62,89 +60,94 @@ export default function TransactionsList() {
   const handleCryptoChange = (e) => {
     setSelectedCrypto(e.target.value);
   };
-  
+
   const handleSubmit = (e) => {
     fetchData();
   };
 
   return (
     <div className="min-h-screen bg-gray-900">
-         {loading && (
+      {loading && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-yellow-500"></div>
         </div>
       )}
-      <Navbar/>
+      <Navbar />
       <div className="max-w-7xl mx-auto p-6">
         <div className="flex items-center justify-center mb-8">
           <ArrowRightLeft className="h-8 w-8 text-yellow-500 mr-3" />
           <h1 className="text-3xl font-bold text-white">Historique des Transactions</h1>
         </div>
+
         <form className="mt-8 space-y-6">
-        <div className="mb-4 ms-1">
-          <label className="text-white mr-2">Filtrer par utilisateur:</label>
-          <select
-            value={selectedUser}
-            onChange={handleUserChange}
-            className="px-4 py-2 rounded-lg text-black mr-4"
-          >
-            <option value="">Tous les utilisateurs</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.fullName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className='mb-4 ms-1'>
-          <label className="text-white mr-2">Filtrer par crypto:</label>
-          <select
-            value={selectedCrypto}
-            onChange={handleCryptoChange}
-            className="px-4 py-2 rounded-lg text-black"
-          >
-            <option value="">Toutes les cryptos</option>
-            {cryptos.map((crypto) => (
-              <option key={crypto.id} value={crypto.id}>
-                {crypto.label}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="flex flex-col">
+              <label className="text-white mb-2">Filtrer par utilisateur:</label>
+              <select
+                value={selectedUser}
+                onChange={handleUserChange}
+                className="px-4 py-2 rounded-lg text-black"
+              >
+                <option value="">Tous les utilisateurs</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.fullName}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="mb-4 ms-1">
-          <label className="text-white mr-2">Filtrer par date maximale:</label>
-          <input
-            type="date"
-            onChange={handleDateMaxChange}
-            className="px-4 py-2 rounded-lg text-black"
-          />
-        </div>
-      
-        <div className="mb-4 ms-1">
-          <label className="text-white mr-2">Filtrer par date minimale:</label>
-          <input
-            type="date"
-            onChange={handleDateMinChange}
-            className="px-4 py-2 rounded-lg text-black"
-          />
-        </div>
+            <div className="flex flex-col">
+              <label className="text-white mb-2">Filtrer par crypto:</label>
+              <select
+                value={selectedCrypto}
+                onChange={handleCryptoChange}
+                className="px-4 py-2 rounded-lg text-black"
+              >
+                <option value="">Toutes les cryptos</option>
+                {cryptos.map((crypto) => (
+                  <option key={crypto.id} value={crypto.id}>
+                    {crypto.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div>
-                    <button
-                    onClick={handleSubmit}
-                      type="submit"
-                      className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-                      disabled={loading}
-                    >
-                      <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <Search className="h-5 w-5 text-gray-900" />
-                      </span>
-                      {loading ? 'Filtrage...' : 'Filtrer'}
-                    </button>
-                  </div>
-            </form>
-        <div className="bg-gray-800 rounded-lg shadow overflow-x-auto">
+            <div className="flex flex-col">
+              <label className="text-white mb-2">Filtrer par date maximale:</label>
+              <input
+                type="date"
+                onChange={handleDateMaxChange}
+                className="px-4 py-2 rounded-lg text-black"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-white mb-2">Filtrer par date minimale:</label>
+              <input
+                type="date"
+                onChange={handleDateMinChange}
+                className="px-4 py-2 rounded-lg text-black"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              disabled={loading}
+            >
+              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                <Search className="h-5 w-5 text-gray-900" />
+              </span>
+              {loading ? 'Filtrage...' : 'Filtrer'}
+            </button>
+          </div>
+        </form>
+
+        <div className="bg-gray-800 rounded-lg shadow overflow-x-auto mt-6">
           <table className="min-w-full table-auto divide-y divide-gray-700">
             <thead className="bg-gray-700">
               <tr>
@@ -176,8 +179,7 @@ export default function TransactionsList() {
                     <div
                       className="flex items-center cursor-pointer"
                       onClick={() => {
-                        setSelectedUser(transaction.users.id); 
-                        // fetchData();
+                        setSelectedUser(transaction.users.id);
                       }}
                     >
                       <img
@@ -189,7 +191,7 @@ export default function TransactionsList() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                  {transaction.commission.id == 2 ? transaction.qte : 0.0 }
+                    {transaction.commission.id == 2 ? transaction.qte : 0.0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
                     {transaction.commission.id == 2 ? 0.0 : transaction.qte}
