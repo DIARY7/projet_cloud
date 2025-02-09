@@ -38,4 +38,7 @@ public class Users {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_admin", nullable = false)
+    private Boolean isAdmin;
+
 }

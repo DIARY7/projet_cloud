@@ -57,7 +57,7 @@ LEFT JOIN (
             );
 
     @Query( value = """
-            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id,tc.crypto.label, SUM(qte) ) 
+            SELECT new mg.cloud.projets5.dto.transaction.PorteFeuilleCrypto(tc.crypto.id,tc.crypto.label, COALESCE(SUM(qte), 0) ) 
             FROM TransactionCrypto tc  WHERE tc.users.id = :idUser
             GROUP BY tc.crypto.id,tc.crypto.label
             """)

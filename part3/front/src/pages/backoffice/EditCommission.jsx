@@ -30,7 +30,7 @@ export default function EditCommission() {
             if (data.status == 'success') {
                 setSuccessMessage('Commission mise à jour avec succès!');
             } else {
-                setError('Erreur lors de la mise à jour de la commission');
+                setError('Erreur lors de la mise à jour de la commission: ' + data.message);
                 console.error(data.error);
             }
         } catch (error) {

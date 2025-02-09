@@ -34,6 +34,14 @@ public class DataTransfertObject {
         setMessage(message);
     }
 
+    public void unauthorized(String message) {
+        setStatus("unauthorized");
+        setCode(401);
+        setData(null);
+        setError(null);
+        setMessage(message);
+    }
+
     public void serverError(Object error, String message) {
         setStatus("error");
         setCode(500);
