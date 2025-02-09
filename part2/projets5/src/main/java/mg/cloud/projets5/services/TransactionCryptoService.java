@@ -98,9 +98,9 @@ public class TransactionCryptoService {
                                     .build();
 
                 if (typeCommission == 2) {
-                    tr.setEntree(montantTotal);
-                }else{
                     tr.setSortie(montantTotal);
+                }else{
+                    tr.setEntree(montantTotal);
                 }
                 
                 transactionFondService.create(tr);
