@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRightLeft, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 import { Search } from 'lucide-react';
+import { formatDate } from '../../utils/formattage';
 
 export default function TransactionsList() {
   const [maxDate, setMaxDate] = useState('');
@@ -199,7 +200,7 @@ export default function TransactionsList() {
                     {transaction.prix}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-white">
-                    {transaction.dtTransaction}
+                    {formatDate(transaction.dtTransaction)}
                   </td>
                 </tr>
               ))}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRightLeft, PlusCircle, MinusCircle } from 'lucide-react';
 import Navbar from '../../components/NavBar';
 import { getToken } from '../../utils/auth';
+import { formatDate } from '../../utils/formattage';
 
 export default function TransactionsValidation() {
     const [transactions, setTransactions] = useState([]);
@@ -134,7 +135,8 @@ export default function TransactionsValidation() {
                                             {transaction.sortie}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-white">
-                                            {new Date(transaction.date).toLocaleDateString()}
+                                            {/* {new Date(transaction.date).toLocaleDateString()} */}
+                                            {formatDate(transaction.date)}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-white">
                                             <div className="flex items-center gap-4">
