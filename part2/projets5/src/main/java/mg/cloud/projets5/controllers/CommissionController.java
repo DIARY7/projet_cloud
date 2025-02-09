@@ -15,7 +15,7 @@ import mg.cloud.projets5.services.TokensService;
 @RestController
 @RequestMapping("/commission")
 public class CommissionController {
-      @Autowired
+    @Autowired
     TypeCommissionService typeCommissionService;
 
     @Autowired
