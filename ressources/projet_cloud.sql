@@ -113,7 +113,7 @@ VALUES
 
 INSERT INTO users (full_name, email, pwd, n_attempt, created_at, updated_at, is_admin)
 VALUES
-    ('Admin', 'rollogetroussi-5108@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
+    ('Admin', 'nalopribrucra-1318@yopmail.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 0, NOW(), NULL,TRUE);
 
 UPDATE users set is_admin = true  where email = 'ramavoharinaivo.nyony@gmail.com';
 

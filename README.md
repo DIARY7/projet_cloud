@@ -71,3 +71,9 @@ Une fois Docker lancé, vous pouvez accéder aux ressources suivantes :
   `/wallet/cryptos`
 - **Portefeuille de fonds** :  
   `/wallet/funds`
+
+
+### LOGIN User
+
+admin avec email jetable Yopmail
+`nalopribrucra-1318@yopmail.com` avec mdp `123`
