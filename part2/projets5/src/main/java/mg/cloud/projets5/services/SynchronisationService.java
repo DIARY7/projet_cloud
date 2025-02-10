@@ -22,6 +22,7 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteBatch;
@@ -276,38 +277,40 @@ public class SynchronisationService {
 
 
     private void localToFirestorePrixCrypto(Firestore db) throws Exception {
-    clearCollection("prix_crypto", db);
-    CoursCryptoDTO coursCryptoDTO = cryptoService.getCoursCrypto();
-
-    WriteBatch batch = db.batch();
-    int count = 0;
-
-    for (PrixCrypto prixCrypto : coursCryptoDTO.getCryptoPrix()) {
-        Map<String, Object> prixCryptoData = new HashMap<>();
-        prixCryptoData.put("crypto_id", prixCrypto.getCrypto().getId());
-        prixCryptoData.put("crypto_nom", prixCrypto.getCrypto().getLabel());
-        prixCryptoData.put("daty", Timestamp.valueOf(prixCrypto.getDaty()));
-        prixCryptoData.put("prix", prixCrypto.getPrix());
-
-        // Préparer l'insertion dans le batch
-        DocumentReference docRef = db.collection("prix_crypto").document(UUID.randomUUID().toString());
-        batch.set(docRef, prixCryptoData);
-        count++;
-
-        // Limite de Firestore : 500 opérations par batch
-        if (count == 100) {
-            batch.commit().get();
-            batch = db.batch();  // Créer un nouveau batch
-            count = 0;
+        CoursCryptoDTO coursCryptoDTO = cryptoService.getCoursCrypto();
+    
+        for (PrixCrypto prixCrypto : coursCryptoDTO.getCryptoPrix()) {
+            // Recherche du document correspondant avec crypto_id
+            Query query = db.collection("prix_crypto")
+                    .whereEqualTo("crypto_id", prixCrypto.getCrypto().getId());
+    
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+    
+            if (!documents.isEmpty()) {
+                // Document existant, mise à jour des champs
+                DocumentReference docRef = documents.get(0).getReference();
+                Map<String, Object> updatedData = new HashMap<>();
+                updatedData.put("crypto_nom", prixCrypto.getCrypto().getLabel());
+                updatedData.put("daty", Timestamp.valueOf(prixCrypto.getDaty()));
+                updatedData.put("prix", prixCrypto.getPrix());
+    
+                docRef.update(updatedData).get();
+            } else {
+                // Document inexistant, insertion
+                Map<String, Object> newData = new HashMap<>();
+                newData.put("crypto_id", prixCrypto.getCrypto().getId());
+                newData.put("crypto_nom", prixCrypto.getCrypto().getLabel());
+                newData.put("daty", Timestamp.valueOf(prixCrypto.getDaty()));
+                newData.put("prix", prixCrypto.getPrix());
+    
+                db.collection("prix_crypto").add(newData).get();
+            }
         }
+    
+        System.out.println("Les données de prix_crypto ont été synchronisées.");
     }
-
-    // Commit des insertions restantes
-    if (count > 0) {
-        batch.commit().get();
-    }
-    System.out.println("Les données prix_crypto ont été synchronisées.");
-}
+    
 
 
     private void localToFirestoreUsers(LocalDateTime lastSync,Firestore db)throws Exception{

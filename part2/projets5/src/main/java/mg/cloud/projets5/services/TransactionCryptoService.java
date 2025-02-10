@@ -114,21 +114,40 @@ public class TransactionCryptoService {
                 }
                 
                 transactionFondService.create(tr);
-
                 Firestore db = FirestoreClient.getFirestore();
-
-                Query query = db.collection("FCM_Token")
-                .whereEqualTo("user_id", userId.toString());
+                try {
+                    // Vérification si une crypto est favorite pour un utilisateur donné
+                    Query query = db.collection("crypto_favorie")
+                                    .whereEqualTo("user_id", userId)
+                                    .whereEqualTo("crypto_id", cryptoId);
+                
                     ApiFuture<QuerySnapshot> querySnapshot = query.get();
                     List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
-                    QueryDocumentSnapshot documentSnapshot = documents.isEmpty() ? null : documents.get(0);
-                    System.out.println(documents.isEmpty());
-                    if (documentSnapshot != null) {
-                        String fcmToken = documentSnapshot.getString("token");
-                        System.out.println(fcmToken);
-                        notificationService.envoyerNotification(fcmToken, "Transaction Crypto favoris", "Mercie bcp");
-                       
+                
+                    if (!documents.isEmpty()) {
+                        // La crypto est favorite, récupérer le token FCM
+                        Query tokenQuery = db.collection("FCM_Token")
+                                              .whereEqualTo("user_id", userId);
+                
+                        ApiFuture<QuerySnapshot> tokenSnapshot = tokenQuery.get();
+                        List<QueryDocumentSnapshot> tokenDocuments = tokenSnapshot.get().getDocuments();
+                
+                        if (!tokenDocuments.isEmpty()) {
+                            String fcmToken = tokenDocuments.get(0).getString("token");
+                            if (fcmToken != null) {
+                                // Envoyer la notification
+                                notificationService.envoyerNotification(fcmToken, 
+                                    "Transaction Crypto Favorie", 
+                                    "Merci beaucoup, cette transaction concerne votre crypto favorite !");
+                                System.out.println("Notification envoyée avec succès !");
+                            }
+                        }
+                    } else {
+                        System.out.println("La crypto n'est pas favorite pour cet utilisateur.");
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
           
         }else{
             throw new IllegalArgumentException("Quantite positive uniquement");
